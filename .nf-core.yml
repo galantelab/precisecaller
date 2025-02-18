@@ -1,0 +1,77 @@
+bump_version: null
+lint:
+  files_exist:
+  - .github/workflows/branch.yml
+  - .github/workflows/ci.yml
+  - .github/workflows/linting_comment.yml
+  - .github/workflows/linting.yml
+  - .editorconfig
+  - .prettierignore
+  - .prettierrc.yml
+  - CHANGELOG.md
+  - LICENSE
+  - .github/workflows/branch.yml
+  - .github/workflows/ci.yml
+  - .github/workflows/linting_comment.yml
+  - .github/workflows/linting.yml
+  - .editorconfig
+  - .prettierignore
+  - .prettierrc.yml
+  - CHANGELOG.md
+  - LICENSE
+  - CODE_OF_CONDUCT.md
+  - assets/nf-core-precisecaller_logo_light.png
+  - docs/images/nf-core-precisecaller_logo_light.png
+  - docs/images/nf-core-precisecaller_logo_dark.png
+  - .github/ISSUE_TEMPLATE/config.yml
+  - .github/workflows/awstest.yml
+  - .github/workflows/awsfulltest.yml
+  files_unchanged:
+  - .github/CONTRIBUTING.md
+  - LICENSE
+  - .prettierignore
+  - .prettierignore
+  - .github/CONTRIBUTING.md
+  - LICENSE
+  - .prettierignore
+  - .prettierignore
+  - CODE_OF_CONDUCT.md
+  - assets/nf-core-precisecaller_logo_light.png
+  - docs/images/nf-core-precisecaller_logo_light.png
+  - docs/images/nf-core-precisecaller_logo_dark.png
+  - .github/ISSUE_TEMPLATE/bug_report.yml
+  multiqc_config:
+  - report_comment
+  nextflow_config:
+  - manifest.name
+  - manifest.homePage
+  - validation.help.beforeText
+  - validation.help.afterText
+  - validation.summary.beforeText
+  - validation.summary.afterText
+  readme:
+  - nextflow_badge
+nf_core_version: 3.0.2
+org_path: null
+repository_type: pipeline
+template:
+  author: Thiago L. A. Miller / Pedro A. F. Galante
+  description: 'A complete, scalable, easy-to-use, open-source platform for genomic
+    variant detection in Oncology and Precision Medicine '
+  force: true
+  is_nfcore: false
+  name: precisecaller
+  org: galantelab
+  outdir: .
+  skip_features:
+  - ci
+  - github_badges
+  - code_linters
+  - gitpod
+  - codespaces
+  - changelog
+  - license
+  - adaptivecard
+  - slackreport
+  version: 1.0.0dev
+update: null
