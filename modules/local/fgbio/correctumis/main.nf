@@ -9,11 +9,12 @@ process FGBIO_CORRECTUMIS {
 
     input:
     tuple val(meta), path(bam)
-    path expected_umis
+    path umi_file
+    val max_mismatches
+    val min_distance
 
     output:
-    tuple val(meta), path("*.correct_umis.bam") , emit: bam,  optional: true
-    tuple val(meta), path("*.correct_umis.cram"), emit: cram, optional: true
+    tuple val(meta), path("*.correct_umis.bam") , emit: bam
     path "versions.yml"                         , emit: versions
 
     when:
@@ -22,13 +23,10 @@ process FGBIO_CORRECTUMIS {
     script:
     def args = task.ext.args ?: ''
     def prefix = task.ext.prefix ?: "${meta.id}"
-    def suffix = task.ext.suffix ?: "bam"
-    def max_mismatches = args.contains("--max-mismatches") ? "" : "--max-mismatches 1"
-    def min_distance = args.contains("--min-distance") ? "" : "--min-distance 2"
 
     def mem_gb = 8
     if (!task.memory) {
-        log.info '[fgbio FastqToBam] Available memory not known - defaulting to 8GB. Specify process memory requirements to change this.'
+        log.info '[fgbio CorrectUmis] Available memory not known - defaulting to 8GB. Specify process memory requirements to change this.'
     } else if (mem_gb > task.memory.giga) {
         if (task.memory.giga < 2) {
             mem_gb = 1
@@ -45,11 +43,11 @@ process FGBIO_CORRECTUMIS {
         CorrectUmis \\
         ${args} \\
         --input ${bam} \\
-        --output ${prefix}.correct_umis.${suffix} \\
-        --umi-files ${expected_umis} \\
+        --output ${prefix}.correct_umis.bam \\
+        --umi-files ${umi_file} \\
         --dont-store-original-umis \\
-        ${max_mismatches} \\
-        ${min_distance}
+        --max-mismatches ${max_mismatches} \\
+        --min-distance ${min_distance}
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
@@ -60,9 +58,8 @@ process FGBIO_CORRECTUMIS {
     stub:
     def args = task.ext.args ?: ''
     def prefix = task.ext.prefix ?: "${meta.id}"
-    def suffix = task.ext.suffix ?: "bam"
     """
-    touch ${prefix}.correct_umis.${suffix}
+    touch ${prefix}.correct_umis.bam
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
