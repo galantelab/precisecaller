@@ -14,15 +14,15 @@ process FGBIO_CORRECTUMIS {
     val min_distance
 
     output:
-    tuple val(meta), path("*.correct_umis.bam") , emit: bam
-    path "versions.yml"                         , emit: versions
+    tuple val(meta), path("${prefix}.bam") , emit: bam
+    path "versions.yml"                    , emit: versions
 
     when:
     task.ext.when == null || task.ext.when
 
     script:
     def args = task.ext.args ?: ''
-    def prefix = task.ext.prefix ?: "${meta.id}"
+    prefix = task.ext.prefix ?: "${meta.id}_correct_umis"
 
     def mem_gb = 8
     if (!task.memory) {
@@ -35,6 +35,10 @@ process FGBIO_CORRECTUMIS {
         }
     }
 
+    if ("${bam}" == "${prefix}.bam") {
+        error "Input and output names are the same, use \"task.ext.prefix\" to disambiguate!"
+    }
+
     """
     fgbio \\
         -Xmx${mem_gb}g \\
@@ -43,7 +47,7 @@ process FGBIO_CORRECTUMIS {
         CorrectUmis \\
         ${args} \\
         --input ${bam} \\
-        --output ${prefix}.correct_umis.bam \\
+        --output ${prefix}.bam \\
         --umi-files ${umi_file} \\
         --dont-store-original-umis \\
         --max-mismatches ${max_mismatches} \\
@@ -57,9 +61,14 @@ process FGBIO_CORRECTUMIS {
 
     stub:
     def args = task.ext.args ?: ''
-    def prefix = task.ext.prefix ?: "${meta.id}"
+    prefix = task.ext.prefix ?: "${meta.id}_correct_umis"
+
+    if ("${bam}" == "${prefix}.bam") {
+        error "Input and output names are the same, use \"task.ext.prefix\" to disambiguate!"
+    }
+
     """
-    touch ${prefix}.correct_umis.bam
+    touch ${prefix}.bam
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
