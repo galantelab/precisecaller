@@ -1,5 +1,7 @@
 //
 // Runs FGBIO tools to filter UMI tags from FASTQ reads
+// This pipeline is based on 'fgbio Best Practise'
+// https://github.com/fulcrumgenomics/fgbio/blob/main/docs/best-practice-consensus-pipeline.md
 //
 
 include { FGBIO_FASTQTOBAM                  as FASTQTOBAM                  } from '../../../modules/nf-core/fgbio/fastqtobam/main'
@@ -20,13 +22,13 @@ workflow FASTQ_FILTER_UMI_CONSENSUS_FGBIO {
     fasta                     // channel: [mandatory] [ val(meta2), [ fasta ] ]
     dict                      // channel: [mandatory] [ val(meta3), [ dict  ] ]
     bwa_index                 // channel: [mandatory] [ val(meta4), [ index ] ]
+    umi_file                  // channel: [optional]  /path/to/file/txt - list of expected UMIs
+    max_mismatches            // integer: [optional]  used with umi_file - default: 1
+    min_distance              // integer: [optional]  used with umi_file - default: 2
     groupreadsbyumi_strategy  // string:  [mandatory] grouping strategy - default: "Adjacency"
     min_reads                 // integer: [mandatory] the min num of reads for a consensus base/read - default: 3
     min_base_quality          // integer: [mandatory] mask (make 'N') consensus bases with Q < - default: 45
     max_base_error_rate       // real:    [mandatory] the maximum error rate for a single consensus base - default: 0.2
-    umi_file                  // channel: [optional]  [ val(meta5), [ txt   ] ] - list of expected UMIs
-    max_mismatches            // integer: [optional]  used with umi_file - default: 1
-    min_distance              // integer: [optional]  used with umi_file - default: 2
 
     main:
     versions = Channel.empty()
@@ -43,7 +45,7 @@ workflow FASTQ_FILTER_UMI_CONSENSUS_FGBIO {
     // Corrects UMIs stored in BAM files when a set of fixed UMIs is in use
     if (umi_file) {
         CORRECTUMIS(ubam, umi_file, max_mismatches, min_distance)
-        ubam      = CORRECTUMIS.out.bam
+        ubam     = CORRECTUMIS.out.bam
         versions = versions.mix(CORRECTUMIS.out.versions)
     }
 
