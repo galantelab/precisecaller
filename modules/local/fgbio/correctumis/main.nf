@@ -49,7 +49,6 @@ process FGBIO_CORRECTUMIS {
         --input ${bam} \\
         --output ${prefix}.bam \\
         --umi-files ${umi_file} \\
-        --dont-store-original-umis \\
         --max-mismatches ${max_mismatches} \\
         --min-distance ${min_distance}
 
