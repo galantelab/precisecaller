@@ -1,0 +1,76 @@
+nextflow_process {
+
+    name "Test Process FGBIO_CORRECTUMIS"
+    script "../main.nf"
+    process "FGBIO_CORRECTUMIS"
+
+    tag "modules"
+    tag "modules_"
+    tag "fgbio"
+    tag "fgbio/correctumis"
+
+    test("Non fully degenerate dataset - bam") {
+
+        when {
+            config "./nextflow.config"
+
+            process {
+                """
+                input[0] = [
+                    [ id:'test', single_end:false ], // meta map
+                    file(params.local_testdata_base_path + 'data/Homo_sapiens/Simulations/bam/non_fully_degenerate_umis.bam', checkIfExists: true)
+                ]
+                input[1] = file(params.local_testdata_base_path + 'data/Homo_sapiens/Simulations/txt/expected_umis.txt', checkIfExists: true)
+                input[2] = params.max_mismatches
+                input[3] = params.min_distance
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert process.success },
+                { assert snapshot(
+                    file(process.out.bam[0][1]).name,
+                    process.out.cram,
+                    process.out.versions
+                ).match() }
+            )
+        }
+
+    }
+
+    test("Non fully degenerate dataset - stub") {
+
+        options "-stub"
+
+        when {
+            config "./nextflow.config"
+
+            process {
+                """
+                input[0] = [
+                    [ id:'test', single_end:false ], // meta map
+                    file(params.local_testdata_base_path + 'data/Homo_sapiens/Simulations/bam/non_fully_degenerate_umis.bam', checkIfExists: true)
+                ]
+                input[1] = file(params.local_testdata_base_path + 'data/Homo_sapiens/Simulations/txt/expected_umis.txt', checkIfExists: true)
+                input[2] = params.max_mismatches
+                input[3] = params.min_distance
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert process.success },
+                { assert snapshot(
+                    file(process.out.bam[0][1]).name,
+                    process.out.cram,
+                    process.out.versions
+                ).match() }
+            )
+        }
+
+    }
+
+}

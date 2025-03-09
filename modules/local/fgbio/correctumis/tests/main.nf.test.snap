@@ -1,0 +1,30 @@
+{
+    "Non fully degenerate dataset - stub": {
+        "content": [
+            "test_correct_umis.bam",
+            null,
+            [
+                "versions.yml:md5,691dc7f665ce7035bf5c5e108ae96e22"
+            ]
+        ],
+        "meta": {
+            "nf-test": "0.9.2",
+            "nextflow": "24.10.4"
+        },
+        "timestamp": "2025-03-09T02:45:10.836249659"
+    },
+    "Non fully degenerate dataset - bam": {
+        "content": [
+            "test_correct_umis.bam",
+            null,
+            [
+                "versions.yml:md5,691dc7f665ce7035bf5c5e108ae96e22"
+            ]
+        ],
+        "meta": {
+            "nf-test": "0.9.2",
+            "nextflow": "24.10.4"
+        },
+        "timestamp": "2025-03-09T02:44:55.120537791"
+    }
+}
