@@ -1,0 +1,78 @@
+// nf-core subworkflows test fastq_filter_umi_consensus_fgbio
+nextflow_workflow {
+
+    name "Test Subworkflow FASTQ_FILTER_UMI_CONSENSUS_FGBIO"
+    script "../main.nf"
+    workflow "FASTQ_FILTER_UMI_CONSENSUS_FGBIO"
+
+    tag "subworkflows"
+    tag "subworkflows_"
+    tag "subworkflows/fastq_filter_umi_consensus_fgbio"
+    tag "bwa"
+    tag "bwa/mem"
+    tag "fgbio"
+    tag "fgbio/callmolecularconsensusreads"
+    tag "fgbio/correctumis"
+    tag "fgbio/fastqtobam"
+    tag "fgbio/filterconsensusreads"
+    tag "fgbio/groupreadsbyumi"
+    tag "fgbio/zipperbams"
+    tag "samtools"
+    tag "samtools/bam2fq"
+
+    setup {
+        run("BWA_INDEX") {
+            script "../../../../modules/nf-core/bwa/index/main.nf"
+            process {
+                """
+                input[0] = [
+                    [id: 'test'],
+                    file(params.local_testdata_base_path + 'references/Homo_sapiens/Gencode/hg38_chr22/Sequence/WholeGenomeFasta/genome.fa', checkIfExists: true)
+                ]
+                """
+            }
+        }
+    }
+
+    test("Homo_sapiens - fastq.gz") {
+
+        when {
+            config "./nextflow.config"
+
+            workflow {
+                """
+                input[0] = [
+                    [ id:'test', sample:'test_umi', read_group:'\\\'@RG\\\\tID:test\\\'' ], // meta map
+                    [
+                        file(params.local_testdata_base_path + 'data/Homo_sapiens/Illumina/fastq/test.umi_1.fastq.gz', checkIfExists: true),
+                        file(params.local_testdata_base_path + 'data/Homo_sapiens/Illumina/fastq/test.umi_2.fastq.gz', checkIfExists: true)
+                    ]
+                ]
+                input[1] = [
+                    [ id:'genome' ],
+                    file(params.local_testdata_base_path + 'references/Homo_sapiens/Gencode/hg38_chr22/Sequence/WholeGenomeFasta/genome.fa', checkIfExists: true)
+                ]
+                input[2] = [
+                    [ id:'dict' ],
+                    file(params.local_testdata_base_path + 'references/Homo_sapiens/Gencode/hg38_chr22/Sequence/WholeGenomeFasta/genome.dict', checkIfExists: true)
+                ]
+                input[3]  = BWA_INDEX.out.index
+                input[4]  = null
+                input[5]  = null
+                input[6]  = null
+                input[7]  = params.group_by_umi_strategy
+                input[8]  = params.umi_min_reads
+                input[9]  = params.umi_min_base_quality
+                input[10] = params.umi_max_base_error_rate
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert workflow.success},
+                { assert snapshot(workflow.out).match()}
+            )
+        }
+    }
+}
