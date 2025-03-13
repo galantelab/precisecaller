@@ -1,0 +1,198 @@
+{
+    "fasta.gz - prepare fasta reference": {
+        "content": [
+            {
+                "0": [
+                    [
+                        {
+                            "id": "genome.fa"
+                        },
+                        "genome.fa:md5,96abec2e5bbf15e88af5c6adbb6fb33e"
+                    ]
+                ],
+                "1": [
+                    [
+                        {
+                            "id": "genome.fa"
+                        },
+                        "genome.fa.fai:md5,889ed0b342d3854343aebb08cd0a9c6d"
+                    ]
+                ],
+                "2": [
+                    [
+                        {
+                            "id": "genome.fa"
+                        },
+                        "genome.dict:md5,41f4d1eb30aa93e078a2997d9768e93f"
+                    ]
+                ],
+                "3": [
+                    [
+                        {
+                            "id": "genome.fa"
+                        },
+                        [
+                            "genome.amb:md5,4a9a52d98d38ddbaa438b71c68d24446",
+                            "genome.ann:md5,b4aaa436f9ea7fdf9dc36d8914912f6c",
+                            "genome.bwt:md5,fcc50591c1320abc5f87b6087aed93e7",
+                            "genome.pac:md5,2f93530bfcb6be9dd4918b52249e5db2",
+                            "genome.sa:md5,a8c6c3224d4e167a3329eb69f065aed9"
+                        ]
+                    ]
+                ],
+                "4": [
+                    "versions.yml:md5,265795dcfabc74e982198a30abb773d5",
+                    "versions.yml:md5,6500dc776f23be2846f35446e2e38897",
+                    "versions.yml:md5,7303f194674b485c6914e28422822a12",
+                    "versions.yml:md5,e2315fc397ebc95e618a8f7fcfb8dc12"
+                ],
+                "bwa": [
+                    [
+                        {
+                            "id": "genome.fa"
+                        },
+                        [
+                            "genome.amb:md5,4a9a52d98d38ddbaa438b71c68d24446",
+                            "genome.ann:md5,b4aaa436f9ea7fdf9dc36d8914912f6c",
+                            "genome.bwt:md5,fcc50591c1320abc5f87b6087aed93e7",
+                            "genome.pac:md5,2f93530bfcb6be9dd4918b52249e5db2",
+                            "genome.sa:md5,a8c6c3224d4e167a3329eb69f065aed9"
+                        ]
+                    ]
+                ],
+                "dict": [
+                    [
+                        {
+                            "id": "genome.fa"
+                        },
+                        "genome.dict:md5,41f4d1eb30aa93e078a2997d9768e93f"
+                    ]
+                ],
+                "fasta": [
+                    [
+                        {
+                            "id": "genome.fa"
+                        },
+                        "genome.fa:md5,96abec2e5bbf15e88af5c6adbb6fb33e"
+                    ]
+                ],
+                "fasta_fai": [
+                    [
+                        {
+                            "id": "genome.fa"
+                        },
+                        "genome.fa.fai:md5,889ed0b342d3854343aebb08cd0a9c6d"
+                    ]
+                ],
+                "versions": [
+                    "versions.yml:md5,265795dcfabc74e982198a30abb773d5",
+                    "versions.yml:md5,6500dc776f23be2846f35446e2e38897",
+                    "versions.yml:md5,7303f194674b485c6914e28422822a12",
+                    "versions.yml:md5,e2315fc397ebc95e618a8f7fcfb8dc12"
+                ]
+            }
+        ],
+        "meta": {
+            "nf-test": "0.9.2",
+            "nextflow": "24.10.5"
+        },
+        "timestamp": "2025-03-13T17:47:05.820589"
+    },
+    "fasta - prepare fasta reference": {
+        "content": [
+            {
+                "0": [
+                    [
+                        {
+                            "id": "genome"
+                        },
+                        "/precisecaller/test-datasets/references/Homo_sapiens/Gencode/hg38_chr22q12.1/Sequence/WholeGenomeFasta/genome.fa"
+                    ]
+                ],
+                "1": [
+                    [
+                        {
+                            "id": "genome"
+                        },
+                        "genome.fa.fai:md5,889ed0b342d3854343aebb08cd0a9c6d"
+                    ]
+                ],
+                "2": [
+                    [
+                        {
+                            "id": "genome"
+                        },
+                        "genome.dict:md5,41f4d1eb30aa93e078a2997d9768e93f"
+                    ]
+                ],
+                "3": [
+                    [
+                        {
+                            "id": "genome"
+                        },
+                        [
+                            "genome.amb:md5,4a9a52d98d38ddbaa438b71c68d24446",
+                            "genome.ann:md5,b4aaa436f9ea7fdf9dc36d8914912f6c",
+                            "genome.bwt:md5,fcc50591c1320abc5f87b6087aed93e7",
+                            "genome.pac:md5,2f93530bfcb6be9dd4918b52249e5db2",
+                            "genome.sa:md5,a8c6c3224d4e167a3329eb69f065aed9"
+                        ]
+                    ]
+                ],
+                "4": [
+                    "versions.yml:md5,265795dcfabc74e982198a30abb773d5",
+                    "versions.yml:md5,6500dc776f23be2846f35446e2e38897",
+                    "versions.yml:md5,7303f194674b485c6914e28422822a12"
+                ],
+                "bwa": [
+                    [
+                        {
+                            "id": "genome"
+                        },
+                        [
+                            "genome.amb:md5,4a9a52d98d38ddbaa438b71c68d24446",
+                            "genome.ann:md5,b4aaa436f9ea7fdf9dc36d8914912f6c",
+                            "genome.bwt:md5,fcc50591c1320abc5f87b6087aed93e7",
+                            "genome.pac:md5,2f93530bfcb6be9dd4918b52249e5db2",
+                            "genome.sa:md5,a8c6c3224d4e167a3329eb69f065aed9"
+                        ]
+                    ]
+                ],
+                "dict": [
+                    [
+                        {
+                            "id": "genome"
+                        },
+                        "genome.dict:md5,41f4d1eb30aa93e078a2997d9768e93f"
+                    ]
+                ],
+                "fasta": [
+                    [
+                        {
+                            "id": "genome"
+                        },
+                        "/precisecaller/test-datasets/references/Homo_sapiens/Gencode/hg38_chr22q12.1/Sequence/WholeGenomeFasta/genome.fa"
+                    ]
+                ],
+                "fasta_fai": [
+                    [
+                        {
+                            "id": "genome"
+                        },
+                        "genome.fa.fai:md5,889ed0b342d3854343aebb08cd0a9c6d"
+                    ]
+                ],
+                "versions": [
+                    "versions.yml:md5,265795dcfabc74e982198a30abb773d5",
+                    "versions.yml:md5,6500dc776f23be2846f35446e2e38897",
+                    "versions.yml:md5,7303f194674b485c6914e28422822a12"
+                ]
+            }
+        ],
+        "meta": {
+            "nf-test": "0.9.2",
+            "nextflow": "24.10.5"
+        },
+        "timestamp": "2025-03-13T17:45:58.268773"
+    }
+}

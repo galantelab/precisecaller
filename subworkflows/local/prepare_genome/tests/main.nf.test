@@ -15,7 +15,7 @@ nextflow_workflow {
 
             workflow {
                 """
-                input[0] = params.local_testdata_base_path + 'references/Homo_sapiens/Gencode/hg38_chr22/Sequence/WholeGenomeFasta/genome.fa'
+                input[0] = params.local_testdata_base_path + 'references/Homo_sapiens/Gencode/hg38_chr22q12.1/Sequence/WholeGenomeFasta/genome.fa'
                 input[1] = null
                 input[2] = null
                 input[3] = null
@@ -30,4 +30,28 @@ nextflow_workflow {
             )
         }
     }
+
+    test("fasta.gz - prepare fasta reference") {
+        config "./nextflow.config"
+
+        when {
+
+            workflow {
+                """
+                input[0] = params.local_testdata_base_path + 'references/Homo_sapiens/Gencode/hg38_chr22q12.1/Sequence/WholeGenomeFasta/genome.fa.gz'
+                input[1] = null
+                input[2] = null
+                input[3] = null
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert workflow.success},
+                { assert snapshot(workflow.out).match()}
+            )
+        }
+    }
+
 }
