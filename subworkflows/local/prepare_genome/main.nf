@@ -12,7 +12,7 @@ workflow PREPARE_GENOME {
     fasta      // file: [mandatory] /path/to/genome.fasta
     fasta_fai  // file: [optional]  /path/to/genome.fasta.fai
     dict       // file: [optional]  /path/to/genome.dict
-    bwa_index  // file: [optional]  /path/to/bwa/
+    bwa        // file: [optional]  /path/to/bwa/
 
     main:
     ch_versions = Channel.empty()
@@ -45,12 +45,12 @@ workflow PREPARE_GENOME {
         ch_versions = ch_versions.mix(GATK4_CREATESEQUENCEDICTIONARY.out.versions)
     }
 
-    ch_bwa_index = Channel.empty()
-    if (bwa_index) {
-        ch_bwa_index = Channel.value([[id:"bwa"], file(bwa_index, checkIfExists: true)])
+    ch_bwa = Channel.empty()
+    if (bwa) {
+        ch_bwa = Channel.value([[id:"bwa"], file(bwa, checkIfExists: true)])
     } else {
         BWA_INDEX(ch_fasta)
-        ch_bwa_index = BWA_INDEX.out.index
+        ch_bwa       = BWA_INDEX.out.index
         ch_versions  = ch_versions.mix(BWA_INDEX.out.versions)
     }
 
@@ -58,6 +58,6 @@ workflow PREPARE_GENOME {
     fasta     = ch_fasta      // channel: [ val(meta), [ fasta ] ]
     fasta_fai = ch_fasta_fai  // channel: [ val(meta), [ fai   ] ]
     dict      = ch_dict       // channel: [ val(meta), [ dict  ] ]
-    bwa       = ch_bwa_index  // channel: [ val(meta), [ index ] ]
+    bwa       = ch_bwa        // channel: [ val(meta), [ bwa   ] ]
     versions  = ch_versions   // channel: [ versions.yml ]
 }
