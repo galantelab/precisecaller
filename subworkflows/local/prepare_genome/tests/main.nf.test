@@ -1,0 +1,33 @@
+// nf-core subworkflows test prepare_genome
+nextflow_workflow {
+    name "Test Subworkflow PREPARE_GENOME"
+    script "../main.nf"
+    workflow "PREPARE_GENOME"
+
+    tag "subworkflows"
+    tag "subworkflows_"
+    tag "subworkflows/fasta_prepare_references"
+
+    test("fasta - prepare fasta reference") {
+        config "./nextflow.config"
+
+        when {
+
+            workflow {
+                """
+                input[0] = params.local_testdata_base_path + 'references/Homo_sapiens/Gencode/hg38_chr22/Sequence/WholeGenomeFasta/genome.fa'
+                input[1] = null
+                input[2] = null
+                input[3] = null
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert workflow.success},
+                { assert snapshot(workflow.out).match()}
+            )
+        }
+    }
+}
