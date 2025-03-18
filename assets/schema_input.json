@@ -7,12 +7,24 @@
     "items": {
         "type": "object",
         "properties": {
+            "id": {
+                "type": "string",
+                "pattern": "^\\S+$",
+                "errorMessage": "ID must be provided and cannot contain spaces",
+                "meta": ["id"]
+            },
             "sample": {
                 "type": "string",
                 "pattern": "^\\S+$",
                 "errorMessage": "Sample name must be provided and cannot contain spaces",
-                "meta": ["id"]
+                "meta": ["sample"]
             },
+	    "lane": {
+                "type": "string",
+                "pattern": "^\\S+$",
+                "errorMessage": "Lane must be provided and cannot contain spaces",
+                "meta": ["lane"]
+	    },
             "fastq_1": {
                 "type": "string",
                 "format": "file-path",
@@ -25,9 +37,10 @@
                 "format": "file-path",
                 "exists": true,
                 "pattern": "^\\S+\\.f(ast)?q\\.gz$",
-                "errorMessage": "FastQ file for reads 2 cannot contain spaces and must have extension '.fq.gz' or '.fastq.gz'"
+                "errorMessage": "FastQ file for reads 2 must be provided, cannot contain spaces and must have extension '.fq.gz' or '.fastq.gz'"
             }
         },
-        "required": ["sample", "fastq_1"]
+        "required": ["id", "sample", "lane", "fastq_1", "fastq_2"],
+        "uniqueEntries": ["id", "sample", "lane"]
     }
 }
