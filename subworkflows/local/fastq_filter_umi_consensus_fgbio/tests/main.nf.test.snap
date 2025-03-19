@@ -9,13 +9,14 @@
                             "sample": "test_umi",
                             "read_group": "'@RG\\tID:test'"
                         },
-                        "test.cons.filtered.bam:md5,3b219102de4b637ae6afc7088b29d055"
+                        "test.cons.filtered.sorted.bam:md5,059e240a5e2de1e83025d7f38b729c15"
                     ]
                 ],
                 "1": [
                     "versions.yml:md5,25a88bb0161b7c8c0776ff571ae69c14",
                     "versions.yml:md5,2eaab159bf1e0ebc230271b9b122598a",
                     "versions.yml:md5,3ac60a8fef413d5536c56531d6542d3c",
+                    "versions.yml:md5,6f0a052f53d3612368ffe915c8d69f8e",
                     "versions.yml:md5,8ea9f9df1ceb8c3c85cc8758d3286677",
                     "versions.yml:md5,9bd98e354b529b1c77b81314707beaf3",
                     "versions.yml:md5,ac477a7d830567f244d6ea80f5230df4",
@@ -31,13 +32,14 @@
                             "sample": "test_umi",
                             "read_group": "'@RG\\tID:test'"
                         },
-                        "test.cons.filtered.bam:md5,3b219102de4b637ae6afc7088b29d055"
+                        "test.cons.filtered.sorted.bam:md5,059e240a5e2de1e83025d7f38b729c15"
                     ]
                 ],
                 "versions": [
                     "versions.yml:md5,25a88bb0161b7c8c0776ff571ae69c14",
                     "versions.yml:md5,2eaab159bf1e0ebc230271b9b122598a",
                     "versions.yml:md5,3ac60a8fef413d5536c56531d6542d3c",
+                    "versions.yml:md5,6f0a052f53d3612368ffe915c8d69f8e",
                     "versions.yml:md5,8ea9f9df1ceb8c3c85cc8758d3286677",
                     "versions.yml:md5,9bd98e354b529b1c77b81314707beaf3",
                     "versions.yml:md5,ac477a7d830567f244d6ea80f5230df4",
@@ -52,6 +54,6 @@
             "nf-test": "0.9.2",
             "nextflow": "24.10.4"
         },
-        "timestamp": "2025-03-09T19:04:58.232651915"
+        "timestamp": "2025-03-19T00:54:43.688377292"
     }
 }
