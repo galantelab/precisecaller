@@ -1,6 +1,6 @@
 //
 // Runs FGBIO tools to filter UMI tags from FASTQ reads
-// This pipeline is based on 'fgbio Best Practise'
+// This pipeline is based on 'fgbio Best Practices'
 // https://github.com/fulcrumgenomics/fgbio/blob/main/docs/best-practice-consensus-pipeline.md
 //
 
