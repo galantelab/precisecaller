@@ -9,9 +9,9 @@ include { paramsSummaryMap       } from 'plugin/nf-schema'
 include { paramsSummaryMultiqc   } from '../subworkflows/nf-core/utils_nfcore_pipeline'
 include { softwareVersionsToYAML } from '../subworkflows/nf-core/utils_nfcore_pipeline'
 include { methodsDescriptionText } from '../subworkflows/local/utils_nfcore_precisecaller_pipeline'
-include { SAMTOOLS_BAM2FQ        } from '../modules/nf-core/samtools/bam2fq/main'
 include { FASTP                  } from '../modules/nf-core/fastp/main'
 include { BWA_MEM                } from '../modules/nf-core/bwa/mem/main'
+include { SEQKIT_SPLIT2          } from '../modules/nf-core/seqkit/split2/main'
 
 // Create umi consensus bams from fastq
 include { FASTQ_FILTER_UMI_CONSENSUS_FGBIO } from '../../subworkflows/local/fastq_filter_umi_consensus_fgbio/main'
@@ -59,8 +59,49 @@ workflow PRECISECALLER {
     // alignment
     bam = Channel.empty()
 
+    // Determine which preprocessing steps should be executed based on
+    // user parameters. UMI processing is mutually exclusive with trimming,
+    // while splitting is only applied when trimming is disabled
+    enable_umi   = params.umi_read_structure
+    enable_trim  = !enable_umi && !params.skip_trimming
+    enable_split = !enable_trim && params.split_fastq_reads > 0
+
+    // Alignment is required only when no BAM has been produced upstream
+    enable_align = !enable_umi
+
+    // Split FASTQ files into smaller chunks for improved parallelization
+    // This step is purely structural and does not modify read sequences or
+    // qualities. It is only applied when trimming is disabled
+    if (enable_split) {
+        SEQKIT_SPLIT2(fastq)
+
+        fastq    = SEQKIT_SPLIT2.out.reads
+        versions = versions.mix(SEQKIT_SPLIT2.out.versions)
+    }
+
+    // Perform read trimming and filtering using FastP
+    // This step is skipped when UMI processing is enabled, as trimming may
+    // interfere with UMI read structures
+    if (enable_trim) {
+        save_trimmed_fail = false
+        save_merged       = false
+
+        FASTP(
+            fastq,
+            [],                // no adapter
+            false,             // no discard_trimmed_pass
+            save_trimmed_fail,
+            save_merged
+        )
+
+        fastq         = FASTP.out.reads
+        versions      = versions.mix(FASTP.out.versions)
+        multiqc_files = multiqc_files.mix(FASTP.out.json.map { meta, json -> json })
+        multiqc_files = multiqc_files.mix(FASTP.out.html.map { meta, html -> html })
+    }
+
     // UMI consensus calling
-    if (params.umi_read_structure) {
+    if (enable_umi) {
         FASTQ_FILTER_UMI_CONSENSUS_FGBIO(
             fastq,
             fasta,
@@ -79,42 +120,9 @@ workflow PRECISECALLER {
         versions = versions.mix(FASTQ_FILTER_UMI_CONSENSUS_FGBIO.out.versions)
     }
 
-    // Should we run FASTP?
-    enable_fastp = !params.skip_trimming || params.split_fastq_reads > 0
-
-    // TRIM/SPLIT
-    if (enable_fastp) {
-        if (params.umi_read_structure) {
-            // Convert BAM to FASTQ
-            split = false
-            SAMTOOLS_BAM2FQ(bam, split)
-
-            fastq    = SAMTOOLS_BAM2FQ.out.reads
-            versions = versions.mix(SAMTOOLS_BAM2FQ.out.versions)
-        }
-
-        save_trimmed_fail = false
-        save_merged       = false
-
-        FASTP(
-            fastq,
-            [],                // no adapter
-            false,             // no discard_trimmed_pass
-            save_trimmed_fail,
-            save_merged
-        )
-
-        fastq         = FASTP.out.reads
-        versions      = versions.mix(FASTP.out.versions)
-        multiqc_files = multiqc_files.mix(FASTP.out.json.map { meta, json -> json })
-        multiqc_files = multiqc_files.mix(FASTP.out.html.map { meta, html -> html })
-    }
-
-    // Alignment is already performed inside the UMI subworkflow
-    // Re-align only if FASTP was applied or UMI was not used
-    enable_align = !params.umi_read_structure || enable_fastp
-
-    // ALIGN
+    // Align reads to the reference genome when UMI processing is not enabled
+    // If UMI consensus calling was performed, alignment is already included
+    // in the UMI subworkflow and should not be repeated
     if (enable_align) {
         sort = true
         BWA_MEM(fastq, bwa, [[id:'no_fasta'], []], sort)
