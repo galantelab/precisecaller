@@ -1,9 +1,9 @@
 nextflow_function {
 
-    name "Test Utils.groovy"
+    name "Test ReadGroup.groovy"
 
     test("Test illumina-1.0") {
-        function "Utils.extractReadGroup"
+        function "ReadGroup.buildFromFastq"
 
         when {
             function {
@@ -15,7 +15,6 @@ nextflow_function {
                 ]
                 input[2] = "PONGA"
                 input[3] = "ILLUMINA"
-                input[4] = log
                 """
             }
         }
@@ -27,7 +26,7 @@ nextflow_function {
     }
 
     test("Test illumina-1.4") {
-        function "Utils.extractReadGroup"
+        function "ReadGroup.buildFromFastq"
 
         when {
             function {
@@ -39,7 +38,6 @@ nextflow_function {
                 ]
                 input[2] = "PONGA"
                 input[3] = "ILLUMINA"
-                input[4] = log
                 """
             }
         }
@@ -51,7 +49,7 @@ nextflow_function {
     }
 
     test("Test illumina-1.8") {
-        function "Utils.extractReadGroup"
+        function "ReadGroup.buildFromFastq"
 
         when {
             function {
@@ -63,7 +61,6 @@ nextflow_function {
                 ]
                 input[2] = "PONGA"
                 input[3] = "ILLUMINA"
-                input[4] = log
                 """
             }
         }
@@ -75,7 +72,7 @@ nextflow_function {
     }
 
     test("Test broad-1.0") {
-        function "Utils.extractReadGroup"
+        function "ReadGroup.buildFromFastq"
 
         when {
             function {
@@ -87,7 +84,6 @@ nextflow_function {
                 ]
                 input[2] = "PONGA"
                 input[3] = "ILLUMINA"
-                input[4] = log
                 """
             }
         }
@@ -99,7 +95,7 @@ nextflow_function {
     }
 
     test("Test ncbi_sra") {
-        function "Utils.extractReadGroup"
+        function "ReadGroup.buildFromFastq"
 
         when {
             function {
@@ -111,7 +107,6 @@ nextflow_function {
                 ]
                 input[2] = "PONGA"
                 input[3] = "ILLUMINA"
-                input[4] = log
                 """
             }
         }
@@ -123,19 +118,18 @@ nextflow_function {
     }
 
     test("Test simple") {
-        function "Utils.extractReadGroup"
+        function "ReadGroup.buildFromFastq"
 
         when {
             function {
                 """
                 input[0] = [id:1, sample:"simple", lane:"L1"]
                 input[1] = [
-                  file("s3://bioinfohsl-tools/precisecaller/test-datasets/data/Homo_sapiens/Simulations/fastq/simple_sra_R1.fq"),
-                  file("s3://bioinfohsl-tools/precisecaller/test-datasets/data/Homo_sapiens/Simulations/fastq/simple_sra_R2.fq")
+                  file("s3://bioinfohsl-tools/precisecaller/test-datasets/data/Homo_sapiens/Simulations/fastq/simple_R1.fq"),
+                  file("s3://bioinfohsl-tools/precisecaller/test-datasets/data/Homo_sapiens/Simulations/fastq/simple_R2.fq")
                 ]
                 input[2] = "PONGA"
                 input[3] = "ILLUMINA"
-                input[4] = log
                 """
             }
         }
@@ -147,49 +141,47 @@ nextflow_function {
     }
 
     test("Test error platform") {
-        function "Utils.extractReadGroup"
+        function "ReadGroup.buildFromFastq"
 
         when {
             function {
                 """
                 input[0] = [id:1, sample:"error", lane:"L1"]
                 input[1] = [
-                  file("s3://bioinfohsl-tools/precisecaller/test-datasets/data/Homo_sapiens/Simulations/fastq/simple_sra_R1.fq"),
-                  file("s3://bioinfohsl-tools/precisecaller/test-datasets/data/Homo_sapiens/Simulations/fastq/simple_sra_R2.fq")
+                  file("s3://bioinfohsl-tools/precisecaller/test-datasets/data/Homo_sapiens/Simulations/fastq/simple_R1.fq"),
+                  file("s3://bioinfohsl-tools/precisecaller/test-datasets/data/Homo_sapiens/Simulations/fastq/simple_R2.fq")
                 ]
                 input[2] = "PONGA"
                 input[3] = null
-                input[4] = log
                 """
             }
         }
 
         then {
-            assert function.success
+            assert !function.success
             assert !function.result
         }
     }
 
     test("Test error matching") {
-        function "Utils.extractReadGroup"
+        function "ReadGroup.buildFromFastq"
 
         when {
             function {
                 """
                 input[0] = [id:1, sample:"error", lane:"L1"]
                 input[1] = [
-                  file("s3://bioinfohsl-tools/precisecaller/test-datasets/data/Homo_sapiens/Simulations/fastq/simple_sra_R1.fq"),
+                  file("s3://bioinfohsl-tools/precisecaller/test-datasets/data/Homo_sapiens/Simulations/fastq/simple_R1.fq"),
                   file("s3://bioinfohsl-tools/precisecaller/test-datasets/data/Homo_sapiens/Simulations/fastq/illumina-1.0_R2.fq")
                 ]
                 input[2] = "PONGA"
                 input[3] = null
-                input[4] = log
                 """
             }
         }
 
         then {
-            assert function.success
+            assert !function.success
             assert !function.result
         }
     }

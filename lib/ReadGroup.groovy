@@ -1,20 +1,26 @@
-class Utils {
+import java.nio.file.Path
+import java.io.BufferedReader
+import java.io.InputStreamReader
+import java.util.zip.GZIPInputStream
 
-    public static String extractReadGroup(meta, files, seq_center, seq_platform, log) {
+class ReadGroup {
+
+    public static String buildFromFastq(
+        Map meta,
+        List<Path> files,
+        String seq_center,
+        String seq_platform
+    ) {
         def CN = seq_center ? "CN:${seq_center}\\t" : ''
 
-        if (!seq_platform) {
-           log.error("--seq_platform is a mandatory option")
-           return
-        }
+        assert seq_platform :
+            "--seq_platform is a mandatory option"
 
-        def attrs1 = this.readNameAttrs(files[0], log)
-        def attrs2 = this.readNameAttrs(files[1], log)
+        def attrs1 = this.readNameAttrs(files[0])
+        def attrs2 = this.readNameAttrs(files[1])
 
-        if (attrs1.flowcell != attrs2.flowcell) {
-           log.error("Flowcell ID does not match for paired reads of sample ${meta.id} - ${files}")
-           return
-        }
+        assert attrs1.flowcell == attrs2.flowcell :
+            "Flowcell ID does not match for paired reads of sample ${meta.id}: ${files*.getName()}"
 
         def ID = attrs1.flowcell ?
             "${attrs1.flowcell}.${meta.lane}" :
@@ -28,8 +34,8 @@ class Utils {
         return RG
     }
 
-    private static Map readNameAttrs(path, log) {
-        def firstLine = this.readFirstLineOfFastq(path, log)
+    private static Map readNameAttrs(Path path) {
+        def firstLine = this.readFirstLineOfFastq(path)
 
         def parts  = []
         def fields = []
@@ -60,14 +66,12 @@ class Utils {
                 attrs.flowcell = prefix.substring(0, Math.min(5, prefix.length()))
                 attrs.barcode = prefix.substring(Math.min(5, prefix.length()))
             }
-        } else if (fields.size() != 0) {  // NCBI SRA and others
-            log.warn "FASTQ file(${path}): Cannot extract flowcell ID from ${firstLine}"
-        }
+        } // fields.size() != 0 NCBI SRA and others
 
         return attrs
     }
 
-    private static String readFirstLineOfFastq(path, log) {
+    private static String readFirstLineOfFastq(Path path) {
         def firstLine = null
         try {
             path.withInputStream { stream ->
@@ -80,8 +84,9 @@ class Utils {
                 assert firstLine.startsWith('@')
             }
         } catch (Exception e) {
-            log.warn "FASTQ file(${path}): Error streaming"
-            log.warn "${e.message}"
+            throw new RuntimeException(
+                "Error reading FASTQ file ${path}: ${e.message}", e
+            )
         }
         return firstLine
     }
