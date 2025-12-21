@@ -43,7 +43,16 @@ workflow PRECISECALLER {
 
     // Add readgroup to meta
     fastq = samplesheet.map { meta, files ->
-        def rg = extractReadGroup(meta, files, params.seq_center, params.seq_platform, log)
+        def rg = ReadGroup.buildFromFastq(
+            meta,
+            files,
+            params.seq_center,
+            params.seq_platform
+        )
+
+        assert rg :
+            "Failed to build read group for sample ${meta.id}"
+
         [ meta + [ read_group: rg ], files ]
     }
 
