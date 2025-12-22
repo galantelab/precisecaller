@@ -1,0 +1,119 @@
+{
+    "Test seqkit-split2": {
+        "content": [
+            {
+                "0": [
+                    [
+                        {
+                            "id": 1,
+                            "sample": "test_split",
+                            "lane": "L1",
+                            "chunk": "part_001"
+                        },
+                        [
+                            "test_split_R1.part_001.fq.gz:md5,28157301ad89a94c3e2747522425243e",
+                            "test_split_R2.part_001.fq.gz:md5,1435823d8f9726db50ea7e45bf8e1c90"
+                        ]
+                    ],
+                    [
+                        {
+                            "id": 1,
+                            "sample": "test_split",
+                            "lane": "L1",
+                            "chunk": "part_002"
+                        },
+                        [
+                            "test_split_R1.part_002.fq.gz:md5,9e6029a74edb56346060fc1a149a840b",
+                            "test_split_R2.part_002.fq.gz:md5,511567ba36d4caef948e58ca03aebe62"
+                        ]
+                    ],
+                    [
+                        {
+                            "id": 1,
+                            "sample": "test_split",
+                            "lane": "L1",
+                            "chunk": "part_003"
+                        },
+                        [
+                            "test_split_R1.part_003.fq.gz:md5,14778ebbe1316aadc3b305f35dae9007",
+                            "test_split_R2.part_003.fq.gz:md5,279e62587a651985d71a92892ea0161d"
+                        ]
+                    ],
+                    [
+                        {
+                            "id": 1,
+                            "sample": "test_split",
+                            "lane": "L1",
+                            "chunk": "part_004"
+                        },
+                        [
+                            "test_split_R1.part_004.fq.gz:md5,815926616bef46bf2c1dea9263aec67d",
+                            "test_split_R2.part_004.fq.gz:md5,b711f6da7233ee0b929900085a3adb0b"
+                        ]
+                    ]
+                ],
+                "1": [
+                    "versions.yml:md5,16d7b57a53b9de10b1a7a8eadfab0949"
+                ],
+                "reads": [
+                    [
+                        {
+                            "id": 1,
+                            "sample": "test_split",
+                            "lane": "L1",
+                            "chunk": "part_001"
+                        },
+                        [
+                            "test_split_R1.part_001.fq.gz:md5,28157301ad89a94c3e2747522425243e",
+                            "test_split_R2.part_001.fq.gz:md5,1435823d8f9726db50ea7e45bf8e1c90"
+                        ]
+                    ],
+                    [
+                        {
+                            "id": 1,
+                            "sample": "test_split",
+                            "lane": "L1",
+                            "chunk": "part_002"
+                        },
+                        [
+                            "test_split_R1.part_002.fq.gz:md5,9e6029a74edb56346060fc1a149a840b",
+                            "test_split_R2.part_002.fq.gz:md5,511567ba36d4caef948e58ca03aebe62"
+                        ]
+                    ],
+                    [
+                        {
+                            "id": 1,
+                            "sample": "test_split",
+                            "lane": "L1",
+                            "chunk": "part_003"
+                        },
+                        [
+                            "test_split_R1.part_003.fq.gz:md5,14778ebbe1316aadc3b305f35dae9007",
+                            "test_split_R2.part_003.fq.gz:md5,279e62587a651985d71a92892ea0161d"
+                        ]
+                    ],
+                    [
+                        {
+                            "id": 1,
+                            "sample": "test_split",
+                            "lane": "L1",
+                            "chunk": "part_004"
+                        },
+                        [
+                            "test_split_R1.part_004.fq.gz:md5,815926616bef46bf2c1dea9263aec67d",
+                            "test_split_R2.part_004.fq.gz:md5,b711f6da7233ee0b929900085a3adb0b"
+                        ]
+                    ]
+                ],
+                "versions": [
+                    "versions.yml:md5,16d7b57a53b9de10b1a7a8eadfab0949"
+                ]
+            }
+        ],
+        "meta": {
+            "nf-test": "0.9.3",
+            "nextflow": "25.10.2"
+        },
+        "timestamp": "2025-12-22T02:08:26.60091369"
+    }
+}

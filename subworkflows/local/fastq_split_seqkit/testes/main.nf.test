@@ -1,0 +1,39 @@
+// nf-core subworkflows test utils_fastq_split
+nextflow_workflow {
+
+    name "Test Subworkflow FASTQ_SPLIT_SEQKIT"
+    script "../main.nf"
+    workflow "FASTQ_SPLIT_SEQKIT"
+
+    tag "subworkflows"
+    tag "subworkflows_"
+    tag "subworkflows/fastq_split_seqkit"
+    tag "seqkit"
+    tag "seqkit/split2"
+
+    test("Test seqkit-split2") {
+
+        when {
+           config "./nextflow.config"
+
+           workflow {
+               """
+               input[0] = [
+                   [id:1, sample:"test_split", lane:"L1"],
+                   [
+                       file(params.local_testdata_base_path + 'data/Homo_sapiens/Illumina/fastq/test_split_R1.fq.gz', checkIfExists: true),
+                       file(params.local_testdata_base_path + 'data/Homo_sapiens/Illumina/fastq/test_split_R2.fq.gz', checkIfExists: true)
+                   ]
+               ]
+               """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert workflow.success},
+                { assert snapshot(workflow.out).match()}
+            )
+        }
+    }
+}
