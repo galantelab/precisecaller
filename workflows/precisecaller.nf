@@ -3,18 +3,16 @@
     IMPORT MODULES / SUBWORKFLOWS / FUNCTIONS
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
-include { FASTQC                 } from '../modules/nf-core/fastqc/main'
-include { MULTIQC                } from '../modules/nf-core/multiqc/main'
-include { paramsSummaryMap       } from 'plugin/nf-schema'
-include { paramsSummaryMultiqc   } from '../subworkflows/nf-core/utils_nfcore_pipeline'
-include { softwareVersionsToYAML } from '../subworkflows/nf-core/utils_nfcore_pipeline'
-include { methodsDescriptionText } from '../subworkflows/local/utils_nfcore_precisecaller_pipeline'
-include { FASTP                  } from '../modules/nf-core/fastp/main'
-include { BWA_MEM                } from '../modules/nf-core/bwa/mem/main'
-include { SEQKIT_SPLIT2          } from '../modules/nf-core/seqkit/split2/main'
-
-// Create umi consensus bams from fastq
+include { FASTQC                           } from '../modules/nf-core/fastqc/main'
+include { MULTIQC                          } from '../modules/nf-core/multiqc/main'
+include { paramsSummaryMap                 } from 'plugin/nf-schema'
+include { paramsSummaryMultiqc             } from '../subworkflows/nf-core/utils_nfcore_pipeline'
+include { softwareVersionsToYAML           } from '../subworkflows/nf-core/utils_nfcore_pipeline'
+include { methodsDescriptionText           } from '../subworkflows/local/utils_nfcore_precisecaller_pipeline'
+include { FASTP                            } from '../modules/nf-core/fastp/main'
+include { BWA_MEM                          } from '../modules/nf-core/bwa/mem/main'
 include { FASTQ_FILTER_UMI_CONSENSUS_FGBIO } from '../../subworkflows/local/fastq_filter_umi_consensus_fgbio/main'
+include { FASTQ_SPLIT_SEQKIT               } from '../../subworkflows/local/fastq_split_seqkit/main'
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -58,7 +56,8 @@ workflow PRECISECALLER {
 
     // STEP 0: QC, UMI & TRIM //
 
-    // MODULE: Run FastQC
+    // FASTQC is intentionally run before FASTQ splitting to avoid
+    // duplicating QC metrics across chunks
     FASTQC(fastq)
 
     multiqc_files = multiqc_files.mix(FASTQC.out.zip.map { meta, zip -> zip })
@@ -69,23 +68,22 @@ workflow PRECISECALLER {
     bam = Channel.empty()
 
     // Determine which preprocessing steps should be executed based on
-    // user parameters. UMI processing is mutually exclusive with trimming,
-    // while splitting is only applied when trimming is disabled
+    // user parameters. UMI processing is mutually exclusive with trimming
     enable_umi   = params.umi_read_structure
+    enable_split = params.split_fastq_reads > 0
     enable_trim  = !enable_umi && !params.skip_trimming
-    enable_split = !enable_trim && params.split_fastq_reads > 0
 
     // Alignment is required only when no BAM has been produced upstream
     enable_align = !enable_umi
 
-    // Split FASTQ files into smaller chunks for improved parallelization
-    // This step is purely structural and does not modify read sequences or
-    // qualities. It is only applied when trimming is disabled
+    // Split FASTQ files into smaller chunks for improved parallelization.
+    // This step is purely structural: it does not modify read sequences,
+    // qualities, or metadata other than adding `meta.chunk`.
     if (enable_split) {
-        SEQKIT_SPLIT2(fastq)
+        FASTQ_SPLIT_SEQKIT(fastq)
 
-        fastq    = SEQKIT_SPLIT2.out.reads
-        versions = versions.mix(SEQKIT_SPLIT2.out.versions)
+        fastq    = FASTQ_SPLIT_SEQKIT.out.reads
+        versions = versions.mix(FASTQ_SPLIT_SEQKIT.out.versions)
     }
 
     // Perform read trimming and filtering using FastP
