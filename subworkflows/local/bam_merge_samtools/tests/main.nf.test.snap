@@ -1,0 +1,39 @@
+{
+    "Test BAM from samtools/merge module": {
+        "content": [
+            {
+                "0": [
+                    [
+                        {
+                            "id": "PONGA",
+                            "sample": "PONGA",
+                            "n_bams": 2
+                        },
+                        "PONGA.bam:md5,9f2bcd7a6c44b0128b1c729dc23abc93"
+                    ]
+                ],
+                "1": [
+                    "versions.yml:md5,6c00e47a7ba0fe3182d04e18447c2af4"
+                ],
+                "bam": [
+                    [
+                        {
+                            "id": "PONGA",
+                            "sample": "PONGA",
+                            "n_bams": 2
+                        },
+                        "PONGA.bam:md5,9f2bcd7a6c44b0128b1c729dc23abc93"
+                    ]
+                ],
+                "versions": [
+                    "versions.yml:md5,6c00e47a7ba0fe3182d04e18447c2af4"
+                ]
+            }
+        ],
+        "meta": {
+            "nf-test": "0.9.3",
+            "nextflow": "25.10.2"
+        },
+        "timestamp": "2025-12-23T18:53:34.424371488"
+    }
+}

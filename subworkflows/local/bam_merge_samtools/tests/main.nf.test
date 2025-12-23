@@ -1,0 +1,40 @@
+// nf-core subworkflows test bam_merge_samtools
+nextflow_workflow {
+
+    name "Test Subworkflow BAM_MERGE_SAMTOOLS"
+    script "../main.nf"
+    workflow "BAM_MERGE_SAMTOOLS"
+
+    tag "subworkflows"
+    tag "subworkflows_"
+    tag "subworkflows/bam_merge_samtools"
+    tag "samtools"
+    tag "samtools/merge"
+
+    test("Test BAM from samtools/merge module") {
+
+        when {
+           workflow {
+               """
+               input[0] = Channel.from(
+                   [
+									     [ id:'test-1', sample:'PONGA'],
+                       file(params.modules_testdata_base_path + 'genomics/sarscov2/illumina/bam/test.paired_end.methylated.sorted.bam', checkIfExists: true),
+                   ],
+                   [
+									     [ id:'test-2', sample:'PONGA'],
+                       file(params.modules_testdata_base_path + 'genomics/sarscov2/illumina/bam/test.paired_end.sorted.bam', checkIfExists: true),
+                   ]
+               )
+               """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert workflow.success},
+                { assert snapshot(workflow.out).match()}
+            )
+        }
+    }
+}
