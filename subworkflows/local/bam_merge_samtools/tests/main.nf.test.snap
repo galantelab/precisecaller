@@ -9,7 +9,7 @@
                             "sample": "PONGA",
                             "n_bams": 2
                         },
-                        "PONGA.bam:md5,9f2bcd7a6c44b0128b1c729dc23abc93"
+                        "PONGA.bam:md5,cdc0b7e7f872fc2f21608a1b9d800859"
                     ]
                 ],
                 "1": [
@@ -22,7 +22,7 @@
                             "sample": "PONGA",
                             "n_bams": 2
                         },
-                        "PONGA.bam:md5,9f2bcd7a6c44b0128b1c729dc23abc93"
+                        "PONGA.bam:md5,cdc0b7e7f872fc2f21608a1b9d800859"
                     ]
                 ],
                 "versions": [
@@ -34,6 +34,6 @@
             "nf-test": "0.9.3",
             "nextflow": "25.10.2"
         },
-        "timestamp": "2025-12-23T18:53:34.424371488"
+        "timestamp": "2025-12-23T20:25:15.182818722"
     }
 }
