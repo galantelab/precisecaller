@@ -5,10 +5,11 @@
                 "0": [
                     [
                         {
-                            "id": 1,
+                            "id": "1_part_001",
                             "sample": "test_split",
                             "lane": "L1",
-                            "chunk": "part_001"
+                            "chunk": "part_001",
+                            "orig": 1
                         },
                         [
                             "test_split_R1.part_001.fq.gz:md5,28157301ad89a94c3e2747522425243e",
@@ -17,10 +18,11 @@
                     ],
                     [
                         {
-                            "id": 1,
+                            "id": "1_part_002",
                             "sample": "test_split",
                             "lane": "L1",
-                            "chunk": "part_002"
+                            "chunk": "part_002",
+                            "orig": 1
                         },
                         [
                             "test_split_R1.part_002.fq.gz:md5,9e6029a74edb56346060fc1a149a840b",
@@ -29,10 +31,11 @@
                     ],
                     [
                         {
-                            "id": 1,
+                            "id": "1_part_003",
                             "sample": "test_split",
                             "lane": "L1",
-                            "chunk": "part_003"
+                            "chunk": "part_003",
+                            "orig": 1
                         },
                         [
                             "test_split_R1.part_003.fq.gz:md5,14778ebbe1316aadc3b305f35dae9007",
@@ -41,10 +44,11 @@
                     ],
                     [
                         {
-                            "id": 1,
+                            "id": "1_part_004",
                             "sample": "test_split",
                             "lane": "L1",
-                            "chunk": "part_004"
+                            "chunk": "part_004",
+                            "orig": 1
                         },
                         [
                             "test_split_R1.part_004.fq.gz:md5,815926616bef46bf2c1dea9263aec67d",
@@ -58,10 +62,11 @@
                 "reads": [
                     [
                         {
-                            "id": 1,
+                            "id": "1_part_001",
                             "sample": "test_split",
                             "lane": "L1",
-                            "chunk": "part_001"
+                            "chunk": "part_001",
+                            "orig": 1
                         },
                         [
                             "test_split_R1.part_001.fq.gz:md5,28157301ad89a94c3e2747522425243e",
@@ -70,10 +75,11 @@
                     ],
                     [
                         {
-                            "id": 1,
+                            "id": "1_part_002",
                             "sample": "test_split",
                             "lane": "L1",
-                            "chunk": "part_002"
+                            "chunk": "part_002",
+                            "orig": 1
                         },
                         [
                             "test_split_R1.part_002.fq.gz:md5,9e6029a74edb56346060fc1a149a840b",
@@ -82,10 +88,11 @@
                     ],
                     [
                         {
-                            "id": 1,
+                            "id": "1_part_003",
                             "sample": "test_split",
                             "lane": "L1",
-                            "chunk": "part_003"
+                            "chunk": "part_003",
+                            "orig": 1
                         },
                         [
                             "test_split_R1.part_003.fq.gz:md5,14778ebbe1316aadc3b305f35dae9007",
@@ -94,10 +101,11 @@
                     ],
                     [
                         {
-                            "id": 1,
+                            "id": "1_part_004",
                             "sample": "test_split",
                             "lane": "L1",
-                            "chunk": "part_004"
+                            "chunk": "part_004",
+                            "orig": 1
                         },
                         [
                             "test_split_R1.part_004.fq.gz:md5,815926616bef46bf2c1dea9263aec67d",
@@ -114,6 +122,6 @@
             "nf-test": "0.9.3",
             "nextflow": "25.10.2"
         },
-        "timestamp": "2025-12-22T02:08:26.60091369"
+        "timestamp": "2025-12-22T23:25:11.379507368"
     }
 }

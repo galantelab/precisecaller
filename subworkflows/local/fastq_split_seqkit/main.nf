@@ -25,7 +25,18 @@ workflow FASTQ_SPLIT_SEQKIT {
                 assert matcher.find() :
                     "File ${f.getName()} does not match split FASTQ pattern"
 
-                [ meta + [ chunk: matcher.group(1) ], f ]
+                // Get chunk id
+                def chunk = matcher.group(1)
+
+                // New meta.id has the chunk
+                [
+                    meta + [
+                        id:   "${meta.id}_${chunk}",
+                        chunk: chunk,
+                        orig:  meta.id
+                    ],
+                    f
+                ]
             }
         }
         .groupTuple(sort:true)
