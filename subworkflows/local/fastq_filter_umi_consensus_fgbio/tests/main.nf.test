@@ -42,7 +42,18 @@ nextflow_workflow {
             workflow {
                 """
                 input[0] = [
-                    [ id:'test', sample:'test_umi', read_group:'\\\'@RG\\\\tID:test\\\'' ], // meta map
+                    [
+                        id: 'test',
+                        sample: 'test_umi',
+                        read_group: [
+                            ID: 'test.L1',
+                            PU: 'test.L1.0',
+                            SM: 'test_umi',
+                            CN: 'PONGA',
+                            PL: 'ILLUMINA',
+                            LB: 'ILLUMINA_lib'
+                        ]
+                    ], // meta map
                     [
                         file(params.local_testdata_base_path + 'data/Homo_sapiens/Illumina/fastq/test.umi_1.fastq.gz', checkIfExists: true),
                         file(params.local_testdata_base_path + 'data/Homo_sapiens/Illumina/fastq/test.umi_2.fastq.gz', checkIfExists: true)

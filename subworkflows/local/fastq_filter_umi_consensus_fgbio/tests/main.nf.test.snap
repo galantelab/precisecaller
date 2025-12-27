@@ -7,9 +7,16 @@
                         {
                             "id": "test",
                             "sample": "test_umi",
-                            "read_group": "'@RG\\tID:test'"
+                            "read_group": {
+                                "ID": "test.L1",
+                                "PU": "test.L1.0",
+                                "SM": "test_umi",
+                                "CN": "PONGA",
+                                "PL": "ILLUMINA",
+                                "LB": "ILLUMINA_lib"
+                            }
                         },
-                        "test.cons.filtered.bam:md5,3b219102de4b637ae6afc7088b29d055"
+                        "test.cons.filtered.bam:md5,5f60a87e970d14532e0f4e28fafcc1e3"
                     ]
                 ],
                 "1": [
@@ -29,9 +36,16 @@
                         {
                             "id": "test",
                             "sample": "test_umi",
-                            "read_group": "'@RG\\tID:test'"
+                            "read_group": {
+                                "ID": "test.L1",
+                                "PU": "test.L1.0",
+                                "SM": "test_umi",
+                                "CN": "PONGA",
+                                "PL": "ILLUMINA",
+                                "LB": "ILLUMINA_lib"
+                            }
                         },
-                        "test.cons.filtered.bam:md5,3b219102de4b637ae6afc7088b29d055"
+                        "test.cons.filtered.bam:md5,5f60a87e970d14532e0f4e28fafcc1e3"
                     ]
                 ],
                 "versions": [
@@ -52,6 +66,6 @@
             "nf-test": "0.9.3",
             "nextflow": "25.10.2"
         },
-        "timestamp": "2025-12-23T20:06:04.373277471"
+        "timestamp": "2025-12-27T19:32:09.137194779"
     }
 }
