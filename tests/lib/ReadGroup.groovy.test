@@ -3,7 +3,7 @@ nextflow_function {
     name "Test ReadGroup.groovy"
 
     test("Test illumina-1.0") {
-        function "ReadGroup.buildFromFastq"
+        function "ReadGroup.extractFromFastq"
 
         when {
             function {
@@ -21,127 +21,199 @@ nextflow_function {
 
         then {
             assert function.success
-            assert function.result == "\"@RG\\tID:HWUSI-EAS100R.L1\\tCN:PONGA\\tPU:HWUSI-EAS100R.L1.0\\tSM:illumina-1.0\\tLB:illumina-1.0_lib\\tPL:ILLUMINA\""
+
+            def rg = function.result
+
+            assert rg.ID == "HWUSI-EAS100R.L1"
+            assert rg.PU == "HWUSI-EAS100R.L1.0"
+            assert rg.SM == "illumina-1.0"
+            assert rg.CN == "PONGA"
+            assert rg.PL == "ILLUMINA"
+            assert rg.LB == "illumina-1.0_lib"
         }
     }
 
-    test("Test illumina-1.4") {
-        function "ReadGroup.buildFromFastq"
+        test("Test illumina-1.4") {
+            function "ReadGroup.extractFromFastq"
+
+            when {
+                function {
+                    """
+                    input[0] = [id:1, sample:"illumina-1.4", lane:"L1"]
+                    input[1] = [
+                        file("s3://bioinfohsl-tools/precisecaller/test-datasets/data/Homo_sapiens/Simulations/fastq/illumina-1.4_R1.fq"),
+                        file("s3://bioinfohsl-tools/precisecaller/test-datasets/data/Homo_sapiens/Simulations/fastq/illumina-1.4_R2.fq")
+                    ]
+                    input[2] = "PONGA"
+                    input[3] = "ILLUMINA"
+                    """
+                }
+            }
+
+            then {
+                assert function.success
+
+                def rg = function.result
+
+                assert rg.ID == "HWUSI-EAS100R.L1"
+                assert rg.PU == "HWUSI-EAS100R.L1.NNNNNN"
+                assert rg.SM == "illumina-1.4"
+                assert rg.CN == "PONGA"
+                assert rg.PL == "ILLUMINA"
+                assert rg.LB == "illumina-1.4_lib"
+            }
+        }
+
+        test("Test illumina-1.8") {
+            function "ReadGroup.extractFromFastq"
+
+            when {
+                function {
+                    """
+                    input[0] = [id:1, sample:"illumina-1.8", lane:"L1"]
+                    input[1] = [
+                        file("s3://bioinfohsl-tools/precisecaller/test-datasets/data/Homo_sapiens/Simulations/fastq/illumina-1.8_R1.fq"),
+                        file("s3://bioinfohsl-tools/precisecaller/test-datasets/data/Homo_sapiens/Simulations/fastq/illumina-1.8_R2.fq")
+                    ]
+                    input[2] = "PONGA"
+                    input[3] = "ILLUMINA"
+                    """
+                }
+            }
+
+            then {
+                assert function.success
+
+                def rg = function.result
+
+                assert rg.ID == "FC706VJ.L1"
+                assert rg.PU == "FC706VJ.L1.ATCACG"
+                assert rg.SM == "illumina-1.8"
+                assert rg.CN == "PONGA"
+                assert rg.PL == "ILLUMINA"
+                assert rg.LB == "illumina-1.8_lib"
+            }
+        }
+
+        test("Test broad-1.0") {
+            function "ReadGroup.extractFromFastq"
+
+            when {
+                function {
+                    """
+                    input[0] = [id:1, sample:"broad-1.0", lane:"L1"]
+                    input[1] = [
+                        file("s3://bioinfohsl-tools/precisecaller/test-datasets/data/Homo_sapiens/Simulations/fastq/broad-1.0_R1.fq"),
+                        file("s3://bioinfohsl-tools/precisecaller/test-datasets/data/Homo_sapiens/Simulations/fastq/broad-1.0_R2.fq")
+                    ]
+                    input[2] = "PONGA"
+                    input[3] = "ILLUMINA"
+                    """
+                }
+            }
+
+            then {
+                assert function.success
+
+                def rg = function.result
+
+                assert rg.ID == "H0164.L1"
+                assert rg.PU == "H0164.L1.ALXX140820"
+                assert rg.SM == "broad-1.0"
+                assert rg.CN == "PONGA"
+                assert rg.PL == "ILLUMINA"
+                assert rg.LB == "broad-1.0_lib"
+            }
+        }
+
+        test("Test ncbi_sra") {
+            function "ReadGroup.extractFromFastq"
+
+            when {
+                function {
+                    """
+                    input[0] = [id:1, sample:"ncbi_sra", lane:"L1"]
+                    input[1] = [
+                        file("s3://bioinfohsl-tools/precisecaller/test-datasets/data/Homo_sapiens/Simulations/fastq/ncbi_sra_R1.fq"),
+                        file("s3://bioinfohsl-tools/precisecaller/test-datasets/data/Homo_sapiens/Simulations/fastq/ncbi_sra_R2.fq")
+                    ]
+                    input[2] = "PONGA"
+                    input[3] = "ILLUMINA"
+                    """
+                }
+            }
+
+            then {
+                assert function.success
+
+                def rg = function.result
+
+                assert rg.ID == "ncbi_sra.L1"
+                assert rg.PU == "ncbi_sra.L1"
+                assert rg.SM == "ncbi_sra"
+                assert rg.CN == "PONGA"
+                assert rg.PL == "ILLUMINA"
+                assert rg.LB == "ncbi_sra_lib"
+            }
+        }
+
+        test("Test simple") {
+            function "ReadGroup.extractFromFastq"
+
+            when {
+                function {
+                    """
+                    input[0] = [id:1, sample:"simple", lane:"L1"]
+                    input[1] = [
+                        file("s3://bioinfohsl-tools/precisecaller/test-datasets/data/Homo_sapiens/Simulations/fastq/simple_R1.fq"),
+                        file("s3://bioinfohsl-tools/precisecaller/test-datasets/data/Homo_sapiens/Simulations/fastq/simple_R2.fq")
+                    ]
+                    input[2] = "PONGA"
+                    input[3] = "ILLUMINA"
+                    """
+                }
+            }
+
+            then {
+                assert function.success
+
+                def rg = function.result
+
+                assert rg.ID == "simple.L1"
+                assert rg.PU == "simple.L1"
+                assert rg.SM == "simple"
+                assert rg.CN == "PONGA"
+                assert rg.PL == "ILLUMINA"
+                assert rg.LB == "simple_lib"
+            }
+        }
+
+    test("Test toSam formatting") {
+        function "ReadGroup.toSam"
 
         when {
             function {
                 """
-                input[0] = [id:1, sample:"illumina-1.4", lane:"L1"]
-                input[1] = [
-                  file("s3://bioinfohsl-tools/precisecaller/test-datasets/data/Homo_sapiens/Simulations/fastq/illumina-1.4_R1.fq"),
-                  file("s3://bioinfohsl-tools/precisecaller/test-datasets/data/Homo_sapiens/Simulations/fastq/illumina-1.4_R2.fq")
+                input[0] = [
+                    ID: "FC123.L1",
+                    PU: "FC123.L1.AAAAAA",
+                    CN: "PONGA",
+                    PL: "ILLUMINA",
+                    SM: "sample1",
+                    LB: "sample1_lib"
                 ]
-                input[2] = "PONGA"
-                input[3] = "ILLUMINA"
                 """
             }
         }
 
         then {
             assert function.success
-            assert function.result == "\"@RG\\tID:HWUSI-EAS100R.L1\\tCN:PONGA\\tPU:HWUSI-EAS100R.L1.NNNNNN\\tSM:illumina-1.4\\tLB:illumina-1.4_lib\\tPL:ILLUMINA\""
-        }
-    }
-
-    test("Test illumina-1.8") {
-        function "ReadGroup.buildFromFastq"
-
-        when {
-            function {
-                """
-                input[0] = [id:1, sample:"illumina-1.8", lane:"L1"]
-                input[1] = [
-                  file("s3://bioinfohsl-tools/precisecaller/test-datasets/data/Homo_sapiens/Simulations/fastq/illumina-1.8_R1.fq"),
-                  file("s3://bioinfohsl-tools/precisecaller/test-datasets/data/Homo_sapiens/Simulations/fastq/illumina-1.8_R2.fq")
-                ]
-                input[2] = "PONGA"
-                input[3] = "ILLUMINA"
-                """
-            }
-        }
-
-        then {
-            assert function.success
-            assert function.result == "\"@RG\\tID:FC706VJ.L1\\tCN:PONGA\\tPU:FC706VJ.L1.ATCACG\\tSM:illumina-1.8\\tLB:illumina-1.8_lib\\tPL:ILLUMINA\""
-        }
-    }
-
-    test("Test broad-1.0") {
-        function "ReadGroup.buildFromFastq"
-
-        when {
-            function {
-                """
-                input[0] = [id:1, sample:"broad-1.0", lane:"L1"]
-                input[1] = [
-                  file("s3://bioinfohsl-tools/precisecaller/test-datasets/data/Homo_sapiens/Simulations/fastq/broad-1.0_R1.fq"),
-                  file("s3://bioinfohsl-tools/precisecaller/test-datasets/data/Homo_sapiens/Simulations/fastq/broad-1.0_R2.fq")
-                ]
-                input[2] = "PONGA"
-                input[3] = "ILLUMINA"
-                """
-            }
-        }
-
-        then {
-            assert function.success
-            assert function.result == "\"@RG\\tID:H0164.L1\\tCN:PONGA\\tPU:H0164.L1.ALXX140820\\tSM:broad-1.0\\tLB:broad-1.0_lib\\tPL:ILLUMINA\""
-        }
-    }
-
-    test("Test ncbi_sra") {
-        function "ReadGroup.buildFromFastq"
-
-        when {
-            function {
-                """
-                input[0] = [id:1, sample:"ncbi_sra", lane:"L1"]
-                input[1] = [
-                  file("s3://bioinfohsl-tools/precisecaller/test-datasets/data/Homo_sapiens/Simulations/fastq/ncbi_sra_R1.fq"),
-                  file("s3://bioinfohsl-tools/precisecaller/test-datasets/data/Homo_sapiens/Simulations/fastq/ncbi_sra_R2.fq")
-                ]
-                input[2] = "PONGA"
-                input[3] = "ILLUMINA"
-                """
-            }
-        }
-
-        then {
-            assert function.success
-            assert function.result == "\"@RG\\tID:ncbi_sra.L1\\tCN:PONGA\\tPU:ncbi_sra.L1\\tSM:ncbi_sra\\tLB:ncbi_sra_lib\\tPL:ILLUMINA\""
-        }
-    }
-
-    test("Test simple") {
-        function "ReadGroup.buildFromFastq"
-
-        when {
-            function {
-                """
-                input[0] = [id:1, sample:"simple", lane:"L1"]
-                input[1] = [
-                  file("s3://bioinfohsl-tools/precisecaller/test-datasets/data/Homo_sapiens/Simulations/fastq/simple_R1.fq"),
-                  file("s3://bioinfohsl-tools/precisecaller/test-datasets/data/Homo_sapiens/Simulations/fastq/simple_R2.fq")
-                ]
-                input[2] = "PONGA"
-                input[3] = "ILLUMINA"
-                """
-            }
-        }
-
-        then {
-            assert function.success
-            assert function.result == "\"@RG\\tID:simple.L1\\tCN:PONGA\\tPU:simple.L1\\tSM:simple\\tLB:simple_lib\\tPL:ILLUMINA\""
+            assert function.result == "@RG\tID:FC123.L1\tCN:PONGA\tPU:FC123.L1.AAAAAA\tSM:sample1\tLB:sample1_lib\tPL:ILLUMINA"
         }
     }
 
     test("Test error platform") {
-        function "ReadGroup.buildFromFastq"
+        function "ReadGroup.extractFromFastq"
 
         when {
             function {
@@ -164,7 +236,7 @@ nextflow_function {
     }
 
     test("Test error matching") {
-        function "ReadGroup.buildFromFastq"
+        function "ReadGroup.extractFromFastq"
 
         when {
             function {

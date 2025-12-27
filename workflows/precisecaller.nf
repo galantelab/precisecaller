@@ -13,6 +13,7 @@ include { FASTP                            } from '../modules/nf-core/fastp/main
 include { BWA_MEM                          } from '../modules/nf-core/bwa/mem/main'
 include { FASTQ_FILTER_UMI_CONSENSUS_FGBIO } from '../../subworkflows/local/fastq_filter_umi_consensus_fgbio/main'
 include { FASTQ_SPLIT_SEQKIT               } from '../../subworkflows/local/fastq_split_seqkit/main'
+include { BAM_MERGE_SAMTOOLS               } from '../../subworkflows/local/bam_merge_samtools/main'
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -41,7 +42,7 @@ workflow PRECISECALLER {
 
     // Add readgroup to meta
     fastq = samplesheet.map { meta, files ->
-        def rg = ReadGroup.buildFromFastq(
+        def rg = ReadGroup.extractFromFastq(
             meta,
             files,
             params.seq_center,
@@ -131,17 +132,16 @@ workflow PRECISECALLER {
     // If UMI consensus calling was performed, alignment is already included
     // in the UMI subworkflow and should not be repeated
     if (enable_align) {
-        sort = true
+        sort = false
         BWA_MEM(fastq, bwa, [[id:'no_fasta'], []], sort)
 
         bam      = BWA_MEM.out.bam
         versions = versions.mix(BWA_MEM.out.versions)
     }
 
-
-
-
-
+    // Merge all BAMs grouping by meta.sample
+    bam      = BAM_MERGE_SAMTOOLS(bam).out.bam
+    versions = versions.mix(BAM_MERGE_SAMTOOLS.out.versions)
 
     //
     // Collate and save software versions

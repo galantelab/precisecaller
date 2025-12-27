@@ -5,22 +5,25 @@ import java.util.zip.GZIPInputStream
 
 class ReadGroup {
 
-    public static String buildFromFastq(
+    public static Map extractFromFastq(
         Map meta,
         List<Path> files,
         String seq_center,
         String seq_platform
     ) {
-        def CN = seq_center ? "CN:${seq_center}\\t" : ''
+        assert files.size() >= 1 :
+            "No FASTQ files provided for sample ${meta.id}"
 
         assert seq_platform :
             "--seq_platform is a mandatory option"
 
         def attrs1 = this.readNameAttrs(files[0])
-        def attrs2 = this.readNameAttrs(files[1])
 
-        assert attrs1.flowcell == attrs2.flowcell :
-            "Flowcell ID does not match for paired reads of sample ${meta.id}: ${files*.getName()}"
+        if (!meta.single_end) {
+            def attrs2 = this.readNameAttrs(files[1])
+            assert attrs1.flowcell == attrs2.flowcell :
+                "Flowcell ID does not match for paired reads of sample ${meta.id}: ${files*.getName()}"
+        }
 
         def ID = attrs1.flowcell ?
             "${attrs1.flowcell}.${meta.lane}" :
@@ -30,8 +33,23 @@ class ReadGroup {
             "${ID}.${attrs1.barcode}" :
             "${ID}"
 
-        def RG = "\"@RG\\tID:${ID}\\t${CN}PU:${PU}\\tSM:${meta.sample}\\tLB:${meta.sample}_lib\\tPL:${seq_platform}\""
-        return RG
+        return [
+            ID: ID,
+            PU: PU,
+            CN: seq_center,
+            PL: seq_platform,
+            SM: meta.sample,
+            LB: "${meta.sample}_lib"
+        ]
+    }
+
+    public static String toSam(Map rg) {
+    def order = ['ID', 'CN', 'PU', 'SM', 'LB', 'PL']
+    
+    return '@RG\t' + order
+        .findAll { rg[it] != null }
+        .collect { "${it}:${rg[it]}" }
+        .join('\t')
     }
 
     private static Map readNameAttrs(Path path) {
