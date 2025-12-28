@@ -18,17 +18,17 @@ include { FGBIO_FILTERCONSENSUSREADS        as FILTERCONSENSUSREADS        } fro
 
 workflow FASTQ_FILTER_UMI_CONSENSUS_FGBIO {
     take:
-    reads                     // channel: [mandatory] [ val(meta1), [ reads ] ]
-    fasta                     // channel: [mandatory] [ val(meta2), [ fasta ] ]
-    dict                      // channel: [mandatory] [ val(meta3), [ dict  ] ]
-    bwa_index                 // channel: [mandatory] [ val(meta4), [ index ] ]
-    umi_file                  // channel: [optional]  /path/to/file/txt - list of expected UMIs
-    max_mismatches            // integer: [optional]  used with umi_file - default: 1
-    min_distance              // integer: [optional]  used with umi_file - default: 2
-    groupreadsbyumi_strategy  // string:  [mandatory] grouping strategy - default: "Adjacency"
-    min_reads                 // integer: [mandatory] the min num of reads for a consensus base/read - default: 3
-    min_base_quality          // integer: [mandatory] mask (make 'N') consensus bases with Q < - default: 45
-    max_base_error_rate       // real:    [mandatory] the maximum error rate for a single consensus base - default: 0.2
+    reads                     // [mandatory] channel: tuple(meta, reads)
+    fasta                     // [mandatory] channel: tuple(meta, fasta)
+    dict                      // [mandatory] channel: tuple(meta, dict)
+    bwa_index                 // [mandatory] channel: tuple(meta, index)
+    umi_file                  // [optional]  path - list of expected UMIs, used for UMI correction
+    max_mismatches            // [optional]  value: int - used with umi_file - default: 1
+    min_distance              // [optional]  value: int - used with umi_file - default: 2
+    groupreadsbyumi_strategy  // [mandatory] value: string - grouping strategy - default: "Adjacency"
+    min_reads                 // [mandatory] value: int - the min num of reads for a consensus base/read - default: 3
+    min_base_quality          // [mandatory] value: int - mask (make 'N') consensus bases with Q < - default: 45
+    max_base_error_rate       // [mandatory] value: float - the maximum error rate for a single consensus base - default: 0.2
 
     main:
     versions = Channel.empty()
@@ -87,6 +87,7 @@ workflow FASTQ_FILTER_UMI_CONSENSUS_FGBIO {
     versions = versions.mix(FILTERCONSENSUSREADS.out.versions)
 
     emit:
-    bam      = FILTERCONSENSUSREADS.out.bam  // channel: [ val(meta), [ bam ] ]
-    versions = versions                      // channel: [ versions.yml ]
+    bam       = FILTERCONSENSUSREADS.out.bam  // channel: tuple(meta, bam)
+    versions  = versions                      // channel: path(versions.yml)
+    histogram = GROUPREADSBYUMI.out.histogram // channel: tuple(meta, txt)
 }
