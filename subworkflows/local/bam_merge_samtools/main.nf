@@ -6,7 +6,7 @@ include { SAMTOOLS_MERGE } from '../../../modules/nf-core/samtools/merge/main'
 
 workflow BAM_MERGE_SAMTOOLS {
     take:
-    bam       // channel: [mandatory] [ val(meta), bam ]
+    bam  // [mandatory] channel: tuple(meta, bam)
 
     main:
     versions = Channel.empty()
@@ -41,6 +41,6 @@ workflow BAM_MERGE_SAMTOOLS {
     versions = versions.mix(SAMTOOLS_MERGE.out.versions)
 
     emit:
-    bam      = SAMTOOLS_MERGE.out.bam   // channel: [ val(meta), [ bam ] ]
-    versions = versions                 // channel: [ versions.yml ]
+    bam      = SAMTOOLS_MERGE.out.bam   // channel: tuple(meta, bam)
+    versions = versions                 // channel: path(versions.yml)
 }
