@@ -9,10 +9,10 @@ include { SAMTOOLS_FAIDX                 } from '../../../modules/nf-core/samtoo
 
 workflow PREPARE_GENOME {
     take:
-    fasta      // file: [mandatory] /path/to/genome.fasta
-    fasta_fai  // file: [optional]  /path/to/genome.fasta.fai
-    dict       // file: [optional]  /path/to/genome.dict
-    bwa        // file: [optional]  /path/to/bwa/
+    fasta      // [mandatory] path(fasta)
+    fasta_fai  // [optional]  path(fasta.fai)
+    dict       // [optional]  path(dict)
+    bwa        // [optional]  path(bwa)
 
     main:
     ch_versions = Channel.empty()
@@ -55,9 +55,8 @@ workflow PREPARE_GENOME {
     }
 
     emit:
-    fasta     = ch_fasta      // channel: [ val(meta), [ fasta ] ]
-    fasta_fai = ch_fasta_fai  // channel: [ val(meta), [ fai   ] ]
-    dict      = ch_dict       // channel: [ val(meta), [ dict  ] ]
-    bwa       = ch_bwa        // channel: [ val(meta), [ bwa   ] ]
-    versions  = ch_versions   // channel: [ versions.yml ]
+    fasta     = ch_fasta      // channel: tuple(meta, fasta)
+    fasta_fai = ch_fasta_fai  // channel: tuple(meta, fasta.fai)
+    bwa       = ch_bwa        // channel: tuple(meta, bwa)
+    versions  = ch_versions   // channel: path(versions.yml)
 }
