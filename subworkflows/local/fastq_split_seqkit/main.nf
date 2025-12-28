@@ -6,7 +6,7 @@ include { SEQKIT_SPLIT2 } from '../../../modules/nf-core/seqkit/split2/main'
 
 workflow FASTQ_SPLIT_SEQKIT {
     take:
-    reads  // channel: [mandatory] [ val(meta), [ reads ] ]
+    reads  // [mandatory] channel: tuple(meta, reads)
 
     main:
     versions = Channel.empty()
@@ -53,6 +53,6 @@ workflow FASTQ_SPLIT_SEQKIT {
     versions = versions.mix(SEQKIT_SPLIT2.out.versions)
 
     emit:
-    reads    = regrouped  // [ val(meta), [ reads ] ]
-    versions = versions  // channel: [ versions.yml ]
+    reads    = regrouped  // channel: tuple(meta, reads)
+    versions = versions   // channel: path(versions.yml)
 }
