@@ -31,6 +31,23 @@
                     "versions.yml:md5,d822d6577f3cc539d920868da812cb1f",
                     "versions.yml:md5,ef394f598cdb27db7d9262f318054e7b"
                 ],
+                "2": [
+                    [
+                        {
+                            "id": "test",
+                            "sample": "test_umi",
+                            "read_group": {
+                                "ID": "test.L1",
+                                "PU": "test.L1.0",
+                                "SM": "test_umi",
+                                "CN": "PONGA",
+                                "PL": "ILLUMINA",
+                                "LB": "ILLUMINA_lib"
+                            }
+                        },
+                        "test.grouped_histogram.txt:md5,85292e9acb83edf17110dce17be27f44"
+                    ]
+                ],
                 "bam": [
                     [
                         {
@@ -46,6 +63,23 @@
                             }
                         },
                         "test.cons.filtered.bam:md5,5f60a87e970d14532e0f4e28fafcc1e3"
+                    ]
+                ],
+                "histogram": [
+                    [
+                        {
+                            "id": "test",
+                            "sample": "test_umi",
+                            "read_group": {
+                                "ID": "test.L1",
+                                "PU": "test.L1.0",
+                                "SM": "test_umi",
+                                "CN": "PONGA",
+                                "PL": "ILLUMINA",
+                                "LB": "ILLUMINA_lib"
+                            }
+                        },
+                        "test.grouped_histogram.txt:md5,85292e9acb83edf17110dce17be27f44"
                     ]
                 ],
                 "versions": [
@@ -66,6 +100,6 @@
             "nf-test": "0.9.3",
             "nextflow": "25.10.2"
         },
-        "timestamp": "2025-12-27T19:32:09.137194779"
+        "timestamp": "2025-12-29T01:39:20.923914627"
     }
 }
