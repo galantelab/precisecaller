@@ -70,6 +70,16 @@
             "git_sha": "cf17ca47590cc578dfb47db1c2a44ef86f89976d",
             "installed_by": ["modules"]
           },
+          "picard/collectalignmentsummarymetrics": {
+            "branch": "master",
+            "git_sha": "e753770db613ce014b3c4bc94f6cba443427b726",
+            "installed_by": ["modules"]
+          },
+          "picard/collectinsertsizemetrics": {
+            "branch": "master",
+            "git_sha": "df124e87c74d8b40285199f8cc20151f5aa57255",
+            "installed_by": ["modules"]
+          },
           "samtools/bam2fq": {
             "branch": "master",
             "git_sha": "b13f07be4c508d6ff6312d354d09f2493243e208",
@@ -88,6 +98,11 @@
           "samtools/sort": {
             "branch": "master",
             "git_sha": "b7800db9b069ed505db3f9d91b8c72faea9be17b",
+            "installed_by": ["modules"]
+          },
+          "samtools/view": {
+            "branch": "master",
+            "git_sha": "5cb9a8694da0a0e550921636bb60bc8c56445fd7",
             "installed_by": ["modules"]
           },
           "seqkit/split2": {
