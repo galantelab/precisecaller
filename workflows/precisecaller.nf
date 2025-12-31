@@ -13,6 +13,7 @@ include { FASTP                                                          } from 
 include { BWA_MEM                                                        } from '../modules/nf-core/bwa/mem/main'
 include { SAMTOOLS_SORT                                                  } from '../modules/nf-core/samtools/sort/main'
 include { SAMTOOLS_VIEW                     as SAMTOOLS_FILTER_MAPQ      } from '../modules/nf-core/samtools/view/main'
+include { PICARD_MARKDUPLICATES                                          } from '../modules/nf-core/picard/markduplicates/main'
 include { FASTQ_FILTER_UMI_CONSENSUS_FGBIO                               } from '../subworkflows/local/fastq_filter_umi_consensus_fgbio/main'
 include { FASTQ_SPLIT_SEQKIT                                             } from '../subworkflows/local/fastq_split_seqkit/main'
 include { BAM_MERGE_SAMTOOLS                                             } from '../subworkflows/local/bam_merge_samtools/main'
@@ -215,6 +216,14 @@ workflow PRECISECALLER {
             multiqc_files = multiqc_files.mix(COLLECT_METRICS_POST_MAPQ.out.insert_histogram.map  { meta, pdf -> pdf })
         }
     }
+
+    // Mark duplicated reads
+    PICARD_MARKDUPLICATES(bam, fasta, fasta_fai)
+
+    bam           = PICARD_MARKDUPLICATES.out.bam
+    bam_index     = PICARD_MARKDUPLICATES.out.bai
+    versions      = versions.mix(PICARD_MARKDUPLICATES.out.versions)
+    multiqc_files = multiqc_files.mix(PICARD_MARKDUPLICATES.out.metrics.map { meta, txt -> txt })
 
     //
     // Collate and save software versions
