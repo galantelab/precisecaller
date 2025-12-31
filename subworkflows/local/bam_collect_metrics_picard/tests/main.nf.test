@@ -1,0 +1,39 @@
+nextflow_workflow {
+
+    name "Test Subworkflow BAM_COLLECT_METRICS_PICARD"
+    script "../main.nf"
+    workflow "BAM_COLLECT_METRICS_PICARD"
+
+    tag "modules"
+    tag "modules_nfcore"
+    tag "picard"
+    tag "picard/collectalignmentsummarymetrics"
+    tag "picard/collectinsertsizemetrics"
+
+    test("Test using picard modules data") {
+
+        when {
+            workflow {
+                """
+                input[0] = [
+                    [ id:'test', single_end:false ], // meta map
+                    file(params.modules_testdata_base_path + 'genomics/sarscov2/illumina/bam/test.paired_end.bam', checkIfExists: true)
+                ]
+                input[1] = [
+                    [ id:'test', single_end:false ], // meta map
+                    [file(params.modules_testdata_base_path + 'genomics/sarscov2/genome/genome.fasta', checkIfExists: true)]
+                ]
+                """
+            }
+        }
+
+
+        then {
+            assertAll(
+                { assert workflow.success},
+                { assert snapshot(workflow.out).match()}
+            )
+        }
+    }
+
+}

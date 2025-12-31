@@ -1,0 +1,75 @@
+{
+    "Test using picard modules data": {
+        "content": [
+            {
+                "0": [
+                    [
+                        {
+                            "id": "test",
+                            "single_end": false
+                        },
+                        "test.alignment_metrics.txt:md5,c85fceda1702607877b3e6301721e90b"
+                    ]
+                ],
+                "1": [
+                    [
+                        {
+                            "id": "test",
+                            "single_end": false
+                        },
+                        "test.insert_metrics.txt:md5,ff44d566f8c18c54782a2631d6f0eccd"
+                    ]
+                ],
+                "2": [
+                    [
+                        {
+                            "id": "test",
+                            "single_end": false
+                        },
+                        "test.insert_metrics.pdf:md5,5fb0fc38bad83f506de5ee3e912879a9"
+                    ]
+                ],
+                "3": [
+                    "versions.yml:md5,0e044131a6945a42b0c8db4be8be24aa",
+                    "versions.yml:md5,c044502d314ce5e58c34188273f939ab"
+                ],
+                "alignment_metrics": [
+                    [
+                        {
+                            "id": "test",
+                            "single_end": false
+                        },
+                        "test.alignment_metrics.txt:md5,c85fceda1702607877b3e6301721e90b"
+                    ]
+                ],
+                "insert_histogram": [
+                    [
+                        {
+                            "id": "test",
+                            "single_end": false
+                        },
+                        "test.insert_metrics.pdf:md5,5fb0fc38bad83f506de5ee3e912879a9"
+                    ]
+                ],
+                "insert_metrics": [
+                    [
+                        {
+                            "id": "test",
+                            "single_end": false
+                        },
+                        "test.insert_metrics.txt:md5,ff44d566f8c18c54782a2631d6f0eccd"
+                    ]
+                ],
+                "versions": [
+                    "versions.yml:md5,0e044131a6945a42b0c8db4be8be24aa",
+                    "versions.yml:md5,c044502d314ce5e58c34188273f939ab"
+                ]
+            }
+        ],
+        "meta": {
+            "nf-test": "0.9.3",
+            "nextflow": "25.10.2"
+        },
+        "timestamp": "2025-12-31T00:11:57.247299722"
+    }
+}
