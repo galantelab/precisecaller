@@ -80,6 +80,11 @@
             "git_sha": "df124e87c74d8b40285199f8cc20151f5aa57255",
             "installed_by": ["modules"]
           },
+          "picard/markduplicates": {
+            "branch": "master",
+            "git_sha": "df124e87c74d8b40285199f8cc20151f5aa57255",
+            "installed_by": ["modules"]
+          },
           "samtools/bam2fq": {
             "branch": "master",
             "git_sha": "b13f07be4c508d6ff6312d354d09f2493243e208",
