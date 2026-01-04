@@ -1,0 +1,140 @@
+{
+    "CREATE_INTERVALS - list input": {
+        "content": [
+            {
+                "0": [
+                    "targets.intervals.bed:md5,858b67f959466ece8d7075343e9517ff"
+                ],
+                "1": [
+                    "versions.yml:md5,ed1e52f58470ee48df0a1534ca581929"
+                ],
+                "bed": [
+                    "targets.intervals.bed:md5,858b67f959466ece8d7075343e9517ff"
+                ],
+                "versions": [
+                    "versions.yml:md5,ed1e52f58470ee48df0a1534ca581929"
+                ]
+            }
+        ],
+        "meta": {
+            "nf-test": "0.9.3",
+            "nextflow": "25.10.2"
+        },
+        "timestamp": "2026-01-04T02:27:14.275631279"
+    },
+    "CREATE_INTERVALS - interval_list input": {
+        "content": [
+            {
+                "0": [
+                    "targets.intervals.bed:md5,858b67f959466ece8d7075343e9517ff"
+                ],
+                "1": [
+                    "versions.yml:md5,ed1e52f58470ee48df0a1534ca581929"
+                ],
+                "bed": [
+                    "targets.intervals.bed:md5,858b67f959466ece8d7075343e9517ff"
+                ],
+                "versions": [
+                    "versions.yml:md5,ed1e52f58470ee48df0a1534ca581929"
+                ]
+            }
+        ],
+        "meta": {
+            "nf-test": "0.9.3",
+            "nextflow": "25.10.2"
+        },
+        "timestamp": "2026-01-04T02:26:30.078962065"
+    },
+    "CREATE_INTERVALS - intervals input": {
+        "content": [
+            {
+                "0": [
+                    "targets.intervals.bed:md5,f89227ca3966192f11c3e9f947a912e1"
+                ],
+                "1": [
+                    "versions.yml:md5,ed1e52f58470ee48df0a1534ca581929"
+                ],
+                "bed": [
+                    "targets.intervals.bed:md5,f89227ca3966192f11c3e9f947a912e1"
+                ],
+                "versions": [
+                    "versions.yml:md5,ed1e52f58470ee48df0a1534ca581929"
+                ]
+            }
+        ],
+        "meta": {
+            "nf-test": "0.9.3",
+            "nextflow": "25.10.2"
+        },
+        "timestamp": "2026-01-04T02:26:52.790196331"
+    },
+    "CREATE_INTERVALS - stub": {
+        "content": [
+            {
+                "0": [
+                    "genome.intervals.stub.bed:md5,d41d8cd98f00b204e9800998ecf8427e"
+                ],
+                "1": [
+                    "versions.yml:md5,ed1e52f58470ee48df0a1534ca581929"
+                ],
+                "bed": [
+                    "genome.intervals.stub.bed:md5,d41d8cd98f00b204e9800998ecf8427e"
+                ],
+                "versions": [
+                    "versions.yml:md5,ed1e52f58470ee48df0a1534ca581929"
+                ]
+            }
+        ],
+        "meta": {
+            "nf-test": "0.9.3",
+            "nextflow": "25.10.2"
+        },
+        "timestamp": "2026-01-04T02:27:59.879309434"
+    },
+    "CREATE_INTERVALS - fai input": {
+        "content": [
+            {
+                "0": [
+                    "genome.intervals.bed:md5,edd20a101b97b859ccedde614cb163a7"
+                ],
+                "1": [
+                    "versions.yml:md5,ed1e52f58470ee48df0a1534ca581929"
+                ],
+                "bed": [
+                    "genome.intervals.bed:md5,edd20a101b97b859ccedde614cb163a7"
+                ],
+                "versions": [
+                    "versions.yml:md5,ed1e52f58470ee48df0a1534ca581929"
+                ]
+            }
+        ],
+        "meta": {
+            "nf-test": "0.9.3",
+            "nextflow": "25.10.2"
+        },
+        "timestamp": "2026-01-04T02:26:08.015938666"
+    },
+    "CREATE_INTERVALS - invalid extension": {
+        "content": [
+            {
+                "0": [
+                    
+                ],
+                "1": [
+                    
+                ],
+                "bed": [
+                    
+                ],
+                "versions": [
+                    
+                ]
+            }
+        ],
+        "meta": {
+            "nf-test": "0.9.3",
+            "nextflow": "25.10.2"
+        },
+        "timestamp": "2026-01-04T02:27:37.348843905"
+    }
+}
