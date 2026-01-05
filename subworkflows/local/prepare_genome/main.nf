@@ -4,15 +4,15 @@
 
 include { BWA_INDEX                      } from '../../../modules/nf-core/bwa/index/main'
 include { GATK4_CREATESEQUENCEDICTIONARY } from '../../../modules/nf-core/gatk4/createsequencedictionary/main'
-include { GUNZIP as GUNZIP_FASTA         } from '../../../modules/nf-core/gunzip'
+include { GUNZIP as GUNZIP_FASTA         } from '../../../modules/nf-core/gunzip/main'
 include { SAMTOOLS_FAIDX                 } from '../../../modules/nf-core/samtools/faidx/main'
 
 workflow PREPARE_GENOME {
     take:
-    fasta      // [mandatory] path(fasta)
-    fasta_fai  // [optional]  path(fasta.fai)
-    dict       // [optional]  path(dict)
-    bwa        // [optional]  path(bwa)
+    fasta      // [mandatory] value: string - filename
+    fasta_fai  // [optional]  value: string - filename
+    dict       // [optional]  value: string - filename
+    bwa        // [optional]  value: string - dirname
 
     main:
     ch_versions = Channel.empty()
