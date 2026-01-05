@@ -18,12 +18,12 @@ process CREATE_INTERVALS {
     task.ext.when == null || task.ext.when
 
     script:
-    prefix = task.ext.prefix ?: "${intervals.getSimpleName()}.intervals"
+    prefix = task.ext.prefix ?: "${intervals.getBaseName()}.intervals"
 
     if (intervals.getName().endsWith('.fai')) {
         """
-        awk -F '\\t' 'BEGIN {OFS=FS} {print \$1,0,\$2}' \\
-            ${intervals} > ${prefix}.bed
+        awk -F '\\t' 'BEGIN {OFS=FS} {print \$1,0,\$2}' ${intervals} \\
+            | sort -k 1,1 -k 2,2n -k 3,3n > ${prefix}.bed
 
         cat <<-END_VERSIONS > versions.yml
         "${task.process}":
@@ -32,8 +32,8 @@ process CREATE_INTERVALS {
         """
     } else if (intervals.getName().endsWith('.list') || intervals.getName().endsWith('.intervals')) {
         """
-        awk -F '[:-]' 'BEGIN {OFS="\\t"} NF>=3 {print \$1,\$2-1,\$3}' \\
-            ${intervals} > ${prefix}.bed
+        awk -F '[:-]' 'BEGIN {OFS="\\t"} NF>=3 {print \$1,\$2-1,\$3}' ${intervals} \\
+            | sort -k 1,1 -k 2,2n -k 3,3n > ${prefix}.bed
 
         cat <<-END_VERSIONS > versions.yml
         "${task.process}":
@@ -42,8 +42,17 @@ process CREATE_INTERVALS {
         """
     } else if (intervals.getName().endsWith('.interval_list')) {
         """
-        awk 'BEGIN {OFS="\\t"} !/^@/ {print \$1,\$2-1,\$3}' \\
-            ${intervals} > ${prefix}.bed
+        awk 'BEGIN {OFS="\\t"} !/^@/ {print \$1,\$2-1,\$3}' ${intervals} \\
+            | sort -k 1,1 -k 2,2n -k 3,3n > ${prefix}.bed
+
+        cat <<-END_VERSIONS > versions.yml
+        "${task.process}":
+            gawk: \$(awk -Wversion | sed '1!d; s/.*Awk //; s/,.*//')
+        END_VERSIONS
+        """
+    } else if (intervals.getName().endsWith('.bed')) {
+        """
+        sort -k 1,1 -k 2,2n -k 3,3n ${intervals} > ${prefix}.bed
 
         cat <<-END_VERSIONS > versions.yml
         "${task.process}":
@@ -58,7 +67,7 @@ process CREATE_INTERVALS {
     }
 
     stub:
-    prefix = task.ext.prefix ?: "${intervals.getSimpleName()}.intervals"
+    prefix = task.ext.prefix ?: "${intervals.getBaseName()}.intervals"
 
     """
     touch ${prefix}.stub.bed

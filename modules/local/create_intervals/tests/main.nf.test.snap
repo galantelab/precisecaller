@@ -1,4 +1,27 @@
 {
+    "CREATE_INTERVALS - bed input": {
+        "content": [
+            {
+                "0": [
+                    "targets.intervals.bed:md5,858b67f959466ece8d7075343e9517ff"
+                ],
+                "1": [
+                    "versions.yml:md5,ed1e52f58470ee48df0a1534ca581929"
+                ],
+                "bed": [
+                    "targets.intervals.bed:md5,858b67f959466ece8d7075343e9517ff"
+                ],
+                "versions": [
+                    "versions.yml:md5,ed1e52f58470ee48df0a1534ca581929"
+                ]
+            }
+        ],
+        "meta": {
+            "nf-test": "0.9.3",
+            "nextflow": "25.10.2"
+        },
+        "timestamp": "2026-01-05T03:20:59.455296929"
+    },
     "CREATE_INTERVALS - list input": {
         "content": [
             {
@@ -20,7 +43,7 @@
             "nf-test": "0.9.3",
             "nextflow": "25.10.2"
         },
-        "timestamp": "2026-01-04T02:27:14.275631279"
+        "timestamp": "2026-01-05T03:20:37.37691694"
     },
     "CREATE_INTERVALS - interval_list input": {
         "content": [
@@ -43,7 +66,7 @@
             "nf-test": "0.9.3",
             "nextflow": "25.10.2"
         },
-        "timestamp": "2026-01-04T02:26:30.078962065"
+        "timestamp": "2026-01-05T03:19:53.058265915"
     },
     "CREATE_INTERVALS - intervals input": {
         "content": [
@@ -66,19 +89,19 @@
             "nf-test": "0.9.3",
             "nextflow": "25.10.2"
         },
-        "timestamp": "2026-01-04T02:26:52.790196331"
+        "timestamp": "2026-01-05T03:20:16.027494009"
     },
     "CREATE_INTERVALS - stub": {
         "content": [
             {
                 "0": [
-                    "genome.intervals.stub.bed:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    "genome.fa.intervals.stub.bed:md5,d41d8cd98f00b204e9800998ecf8427e"
                 ],
                 "1": [
                     "versions.yml:md5,ed1e52f58470ee48df0a1534ca581929"
                 ],
                 "bed": [
-                    "genome.intervals.stub.bed:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    "genome.fa.intervals.stub.bed:md5,d41d8cd98f00b204e9800998ecf8427e"
                 ],
                 "versions": [
                     "versions.yml:md5,ed1e52f58470ee48df0a1534ca581929"
@@ -89,19 +112,19 @@
             "nf-test": "0.9.3",
             "nextflow": "25.10.2"
         },
-        "timestamp": "2026-01-04T02:27:59.879309434"
+        "timestamp": "2026-01-05T03:21:45.828133117"
     },
     "CREATE_INTERVALS - fai input": {
         "content": [
             {
                 "0": [
-                    "genome.intervals.bed:md5,edd20a101b97b859ccedde614cb163a7"
+                    "genome.fa.intervals.bed:md5,edd20a101b97b859ccedde614cb163a7"
                 ],
                 "1": [
                     "versions.yml:md5,ed1e52f58470ee48df0a1534ca581929"
                 ],
                 "bed": [
-                    "genome.intervals.bed:md5,edd20a101b97b859ccedde614cb163a7"
+                    "genome.fa.intervals.bed:md5,edd20a101b97b859ccedde614cb163a7"
                 ],
                 "versions": [
                     "versions.yml:md5,ed1e52f58470ee48df0a1534ca581929"
@@ -112,7 +135,7 @@
             "nf-test": "0.9.3",
             "nextflow": "25.10.2"
         },
-        "timestamp": "2026-01-04T02:26:08.015938666"
+        "timestamp": "2026-01-05T03:19:29.023647412"
     },
     "CREATE_INTERVALS - invalid extension": {
         "content": [
@@ -135,6 +158,6 @@
             "nf-test": "0.9.3",
             "nextflow": "25.10.2"
         },
-        "timestamp": "2026-01-04T02:27:37.348843905"
+        "timestamp": "2026-01-05T03:21:23.390971433"
     }
 }

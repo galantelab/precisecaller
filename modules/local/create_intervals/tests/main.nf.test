@@ -85,6 +85,25 @@ nextflow_process {
 
     }
 
+    test("CREATE_INTERVALS - bed input") {
+
+        when {
+            process {
+                """
+                input[0] = file(params.local_testdata_base_path + 'data/Homo_sapiens/Simulations/targets/targets.bed', checkIfExists: true)
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert process.success },
+                { assert snapshot(process.out).match() }
+            )
+        }
+
+    }
+
     test("CREATE_INTERVALS - invalid extension") {
 
         when {
