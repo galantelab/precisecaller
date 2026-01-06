@@ -15,6 +15,7 @@
 
 include { PRECISECALLER           } from './workflows/precisecaller'
 include { PREPARE_GENOME          } from './subworkflows/local/prepare_genome'
+include { PREPARE_INTERVALS       } from './subworkflows/local/prepare_intervals'
 include { PIPELINE_INITIALISATION } from './subworkflows/local/utils_nfcore_precisecaller_pipeline'
 include { PIPELINE_COMPLETION     } from './subworkflows/local/utils_nfcore_precisecaller_pipeline'
 include { getGenomeAttribute      } from './subworkflows/local/utils_nfcore_precisecaller_pipeline'
@@ -70,9 +71,20 @@ workflow GALANTELAB_PRECISECALLER {
     versions = versions.mix(PREPARE_GENOME.out.versions)
 
     //
+    // SUBWORKFLOW: Prepare intervals file
+    //
+    PREPARE_INTERVALS(
+        PREPARE_GENOME.out.fasta_fai,
+        params.intervals
+    )
+    versions = versions.mix(PREPARE_INTERVALS.out.versions)
+
+    //
     // Prepare files based on params
     //
-    umi_file = params.umi_file ? file(umi_file, checkIfExists: true) : Channel.empty()
+    umi_file = params.umi_file ?
+        file(params.umi_file, checkIfExists: true) :
+        null
 
     //
     // WORKFLOW: Run pipeline
@@ -83,6 +95,8 @@ workflow GALANTELAB_PRECISECALLER {
         PREPARE_GENOME.out.fasta_fai,
         PREPARE_GENOME.out.dict,
         PREPARE_GENOME.out.bwa,
+        PREPARE_INTERVALS.out.intervals,
+        PREPARE_INTERVALS.out.intervals_gz_tbi,
         umi_file
     )
     versions = versions.mix(PRECISECALLER.out.versions)
