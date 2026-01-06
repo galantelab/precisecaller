@@ -21,7 +21,7 @@ workflow PREPARE_GENOME {
     ch_fasta = Channel.empty()
     if (fasta.endsWith('.gz')) {
         GUNZIP_FASTA([[id:"${fasta_file.baseName}"], fasta_file])
-        ch_fasta     = GUNZIP_FASTA.out.gunzip
+        ch_fasta     = GUNZIP_FASTA.out.gunzip.first()
         ch_versions  = ch_versions.mix(GUNZIP_FASTA.out.versions)
     } else {
         ch_fasta = Channel.value([[id:"${fasta_file.baseName}"], fasta_file])
@@ -32,7 +32,7 @@ workflow PREPARE_GENOME {
         ch_fasta_fai = Channel.value([[id:"fai"], file(fasta_fai, checkIfExists: true)])
     } else {
         SAMTOOLS_FAIDX(ch_fasta, [[ id:'no_fai' ], []], false)
-        ch_fasta_fai = SAMTOOLS_FAIDX.out.fai
+        ch_fasta_fai = SAMTOOLS_FAIDX.out.fai.first()
         ch_versions  = ch_versions.mix(SAMTOOLS_FAIDX.out.versions)
     }
 
@@ -41,7 +41,7 @@ workflow PREPARE_GENOME {
         ch_dict = Channel.value([[id:"dict"], file(dict, checkIfExists: true)])
     } else {
         GATK4_CREATESEQUENCEDICTIONARY(ch_fasta)
-        ch_dict     = GATK4_CREATESEQUENCEDICTIONARY.out.dict
+        ch_dict     = GATK4_CREATESEQUENCEDICTIONARY.out.dict.first()
         ch_versions = ch_versions.mix(GATK4_CREATESEQUENCEDICTIONARY.out.versions)
     }
 
