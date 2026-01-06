@@ -1,0 +1,141 @@
+nextflow_workflow {
+    name "Test Subworkflow PREPARE_INTERVALS"
+    script "../main.nf"
+    workflow "PREPARE_INTERVALS"
+
+    tag "subworkflows"
+    tag "subworkflows_"
+    tag "subworkflows/prepare_intervals"
+
+    test("PREPARE_INTERVALS - fai input") {
+        config "./nextflow.config"
+
+        when {
+
+            workflow {
+                """
+                input[0] = Channel.value(
+                    [
+                        [id:"fai"],
+                        file(params.local_testdata_base_path + 'references/Homo_sapiens/Gencode/hg38_chr22q12.1/Sequence/WholeGenomeFasta/genome.fa.fai', checkIfExists: true)
+                    ]
+                )
+                input[1] = null
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert workflow.success},
+                { assert snapshot(workflow.out).match()}
+            )
+        }
+    }
+
+    test("PREPARE_INTERVALS - interval_list input") {
+        config "./nextflow.config"
+
+        when {
+
+            workflow {
+                """
+                input[0] = null
+                input[1] = params.local_testdata_base_path + 'data/Homo_sapiens/Simulations/targets/targets.interval_list'
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert workflow.success},
+                { assert snapshot(workflow.out).match()}
+            )
+        }
+    }
+
+    test("PREPARE_INTERVALS - intervals input") {
+        config "./nextflow.config"
+
+        when {
+            workflow {
+                """
+                input[0] = null
+                input[1] = params.local_testdata_base_path + 'data/Homo_sapiens/Simulations/targets/targets.intervals'
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert workflow.success },
+                { assert snapshot(workflow.out).match() }
+            )
+        }
+
+    }
+
+    test("PREPARE_INTERVALS - list input") {
+        config "./nextflow.config"
+
+        when {
+            workflow {
+                """
+                input[0] = null
+                input[1] = params.local_testdata_base_path + 'data/Homo_sapiens/Simulations/targets/targets.list'
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert workflow.success },
+                { assert snapshot(workflow.out).match() }
+            )
+        }
+
+    }
+
+    test("PREPARE_INTERVALS - bed input") {
+        config "./nextflow.config"
+
+        when {
+            workflow {
+                """
+                input[0] = null
+                input[1] = params.local_testdata_base_path + 'data/Homo_sapiens/Simulations/targets/targets.bed'
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert workflow.success },
+                { assert snapshot(workflow.out).match() }
+            )
+        }
+
+    }
+
+    test("PREPARE_INTERVALS - bed.gz input") {
+        config "./nextflow.config"
+
+        when {
+            workflow {
+                """
+                input[0] = null
+                input[1] = params.local_testdata_base_path + 'data/Homo_sapiens/Simulations/targets/targets.bed.gz'
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert workflow.success },
+                { assert snapshot(workflow.out).match() }
+            )
+        }
+
+    }
+
+}

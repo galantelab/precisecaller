@@ -1,0 +1,226 @@
+{
+    "PREPARE_INTERVALS - interval_list input": {
+        "content": [
+            {
+                "0": [
+                    "targets.intervals.bed:md5,858b67f959466ece8d7075343e9517ff"
+                ],
+                "1": [
+                    [
+                        "intervals.bed.gz:md5,858b67f959466ece8d7075343e9517ff",
+                        "intervals.bed.gz.tbi:md5,ec231c558d38a6b4cab8f32444e92078"
+                    ]
+                ],
+                "2": [
+                    "versions.yml:md5,4661ef948ee4004eb95de3e7a9125be6",
+                    "versions.yml:md5,7161075e205dde6b36249fbbb75d6ada"
+                ],
+                "intervals": [
+                    "targets.intervals.bed:md5,858b67f959466ece8d7075343e9517ff"
+                ],
+                "intervals_gz_tbi": [
+                    [
+                        "intervals.bed.gz:md5,858b67f959466ece8d7075343e9517ff",
+                        "intervals.bed.gz.tbi:md5,ec231c558d38a6b4cab8f32444e92078"
+                    ]
+                ],
+                "versions": [
+                    "versions.yml:md5,4661ef948ee4004eb95de3e7a9125be6",
+                    "versions.yml:md5,7161075e205dde6b36249fbbb75d6ada"
+                ]
+            }
+        ],
+        "meta": {
+            "nf-test": "0.9.3",
+            "nextflow": "25.10.2"
+        },
+        "timestamp": "2026-01-06T00:46:04.382595968"
+    },
+    "PREPARE_INTERVALS - list input": {
+        "content": [
+            {
+                "0": [
+                    "targets.intervals.bed:md5,858b67f959466ece8d7075343e9517ff"
+                ],
+                "1": [
+                    [
+                        "intervals.bed.gz:md5,858b67f959466ece8d7075343e9517ff",
+                        "intervals.bed.gz.tbi:md5,ec231c558d38a6b4cab8f32444e92078"
+                    ]
+                ],
+                "2": [
+                    "versions.yml:md5,4661ef948ee4004eb95de3e7a9125be6",
+                    "versions.yml:md5,7161075e205dde6b36249fbbb75d6ada"
+                ],
+                "intervals": [
+                    "targets.intervals.bed:md5,858b67f959466ece8d7075343e9517ff"
+                ],
+                "intervals_gz_tbi": [
+                    [
+                        "intervals.bed.gz:md5,858b67f959466ece8d7075343e9517ff",
+                        "intervals.bed.gz.tbi:md5,ec231c558d38a6b4cab8f32444e92078"
+                    ]
+                ],
+                "versions": [
+                    "versions.yml:md5,4661ef948ee4004eb95de3e7a9125be6",
+                    "versions.yml:md5,7161075e205dde6b36249fbbb75d6ada"
+                ]
+            }
+        ],
+        "meta": {
+            "nf-test": "0.9.3",
+            "nextflow": "25.10.2"
+        },
+        "timestamp": "2026-01-06T00:46:59.272983461"
+    },
+    "PREPARE_INTERVALS - fai input": {
+        "content": [
+            {
+                "0": [
+                    "genome.fa.intervals.bed:md5,edd20a101b97b859ccedde614cb163a7"
+                ],
+                "1": [
+                    [
+                        "intervals.bed.gz:md5,edd20a101b97b859ccedde614cb163a7",
+                        "intervals.bed.gz.tbi:md5,47e6ccdbcf4db14427cf71ebc9b3f463"
+                    ]
+                ],
+                "2": [
+                    "versions.yml:md5,4661ef948ee4004eb95de3e7a9125be6",
+                    "versions.yml:md5,7161075e205dde6b36249fbbb75d6ada"
+                ],
+                "intervals": [
+                    "genome.fa.intervals.bed:md5,edd20a101b97b859ccedde614cb163a7"
+                ],
+                "intervals_gz_tbi": [
+                    [
+                        "intervals.bed.gz:md5,edd20a101b97b859ccedde614cb163a7",
+                        "intervals.bed.gz.tbi:md5,47e6ccdbcf4db14427cf71ebc9b3f463"
+                    ]
+                ],
+                "versions": [
+                    "versions.yml:md5,4661ef948ee4004eb95de3e7a9125be6",
+                    "versions.yml:md5,7161075e205dde6b36249fbbb75d6ada"
+                ]
+            }
+        ],
+        "meta": {
+            "nf-test": "0.9.3",
+            "nextflow": "25.10.2"
+        },
+        "timestamp": "2026-01-06T00:45:37.613084592"
+    },
+    "PREPARE_INTERVALS - intervals input": {
+        "content": [
+            {
+                "0": [
+                    "targets.intervals.bed:md5,f89227ca3966192f11c3e9f947a912e1"
+                ],
+                "1": [
+                    [
+                        "intervals.bed.gz:md5,f89227ca3966192f11c3e9f947a912e1",
+                        "intervals.bed.gz.tbi:md5,3b0787f8cc5fb03c277f51324f0200a6"
+                    ]
+                ],
+                "2": [
+                    "versions.yml:md5,4661ef948ee4004eb95de3e7a9125be6",
+                    "versions.yml:md5,7161075e205dde6b36249fbbb75d6ada"
+                ],
+                "intervals": [
+                    "targets.intervals.bed:md5,f89227ca3966192f11c3e9f947a912e1"
+                ],
+                "intervals_gz_tbi": [
+                    [
+                        "intervals.bed.gz:md5,f89227ca3966192f11c3e9f947a912e1",
+                        "intervals.bed.gz.tbi:md5,3b0787f8cc5fb03c277f51324f0200a6"
+                    ]
+                ],
+                "versions": [
+                    "versions.yml:md5,4661ef948ee4004eb95de3e7a9125be6",
+                    "versions.yml:md5,7161075e205dde6b36249fbbb75d6ada"
+                ]
+            }
+        ],
+        "meta": {
+            "nf-test": "0.9.3",
+            "nextflow": "25.10.2"
+        },
+        "timestamp": "2026-01-06T00:46:32.195300259"
+    },
+    "PREPARE_INTERVALS - bed.gz input": {
+        "content": [
+            {
+                "0": [
+                    "targets.intervals.bed:md5,858b67f959466ece8d7075343e9517ff"
+                ],
+                "1": [
+                    [
+                        "intervals.bed.gz:md5,858b67f959466ece8d7075343e9517ff",
+                        "intervals.bed.gz.tbi:md5,ec231c558d38a6b4cab8f32444e92078"
+                    ]
+                ],
+                "2": [
+                    "versions.yml:md5,4661ef948ee4004eb95de3e7a9125be6",
+                    "versions.yml:md5,7161075e205dde6b36249fbbb75d6ada",
+                    "versions.yml:md5,82f902876bf288bdd3b3708b97413ca3"
+                ],
+                "intervals": [
+                    "targets.intervals.bed:md5,858b67f959466ece8d7075343e9517ff"
+                ],
+                "intervals_gz_tbi": [
+                    [
+                        "intervals.bed.gz:md5,858b67f959466ece8d7075343e9517ff",
+                        "intervals.bed.gz.tbi:md5,ec231c558d38a6b4cab8f32444e92078"
+                    ]
+                ],
+                "versions": [
+                    "versions.yml:md5,4661ef948ee4004eb95de3e7a9125be6",
+                    "versions.yml:md5,7161075e205dde6b36249fbbb75d6ada",
+                    "versions.yml:md5,82f902876bf288bdd3b3708b97413ca3"
+                ]
+            }
+        ],
+        "meta": {
+            "nf-test": "0.9.3",
+            "nextflow": "25.10.2"
+        },
+        "timestamp": "2026-01-06T00:47:54.910014298"
+    },
+    "PREPARE_INTERVALS - bed input": {
+        "content": [
+            {
+                "0": [
+                    "targets.intervals.bed:md5,858b67f959466ece8d7075343e9517ff"
+                ],
+                "1": [
+                    [
+                        "intervals.bed.gz:md5,858b67f959466ece8d7075343e9517ff",
+                        "intervals.bed.gz.tbi:md5,ec231c558d38a6b4cab8f32444e92078"
+                    ]
+                ],
+                "2": [
+                    "versions.yml:md5,4661ef948ee4004eb95de3e7a9125be6",
+                    "versions.yml:md5,7161075e205dde6b36249fbbb75d6ada"
+                ],
+                "intervals": [
+                    "targets.intervals.bed:md5,858b67f959466ece8d7075343e9517ff"
+                ],
+                "intervals_gz_tbi": [
+                    [
+                        "intervals.bed.gz:md5,858b67f959466ece8d7075343e9517ff",
+                        "intervals.bed.gz.tbi:md5,ec231c558d38a6b4cab8f32444e92078"
+                    ]
+                ],
+                "versions": [
+                    "versions.yml:md5,4661ef948ee4004eb95de3e7a9125be6",
+                    "versions.yml:md5,7161075e205dde6b36249fbbb75d6ada"
+                ]
+            }
+        ],
+        "meta": {
+            "nf-test": "0.9.3",
+            "nextflow": "25.10.2"
+        },
+        "timestamp": "2026-01-06T00:47:26.330009118"
+    }
+}
