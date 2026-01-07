@@ -110,7 +110,7 @@ workflow PIPELINE_COMPLETION {
     plaintext_email // boolean: Send plain-text email instead of HTML
     outdir          //    path: Path to output directory where results will be published
     monochrome_logs // boolean: Disable ANSI colour codes in log output
-    
+
     multiqc_report  //  string: Path to MultiQC report
 
     main:
@@ -166,6 +166,7 @@ def validateInputSamplesheet(input) {
 
     return [ metas[0], fastqs ]
 }
+
 //
 // Get attribute from genome config file e.g. fasta
 //
@@ -173,6 +174,19 @@ def getGenomeAttribute(attribute) {
     if (params.genomes && params.genome && params.genomes.containsKey(params.genome)) {
         if (params.genomes[ params.genome ].containsKey(attribute)) {
             return params.genomes[ params.genome ][ attribute ]
+        }
+    }
+    return null
+}
+
+//
+// Get attribute from assay config file
+//
+def getAssayAttribute(attribute) {
+    def assay_key = params.wgs ? 'wgs' : 'other'
+    if (params.assays && params.assays.containsKey(assay_key)) {
+        if (params.assays[ assay_key ].containsKey(attribute)) {
+            return params.assays[ assay_key ][ attribute ]
         }
     }
     return null

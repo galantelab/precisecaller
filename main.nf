@@ -19,6 +19,7 @@ include { PREPARE_INTERVALS       } from './subworkflows/local/prepare_intervals
 include { PIPELINE_INITIALISATION } from './subworkflows/local/utils_nfcore_precisecaller_pipeline'
 include { PIPELINE_COMPLETION     } from './subworkflows/local/utils_nfcore_precisecaller_pipeline'
 include { getGenomeAttribute      } from './subworkflows/local/utils_nfcore_precisecaller_pipeline'
+include { getAssayAttribute       } from './subworkflows/local/utils_nfcore_precisecaller_pipeline'
 include { paramsHelp              } from 'plugin/nf-validation'
 
 /*
@@ -42,6 +43,15 @@ params.fasta     = getGenomeAttribute('fasta')
 params.fasta_fai = getGenomeAttribute('fasta_fai')
 params.dict      = getGenomeAttribute('dict')
 params.bwa       = getGenomeAttribute('bwa')
+
+/*
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    ASSAY PARAMETER VALUES
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+*/
+
+params.coverage_metrics_mins      = params.coverage_metrics_mins      ?: getAssayAttribute('coverage_metrics_mins')
+params.coverage_metrics_intervals = params.coverage_metrics_intervals ?: getAssayAttribute('coverage_metrics_intervals')
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
