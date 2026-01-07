@@ -18,8 +18,9 @@ include { FASTQ_FILTER_UMI_CONSENSUS_FGBIO                               } from 
 include { FASTQ_SPLIT_SEQKIT                                             } from '../subworkflows/local/fastq_split_seqkit/main'
 include { BAM_MERGE_SAMTOOLS                                             } from '../subworkflows/local/bam_merge_samtools/main'
 include { BAM_MERGE_SAMTOOLS                                             } from '../subworkflows/local/bam_merge_samtools/main'
-include { BAM_COLLECT_METRICS_PICARD        as COLLECT_METRICS_POST_SORT } from '../subworkflows/local/bam_collect_metrics_picard/main'
-include { BAM_COLLECT_METRICS_PICARD        as COLLECT_METRICS_POST_MAPQ } from '../subworkflows/local/bam_collect_metrics_picard/main'
+include { BAM_COLLECT_METRICS_PICARD        as ALIGN_METRICS_POST_SORT   } from '../subworkflows/local/bam_collect_metrics_picard/main'
+include { BAM_COLLECT_METRICS_PICARD        as ALIGN_METRICS_POST_MAPQ   } from '../subworkflows/local/bam_collect_metrics_picard/main'
+include { BAM_COLLECT_METRICS_MOSDEPTH      as COVERAGE_METRICS          } from '../subworkflows/local/bam_collect_metrics_mosdepth/main'
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -33,7 +34,9 @@ workflow PRECISECALLER {
     fasta
     fasta_fai
     dict
-    bwa
+    bwa,
+    intervals,
+    intervals_gz_tbi,
     umi_file
 
     main:
@@ -75,19 +78,22 @@ workflow PRECISECALLER {
 
     // Determine which preprocessing steps should be executed based on
     // user parameters. UMI processing is mutually exclusive with trimming
-    enable_umi             = params.umi_read_structure
-    enable_split           = params.split_fastq_reads > 0
-    enable_trim            = !enable_umi && !params.skip_trimming
+    enable_umi   = params.umi_read_structure
+    enable_split = params.split_fastq_reads > 0
+    enable_trim  = !enable_umi && !params.skip_trimming
 
     // Alignment is required only when no BAM has been produced upstream
     enable_align = !enable_umi
 
     // Enable MAPQ-based read filtering after coordinate sorting
     // A value of 0 disables filtering entirely, preserving all alignments
-    enable_mapq_filter     = params.min_mapq > 0
+    enable_mapq_filter = params.min_mapq > 0
 
     // Enable alignment metrics collection
-    enable_collect_metrics = !params.skip_collect_metrics
+    enable_collect_alignment_metrics = !params.skip_alignment_metrics
+
+    // Enable coverage metrics collection
+    enable_collect_coverage_metrics = !params.skip_coverage_metrics
 
     // Split FASTQ files into smaller chunks for improved parallelization.
     // This step is purely structural: it does not modify read sequences,
@@ -172,18 +178,18 @@ workflow PRECISECALLER {
     // Collect alignment and insert size metrics on coordinate-sorted BAMs
     // Metrics are labeled as `post_sort` to distinguish them from
     // post-filtering metrics when MAPQ filtering is enabled
-    if (enable_collect_metrics) {
-        COLLECT_METRICS_POST_SORT(
+    if (enable_collect_alignment_metrics) {
+        ALIGN_METRICS_POST_SORT(
             bam.map { meta, bam ->
                 [ meta + [ stage: 'post_sort' ], bam ]
             },
             fasta
         )
 
-        versions      = versions.mix(COLLECT_METRICS_POST_SORT.out.versions)
-        multiqc_files = multiqc_files.mix(COLLECT_METRICS_POST_SORT.out.alignment_metrics.map { meta, txt -> txt })
-        multiqc_files = multiqc_files.mix(COLLECT_METRICS_POST_SORT.out.insert_metrics.map    { meta, txt -> txt })
-        multiqc_files = multiqc_files.mix(COLLECT_METRICS_POST_SORT.out.insert_histogram.map  { meta, pdf -> pdf })
+        versions      = versions.mix(ALIGN_METRICS_POST_SORT.out.versions)
+        multiqc_files = multiqc_files.mix(ALIGN_METRICS_POST_SORT.out.alignment_metrics.map { meta, txt -> txt })
+        multiqc_files = multiqc_files.mix(ALIGN_METRICS_POST_SORT.out.insert_metrics.map    { meta, txt -> txt })
+        multiqc_files = multiqc_files.mix(ALIGN_METRICS_POST_SORT.out.insert_histogram.map  { meta, pdf -> pdf })
     }
 
     // Filter alignments based on minimum MAPQ threshold
@@ -202,18 +208,18 @@ workflow PRECISECALLER {
 
         // Metrics are labeled as `post_mapq` to distinguish them from
         // post-sorting metrics
-        if (enable_collect_metrics) {
-            COLLECT_METRICS_POST_MAPQ(
+        if (enable_collect_alignment_metrics) {
+            ALIGN_METRICS_POST_MAPQ(
                 bam.map { meta, bam ->
                     [ meta + [ stage: 'post_mapq' ], bam ]
                 },
                 fasta
             )
 
-            versions      = versions.mix(COLLECT_METRICS_POST_MAPQ.out.versions)
-            multiqc_files = multiqc_files.mix(COLLECT_METRICS_POST_MAPQ.out.alignment_metrics.map { meta, txt -> txt })
-            multiqc_files = multiqc_files.mix(COLLECT_METRICS_POST_MAPQ.out.insert_metrics.map    { meta, txt -> txt })
-            multiqc_files = multiqc_files.mix(COLLECT_METRICS_POST_MAPQ.out.insert_histogram.map  { meta, pdf -> pdf })
+            versions      = versions.mix(ALIGN_METRICS_POST_MAPQ.out.versions)
+            multiqc_files = multiqc_files.mix(ALIGN_METRICS_POST_MAPQ.out.alignment_metrics.map { meta, txt -> txt })
+            multiqc_files = multiqc_files.mix(ALIGN_METRICS_POST_MAPQ.out.insert_metrics.map    { meta, txt -> txt })
+            multiqc_files = multiqc_files.mix(ALIGN_METRICS_POST_MAPQ.out.insert_histogram.map  { meta, pdf -> pdf })
         }
     }
 
@@ -224,6 +230,16 @@ workflow PRECISECALLER {
     bam_index     = PICARD_MARKDUPLICATES.out.bai
     versions      = versions.mix(PICARD_MARKDUPLICATES.out.versions)
     multiqc_files = multiqc_files.mix(PICARD_MARKDUPLICATES.out.metrics.map { meta, txt -> txt })
+
+    // Collate coverage metrics
+    if (enable_collect_coverage_metrics) {
+        COVERAGE_METRICS(bam, bam_index, intervals)
+
+        versions      = versions.mix(COVERAGE_METRICS.out.versions)
+        multiqc_files = multiqc_files.mix(COVERAGE_METRICS.out.global_txt.map  { meta, txt -> txt })
+        multiqc_files = multiqc_files.mix(COVERAGE_METRICS.out.summary_txt.map { meta, txt -> txt })
+        multiqc_files = multiqc_files.mix(COVERAGE_METRICS.out.regions_txt.map { meta, txt -> txt })
+    }
 
     //
     // Collate and save software versions
