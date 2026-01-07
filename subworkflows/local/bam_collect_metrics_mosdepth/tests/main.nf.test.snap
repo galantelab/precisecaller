@@ -1,0 +1,139 @@
+{
+    "Test for WGS": {
+        "content": [
+            {
+                "0": [
+                    [
+                        {
+                            "id": "test",
+                            "sample": "test",
+                            "single_end": false
+                        },
+                        "test.mosdepth.global.dist.txt:md5,e82e90c7d508a135b5a8a7cd6933452e"
+                    ]
+                ],
+                "1": [
+                    [
+                        {
+                            "id": "test",
+                            "sample": "test",
+                            "single_end": false
+                        },
+                        "test.mosdepth.summary.txt:md5,96c037f769974b904beb53edc4f56d82"
+                    ]
+                ],
+                "2": [
+                    [
+                        {
+                            "id": "test",
+                            "sample": "test",
+                            "single_end": false
+                        },
+                        "test.mosdepth.region.dist.txt:md5,e82e90c7d508a135b5a8a7cd6933452e"
+                    ]
+                ],
+                "3": [
+                    [
+                        {
+                            "id": "test",
+                            "sample": "test",
+                            "single_end": false
+                        },
+                        "test.regions.bed.gz:md5,9ded0397623fda26a6a3514d6a0e2a2c"
+                    ]
+                ],
+                "4": [
+                    [
+                        {
+                            "id": "test",
+                            "sample": "test",
+                            "single_end": false
+                        },
+                        "test.quantized.bed.gz:md5,f037c215449d361112efc10108fcc17c"
+                    ]
+                ],
+                "5": [
+                    [
+                        {
+                            "id": "test",
+                            "sample": "test",
+                            "single_end": false
+                        },
+                        "test.thresholds.bed.gz:md5,fe70ae728cd10726c42a2bcd44adfc9d"
+                    ]
+                ],
+                "6": [
+                    "versions.yml:md5,e5daf5604bdf7412549dfdc59eb0ed0d"
+                ],
+                "global_txt": [
+                    [
+                        {
+                            "id": "test",
+                            "sample": "test",
+                            "single_end": false
+                        },
+                        "test.mosdepth.global.dist.txt:md5,e82e90c7d508a135b5a8a7cd6933452e"
+                    ]
+                ],
+                "quantized_bed": [
+                    [
+                        {
+                            "id": "test",
+                            "sample": "test",
+                            "single_end": false
+                        },
+                        "test.quantized.bed.gz:md5,f037c215449d361112efc10108fcc17c"
+                    ]
+                ],
+                "regions_bed": [
+                    [
+                        {
+                            "id": "test",
+                            "sample": "test",
+                            "single_end": false
+                        },
+                        "test.regions.bed.gz:md5,9ded0397623fda26a6a3514d6a0e2a2c"
+                    ]
+                ],
+                "regions_txt": [
+                    [
+                        {
+                            "id": "test",
+                            "sample": "test",
+                            "single_end": false
+                        },
+                        "test.mosdepth.region.dist.txt:md5,e82e90c7d508a135b5a8a7cd6933452e"
+                    ]
+                ],
+                "summary_txt": [
+                    [
+                        {
+                            "id": "test",
+                            "sample": "test",
+                            "single_end": false
+                        },
+                        "test.mosdepth.summary.txt:md5,96c037f769974b904beb53edc4f56d82"
+                    ]
+                ],
+                "thresholds_bed": [
+                    [
+                        {
+                            "id": "test",
+                            "sample": "test",
+                            "single_end": false
+                        },
+                        "test.thresholds.bed.gz:md5,fe70ae728cd10726c42a2bcd44adfc9d"
+                    ]
+                ],
+                "versions": [
+                    "versions.yml:md5,e5daf5604bdf7412549dfdc59eb0ed0d"
+                ]
+            }
+        ],
+        "meta": {
+            "nf-test": "0.9.3",
+            "nextflow": "25.10.2"
+        },
+        "timestamp": "2026-01-06T22:31:38.143227031"
+    }
+}
