@@ -60,6 +60,11 @@
             "git_sha": "81880787133db07d9b4c1febd152c090eb8325dc",
             "installed_by": ["modules"]
           },
+          "gatk4/baserecalibrator": {
+            "branch": "master",
+            "git_sha": "ae8cd884f895585c6799ab4eb6a2c9f44df03336",
+            "installed_by": ["modules"]
+          },
           "gatk4/createsequencedictionary": {
             "branch": "master",
             "git_sha": "81880787133db07d9b4c1febd152c090eb8325dc",
