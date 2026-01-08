@@ -33,6 +33,38 @@
                     ]
                 ],
                 "3": [
+                    [
+                        {
+                            "id": "known_indels.vcf"
+                        },
+                        "/precisecaller/test-datasets/data/Homo_sapiens/Simulations/known_sites/known_indels.vcf.gz"
+                    ]
+                ],
+                "4": [
+                    [
+                        {
+                            "id": "known_indels.vcf.gz"
+                        },
+                        "/precisecaller/test-datasets/data/Homo_sapiens/Simulations/known_sites/known_indels.vcf.gz.tbi"
+                    ]
+                ],
+                "5": [
+                    [
+                        {
+                            "id": "known_snps.vcf"
+                        },
+                        "/precisecaller/test-datasets/data/Homo_sapiens/Simulations/known_sites/known_snps.vcf.gz"
+                    ]
+                ],
+                "6": [
+                    [
+                        {
+                            "id": "known_snps.vcf.gz"
+                        },
+                        "/precisecaller/test-datasets/data/Homo_sapiens/Simulations/known_sites/known_snps.vcf.gz.tbi"
+                    ]
+                ],
+                "7": [
                     "versions.yml:md5,265795dcfabc74e982198a30abb773d5",
                     "versions.yml:md5,6500dc776f23be2846f35446e2e38897",
                     "versions.yml:md5,7303f194674b485c6914e28422822a12",
@@ -68,6 +100,38 @@
                         "genome.fa.fai:md5,889ed0b342d3854343aebb08cd0a9c6d"
                     ]
                 ],
+                "known_indels": [
+                    [
+                        {
+                            "id": "known_indels.vcf"
+                        },
+                        "/precisecaller/test-datasets/data/Homo_sapiens/Simulations/known_sites/known_indels.vcf.gz"
+                    ]
+                ],
+                "known_indels_tbi": [
+                    [
+                        {
+                            "id": "known_indels.vcf.gz"
+                        },
+                        "/precisecaller/test-datasets/data/Homo_sapiens/Simulations/known_sites/known_indels.vcf.gz.tbi"
+                    ]
+                ],
+                "known_snps": [
+                    [
+                        {
+                            "id": "known_snps.vcf"
+                        },
+                        "/precisecaller/test-datasets/data/Homo_sapiens/Simulations/known_sites/known_snps.vcf.gz"
+                    ]
+                ],
+                "known_snps_tbi": [
+                    [
+                        {
+                            "id": "known_snps.vcf.gz"
+                        },
+                        "/precisecaller/test-datasets/data/Homo_sapiens/Simulations/known_sites/known_snps.vcf.gz.tbi"
+                    ]
+                ],
                 "versions": [
                     "versions.yml:md5,265795dcfabc74e982198a30abb773d5",
                     "versions.yml:md5,6500dc776f23be2846f35446e2e38897",
@@ -80,7 +144,7 @@
             "nf-test": "0.9.3",
             "nextflow": "25.10.2"
         },
-        "timestamp": "2026-01-05T03:37:23.153970494"
+        "timestamp": "2026-01-08T01:45:07.181323176"
     },
     "fasta - prepare fasta reference": {
         "content": [
@@ -116,9 +180,43 @@
                     ]
                 ],
                 "3": [
+                    [
+                        {
+                            "id": "known_indels"
+                        },
+                        "known_indels.sorted.indexed.vcf.gz:md5,9beb4f71e82a4b28d11d0fb2fddb565c"
+                    ]
+                ],
+                "4": [
+                    [
+                        {
+                            "id": "known_indels"
+                        },
+                        "known_indels.sorted.indexed.vcf.gz.tbi:md5,80d07d0c926ebb509953b35786c22e05"
+                    ]
+                ],
+                "5": [
+                    [
+                        {
+                            "id": "known_snps"
+                        },
+                        "known_snps.sorted.indexed.vcf.gz:md5,8046bb11472b030a28d299f551a5fc82"
+                    ]
+                ],
+                "6": [
+                    [
+                        {
+                            "id": "known_snps"
+                        },
+                        "known_snps.sorted.indexed.vcf.gz.tbi:md5,bbe0b1798d261f629da8568a156928f4"
+                    ]
+                ],
+                "7": [
                     "versions.yml:md5,265795dcfabc74e982198a30abb773d5",
+                    "versions.yml:md5,525c119e04d3358dd69f546118f50226",
                     "versions.yml:md5,6500dc776f23be2846f35446e2e38897",
-                    "versions.yml:md5,7303f194674b485c6914e28422822a12"
+                    "versions.yml:md5,7303f194674b485c6914e28422822a12",
+                    "versions.yml:md5,f9fceb37da24162992cea6c8f007bff3"
                 ],
                 "bwa": [
                     [
@@ -150,10 +248,44 @@
                         "genome.fa.fai:md5,889ed0b342d3854343aebb08cd0a9c6d"
                     ]
                 ],
+                "known_indels": [
+                    [
+                        {
+                            "id": "known_indels"
+                        },
+                        "known_indels.sorted.indexed.vcf.gz:md5,9beb4f71e82a4b28d11d0fb2fddb565c"
+                    ]
+                ],
+                "known_indels_tbi": [
+                    [
+                        {
+                            "id": "known_indels"
+                        },
+                        "known_indels.sorted.indexed.vcf.gz.tbi:md5,80d07d0c926ebb509953b35786c22e05"
+                    ]
+                ],
+                "known_snps": [
+                    [
+                        {
+                            "id": "known_snps"
+                        },
+                        "known_snps.sorted.indexed.vcf.gz:md5,8046bb11472b030a28d299f551a5fc82"
+                    ]
+                ],
+                "known_snps_tbi": [
+                    [
+                        {
+                            "id": "known_snps"
+                        },
+                        "known_snps.sorted.indexed.vcf.gz.tbi:md5,bbe0b1798d261f629da8568a156928f4"
+                    ]
+                ],
                 "versions": [
                     "versions.yml:md5,265795dcfabc74e982198a30abb773d5",
+                    "versions.yml:md5,525c119e04d3358dd69f546118f50226",
                     "versions.yml:md5,6500dc776f23be2846f35446e2e38897",
-                    "versions.yml:md5,7303f194674b485c6914e28422822a12"
+                    "versions.yml:md5,7303f194674b485c6914e28422822a12",
+                    "versions.yml:md5,f9fceb37da24162992cea6c8f007bff3"
                 ]
             }
         ],
@@ -161,6 +293,6 @@
             "nf-test": "0.9.3",
             "nextflow": "25.10.2"
         },
-        "timestamp": "2026-01-05T03:36:45.211608544"
+        "timestamp": "2026-01-08T01:44:26.85173791"
     }
 }

@@ -2,21 +2,30 @@
 // Prepare reference genome files
 //
 
-include { BWA_INDEX                      } from '../../../modules/nf-core/bwa/index/main'
-include { GATK4_CREATESEQUENCEDICTIONARY } from '../../../modules/nf-core/gatk4/createsequencedictionary/main'
-include { GUNZIP as GUNZIP_FASTA         } from '../../../modules/nf-core/gunzip/main'
-include { SAMTOOLS_FAIDX                 } from '../../../modules/nf-core/samtools/faidx/main'
+include { BWA_INDEX                                             } from '../../../modules/nf-core/bwa/index/main'
+include { GATK4_CREATESEQUENCEDICTIONARY                        } from '../../../modules/nf-core/gatk4/createsequencedictionary/main'
+include { GUNZIP                          as GUNZIP_FASTA       } from '../../../modules/nf-core/gunzip/main'
+include { BCFTOOLS_SORT                   as SORT_INDEX_INDELS  } from '../../../modules/nf-core/bcftools/sort/main'
+include { BCFTOOLS_SORT                   as SORT_INDEX_SNPS    } from '../../../modules/nf-core/bcftools/sort/main'
+include { SAMTOOLS_FAIDX                                        } from '../../../modules/nf-core/samtools/faidx/main'
 
 workflow PREPARE_GENOME {
     take:
-    fasta      // [mandatory] value: string - filename
-    fasta_fai  // [optional]  value: string - filename
-    dict       // [optional]  value: string - filename
-    bwa        // [optional]  value: string - dirname
+    fasta                // [mandatory] value: string - filename
+    fasta_fai            // [optional]  value: string - filename
+    dict                 // [optional]  value: string - filename
+    bwa                  // [optional]  value: string - dirname
+    known_indels         // [mandatory] value: string - filename
+    known_indels_tbi     // [optional]  value: string - filename
+    known_snps           // [mandatory] value: string - filename
+    known_snps_tbi       // [optional]  value: string - filename
 
     main:
     ch_versions = Channel.empty()
-    fasta_file  = file(fasta, checkIfExists: true)
+
+    fasta_file        = file(fasta, checkIfExists: true)
+    known_indels_file = file(known_indels, checkIfExists: true)
+    known_snps_file   = file(known_snps, checkIfExists: true)
 
     ch_fasta = Channel.empty()
     if (fasta.endsWith('.gz')) {
@@ -54,9 +63,39 @@ workflow PREPARE_GENOME {
         ch_versions  = ch_versions.mix(BWA_INDEX.out.versions)
     }
 
+    ch_known_indels     = Channel.value([[id:"${known_indels_file.baseName}"], known_indels_file])
+    ch_known_indels_tbi = Channel.empty()
+
+    if (known_indels_tbi) {
+        known_indels_tbi_file = file(known_indels_tbi, checkIfExists: true)
+        ch_known_indels_tbi   = Channel.value([[id:"${known_indels_tbi_file.baseName}"], known_indels_tbi_file])
+    } else {
+        SORT_INDEX_INDELS(ch_known_indels)
+        ch_known_indels     = SORT_INDEX_INDELS.out.vcf.first()
+        ch_known_indels_tbi = SORT_INDEX_INDELS.out.tbi.first()
+        ch_versions         = ch_versions.mix(SORT_INDEX_INDELS.out.versions)
+    }
+
+    ch_known_snps     = Channel.value([[id:"${known_snps_file.baseName}"], known_snps_file])
+    ch_known_snps_tbi = Channel.empty()
+
+    if (known_snps_tbi) {
+        known_snps_tbi_file = file(known_snps_tbi, checkIfExists: true)
+        ch_known_snps_tbi   = Channel.value([[id:"${known_snps_tbi_file.baseName}"], known_snps_tbi_file])
+    } else {
+        SORT_INDEX_SNPS(ch_known_snps)
+        ch_known_snps     = SORT_INDEX_SNPS.out.vcf.first()
+        ch_known_snps_tbi = SORT_INDEX_SNPS.out.tbi.first()
+        ch_versions       = ch_versions.mix(SORT_INDEX_SNPS.out.versions)
+    }
+
     emit:
-    fasta     = ch_fasta      // channel: tuple(meta, fasta)
-    fasta_fai = ch_fasta_fai  // channel: tuple(meta, fasta.fai)
-    bwa       = ch_bwa        // channel: tuple(meta, bwa)
-    versions  = ch_versions   // channel: path(versions.yml)
+    fasta            = ch_fasta             // channel: tuple(meta, fasta)
+    fasta_fai        = ch_fasta_fai         // channel: tuple(meta, fasta.fai)
+    bwa              = ch_bwa               // channel: tuple(meta, bwa)
+    known_indels     = ch_known_indels      // channel: tuple(meta, known_indels)
+    known_indels_tbi = ch_known_indels_tbi  // channel: tuple(meta, known_indels_tbi)
+    known_snps       = ch_known_snps        // channel: tuple(meta, known_snps)
+    known_snps_tbi   = ch_known_snps_tbi    // channel: tuple(meta, known_snps_tbi)
+    versions         = ch_versions          // channel: path(versions.yml)
 }

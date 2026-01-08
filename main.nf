@@ -39,10 +39,14 @@ if (params.help) {
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
 
-params.fasta     = getGenomeAttribute('fasta')
-params.fasta_fai = getGenomeAttribute('fasta_fai')
-params.dict      = getGenomeAttribute('dict')
-params.bwa       = getGenomeAttribute('bwa')
+params.fasta            = getGenomeAttribute('fasta')
+params.fasta_fai        = getGenomeAttribute('fasta_fai')
+params.dict             = getGenomeAttribute('dict')
+params.bwa              = getGenomeAttribute('bwa')
+params.known_indels     = getGenomeAttribute('known_indels')
+params.known_indels_tbi = getGenomeAttribute('known_indels_tbi')
+params.known_snps       = getGenomeAttribute('known_snps')
+params.known_snps_tbi   = getGenomeAttribute('known_snps_tbi')
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -76,7 +80,11 @@ workflow GALANTELAB_PRECISECALLER {
         params.fasta,
         params.fasta_fai,
         params.dict,
-        params.bwa
+        params.bwa,
+        params.known_indels,
+        params.known_indels_tbi,
+        params.known_snps,
+        params.known_snps_tbi
     )
     versions = versions.mix(PREPARE_GENOME.out.versions)
 
@@ -105,6 +113,10 @@ workflow GALANTELAB_PRECISECALLER {
         PREPARE_GENOME.out.fasta_fai,
         PREPARE_GENOME.out.dict,
         PREPARE_GENOME.out.bwa,
+        PREPARE_GENOME.out.known_indels,
+        PREPARE_GENOME.out.known_indels_tbi,
+        PREPARE_GENOME.out.known_snps,
+        PREPARE_GENOME.out.known_snps_tbi,
         PREPARE_INTERVALS.out.intervals,
         PREPARE_INTERVALS.out.intervals_gz_tbi,
         umi_file
