@@ -3,24 +3,25 @@
     IMPORT MODULES / SUBWORKFLOWS / FUNCTIONS
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
-include { FASTQC                                                         } from '../modules/nf-core/fastqc/main'
-include { MULTIQC                                                        } from '../modules/nf-core/multiqc/main'
-include { paramsSummaryMap                                               } from 'plugin/nf-schema'
-include { paramsSummaryMultiqc                                           } from '../subworkflows/nf-core/utils_nfcore_pipeline'
-include { softwareVersionsToYAML                                         } from '../subworkflows/nf-core/utils_nfcore_pipeline'
-include { methodsDescriptionText                                         } from '../subworkflows/local/utils_nfcore_precisecaller_pipeline'
-include { FASTP                                                          } from '../modules/nf-core/fastp/main'
-include { BWA_MEM                                                        } from '../modules/nf-core/bwa/mem/main'
-include { SAMTOOLS_SORT                                                  } from '../modules/nf-core/samtools/sort/main'
-include { SAMTOOLS_VIEW                     as SAMTOOLS_FILTER_MAPQ      } from '../modules/nf-core/samtools/view/main'
-include { PICARD_MARKDUPLICATES                                          } from '../modules/nf-core/picard/markduplicates/main'
-include { FASTQ_FILTER_UMI_CONSENSUS_FGBIO                               } from '../subworkflows/local/fastq_filter_umi_consensus_fgbio/main'
-include { FASTQ_SPLIT_SEQKIT                                             } from '../subworkflows/local/fastq_split_seqkit/main'
-include { BAM_MERGE_SAMTOOLS                                             } from '../subworkflows/local/bam_merge_samtools/main'
-include { BAM_MERGE_SAMTOOLS                                             } from '../subworkflows/local/bam_merge_samtools/main'
-include { BAM_COLLECT_METRICS_PICARD        as ALIGN_METRICS_POST_SORT   } from '../subworkflows/local/bam_collect_metrics_picard/main'
-include { BAM_COLLECT_METRICS_PICARD        as ALIGN_METRICS_POST_MAPQ   } from '../subworkflows/local/bam_collect_metrics_picard/main'
-include { BAM_COLLECT_METRICS_MOSDEPTH      as COVERAGE_METRICS          } from '../subworkflows/local/bam_collect_metrics_mosdepth/main'
+include { FASTQC                                                            } from '../modules/nf-core/fastqc/main'
+include { MULTIQC                                                           } from '../modules/nf-core/multiqc/main'
+include { paramsSummaryMap                                                  } from 'plugin/nf-schema'
+include { paramsSummaryMultiqc                                              } from '../subworkflows/nf-core/utils_nfcore_pipeline'
+include { softwareVersionsToYAML                                            } from '../subworkflows/nf-core/utils_nfcore_pipeline'
+include { methodsDescriptionText                                            } from '../subworkflows/local/utils_nfcore_precisecaller_pipeline'
+include { FASTP                                                             } from '../modules/nf-core/fastp/main'
+include { BWA_MEM                                                           } from '../modules/nf-core/bwa/mem/main'
+include { SAMTOOLS_SORT                                                     } from '../modules/nf-core/samtools/sort/main'
+include { SAMTOOLS_VIEW                        as SAMTOOLS_FILTER_MAPQ      } from '../modules/nf-core/samtools/view/main'
+include { PICARD_MARKDUPLICATES                                             } from '../modules/nf-core/picard/markduplicates/main'
+include { FASTQ_FILTER_UMI_CONSENSUS_FGBIO                                  } from '../subworkflows/local/fastq_filter_umi_consensus_fgbio/main'
+include { FASTQ_SPLIT_SEQKIT                                                } from '../subworkflows/local/fastq_split_seqkit/main'
+include { BAM_MERGE_SAMTOOLS                                                } from '../subworkflows/local/bam_merge_samtools/main'
+include { BAM_MERGE_SAMTOOLS                                                } from '../subworkflows/local/bam_merge_samtools/main'
+include { BAM_COLLECT_METRICS_PICARD           as ALIGN_METRICS_POST_SORT   } from '../subworkflows/local/bam_collect_metrics_picard/main'
+include { BAM_COLLECT_METRICS_PICARD           as ALIGN_METRICS_POST_MAPQ   } from '../subworkflows/local/bam_collect_metrics_picard/main'
+include { BAM_COLLECT_METRICS_MOSDEPTH         as COVERAGE_METRICS          } from '../subworkflows/local/bam_collect_metrics_mosdepth/main'
+include { BAM_BASERECALIBRATOR_APPLYBQSR_GATK  as BASERECALIBRATOR          } from '../subworkflows/local/bam_baserecalibrator_applybqsr_gatk/main'
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -35,6 +36,10 @@ workflow PRECISECALLER {
     fasta_fai
     dict
     bwa,
+    known_indels,
+    known_indels_tbi,
+    known_snps,
+    known_snps_tbi,
     intervals,
     intervals_gz_tbi,
     umi_file
@@ -94,6 +99,9 @@ workflow PRECISECALLER {
 
     // Enable coverage metrics collection
     enable_collect_coverage_metrics = !params.skip_coverage_metrics
+
+    // Enable base recalibration metrics collection
+    enable_collect_recalibration_metrics = !params.skip_recalibration_metrics
 
     // Split FASTQ files into smaller chunks for improved parallelization.
     // This step is purely structural: it does not modify read sequences,
@@ -189,7 +197,6 @@ workflow PRECISECALLER {
         versions      = versions.mix(ALIGN_METRICS_POST_SORT.out.versions)
         multiqc_files = multiqc_files.mix(ALIGN_METRICS_POST_SORT.out.alignment_metrics.map { meta, txt -> txt })
         multiqc_files = multiqc_files.mix(ALIGN_METRICS_POST_SORT.out.insert_metrics.map    { meta, txt -> txt })
-        multiqc_files = multiqc_files.mix(ALIGN_METRICS_POST_SORT.out.insert_histogram.map  { meta, pdf -> pdf })
     }
 
     // Filter alignments based on minimum MAPQ threshold
@@ -219,7 +226,6 @@ workflow PRECISECALLER {
             versions      = versions.mix(ALIGN_METRICS_POST_MAPQ.out.versions)
             multiqc_files = multiqc_files.mix(ALIGN_METRICS_POST_MAPQ.out.alignment_metrics.map { meta, txt -> txt })
             multiqc_files = multiqc_files.mix(ALIGN_METRICS_POST_MAPQ.out.insert_metrics.map    { meta, txt -> txt })
-            multiqc_files = multiqc_files.mix(ALIGN_METRICS_POST_MAPQ.out.insert_histogram.map  { meta, pdf -> pdf })
         }
     }
 
@@ -231,7 +237,7 @@ workflow PRECISECALLER {
     versions      = versions.mix(PICARD_MARKDUPLICATES.out.versions)
     multiqc_files = multiqc_files.mix(PICARD_MARKDUPLICATES.out.metrics.map { meta, txt -> txt })
 
-    // Collate coverage metrics
+    // Collect coverage metrics
     if (enable_collect_coverage_metrics) {
         COVERAGE_METRICS(bam, bam_index, intervals)
 
@@ -240,6 +246,25 @@ workflow PRECISECALLER {
         multiqc_files = multiqc_files.mix(COVERAGE_METRICS.out.summary_txt.map { meta, txt -> txt })
         multiqc_files = multiqc_files.mix(COVERAGE_METRICS.out.regions_txt.map { meta, txt -> txt })
     }
+
+    // Run GATK4 Base Recalibration on dedupped BAMs
+    BASERECALIBRATOR(
+        bam,
+        bam_index,
+        intervals,
+        fasta,
+        fasta_fai,
+        dict,
+        known_indels,
+        known_indels_tbi,
+        known_snps,
+        known_snps_tbi,
+        enable_collect_recalibration_metrics
+    )
+
+    bam       = BASERECALIBRATOR.out.bam
+    bam_index = BASERECALIBRATOR.out.bai
+    versions  = versions.mix(BASERECALIBRATOR.out.versions)
 
     //
     // Collate and save software versions
