@@ -54,6 +54,18 @@ params.known_snps_tbi   = getGenomeAttribute('known_snps_tbi')
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
 
+params.skip_alignment_metrics = params.skip_alignment_metrics == null ?
+    getAssayAttribute('skip_alignment_metrics') :
+    params.skip_alignment_metrics
+
+params.skip_coverage_metrics = params.skip_coverage_metrics == null ?
+    getAssayAttribute('skip_coverage_metrics') :
+    params.skip_coverage_metrics
+
+params.skip_recalibration_metrics = params.skip_recalibration_metrics == null ?
+    getAssayAttribute('skip_recalibration_metrics') :
+    params.skip_recalibration_metrics
+
 params.coverage_metrics_mins      = params.coverage_metrics_mins      ?: getAssayAttribute('coverage_metrics_mins')
 params.coverage_metrics_intervals = params.coverage_metrics_intervals ?: getAssayAttribute('coverage_metrics_intervals')
 
