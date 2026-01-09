@@ -1,0 +1,60 @@
+nextflow_process {
+
+    name "Test Process GATK4_ANALYZECOVARIATES"
+    script "../main.nf"
+    process "GATK4_ANALYZECOVARIATES"
+
+    tag "modules"
+    tag "modules_"
+    tag "gatk"
+    tag "gatk/analyzecovariates"
+
+    test("Test with tables - before vs after") {
+
+        when {
+            process {
+                """
+                input[0] = [
+                    [ id:'test', single_end:false ],
+                    file(params.local_testdata_base_path + 'data/Homo_sapiens/Simulations/baserecalibrator/before.table', checkIfExists: true),
+                    file(params.local_testdata_base_path + 'data/Homo_sapiens/Simulations/baserecalibrator/after.table', checkIfExists: true)
+                ]
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert process.success },
+                { assert snapshot(process.out).match() }
+            )
+        }
+
+    }
+
+    test("Test with tables - before vs after - stub") {
+
+        options "-stub"
+
+        when {
+            process {
+                """
+                input[0] = [
+                    [ id:'test', single_end:false ],
+                    file(params.local_testdata_base_path + 'data/Homo_sapiens/Simulations/baserecalibrator/before.table', checkIfExists: true),
+                    file(params.local_testdata_base_path + 'data/Homo_sapiens/Simulations/baserecalibrator/after.table', checkIfExists: true)
+                ]
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert process.success },
+                { assert snapshot(process.out).match() }
+            )
+        }
+
+    }
+
+}

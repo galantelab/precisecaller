@@ -1,0 +1,72 @@
+{
+    "Test with tables - before vs after - stub": {
+        "content": [
+            {
+                "0": [
+                    [
+                        {
+                            "id": "test",
+                            "single_end": false
+                        },
+                        "test.pdf:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "1": [
+                    "versions.yml:md5,52948d89f224d985e1be9adca5aa2d7b"
+                ],
+                "plots": [
+                    [
+                        {
+                            "id": "test",
+                            "single_end": false
+                        },
+                        "test.pdf:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "versions": [
+                    "versions.yml:md5,52948d89f224d985e1be9adca5aa2d7b"
+                ]
+            }
+        ],
+        "meta": {
+            "nf-test": "0.9.3",
+            "nextflow": "25.10.2"
+        },
+        "timestamp": "2026-01-08T22:09:27.228870453"
+    },
+    "Test with tables - before vs after": {
+        "content": [
+            {
+                "0": [
+                    [
+                        {
+                            "id": "test",
+                            "single_end": false
+                        },
+                        "test.pdf:md5,06f52579889c4e119e154a7236ee41d0"
+                    ]
+                ],
+                "1": [
+                    "versions.yml:md5,52948d89f224d985e1be9adca5aa2d7b"
+                ],
+                "plots": [
+                    [
+                        {
+                            "id": "test",
+                            "single_end": false
+                        },
+                        "test.pdf:md5,06f52579889c4e119e154a7236ee41d0"
+                    ]
+                ],
+                "versions": [
+                    "versions.yml:md5,52948d89f224d985e1be9adca5aa2d7b"
+                ]
+            }
+        ],
+        "meta": {
+            "nf-test": "0.9.3",
+            "nextflow": "25.10.2"
+        },
+        "timestamp": "2026-01-08T22:08:56.845485603"
+    }
+}
