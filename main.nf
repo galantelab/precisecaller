@@ -43,6 +43,8 @@ params.fasta            = getGenomeAttribute('fasta')
 params.fasta_fai        = getGenomeAttribute('fasta_fai')
 params.dict             = getGenomeAttribute('dict')
 params.bwa              = getGenomeAttribute('bwa')
+params.dbsnp            = getGenomeAttribute('dbsnp')
+params.dbsnp_tbi        = getGenomeAttribute('dbsnp_tbi')
 params.known_indels     = getGenomeAttribute('known_indels')
 params.known_indels_tbi = getGenomeAttribute('known_indels_tbi')
 params.known_snps       = getGenomeAttribute('known_snps')
@@ -93,6 +95,8 @@ workflow GALANTELAB_PRECISECALLER {
         params.fasta_fai,
         params.dict,
         params.bwa,
+        params.dbsnp,
+        params.dbsnp_tbi,
         params.known_indels,
         params.known_indels_tbi,
         params.known_snps,
