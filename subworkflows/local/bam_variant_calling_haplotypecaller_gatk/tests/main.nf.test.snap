@@ -1,0 +1,51 @@
+{
+    "sarscov2 - bam": {
+        "content": [
+            {
+                "0": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "test.gvcf.vcf.gz:md5,3018893aedca7ff31019c92fd64fdf38"
+                    ]
+                ],
+                "1": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "test.gvcf.vcf.gz.tbi:md5,d172d061a0826fb4680e677db490668c"
+                    ]
+                ],
+                "2": [
+                    "versions.yml:md5,e939c17149b7d36e6f335f22e8141f65"
+                ],
+                "tbi": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "test.gvcf.vcf.gz.tbi:md5,d172d061a0826fb4680e677db490668c"
+                    ]
+                ],
+                "vcf": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "test.gvcf.vcf.gz:md5,3018893aedca7ff31019c92fd64fdf38"
+                    ]
+                ],
+                "versions": [
+                    "versions.yml:md5,e939c17149b7d36e6f335f22e8141f65"
+                ]
+            }
+        ],
+        "meta": {
+            "nf-test": "0.9.3",
+            "nextflow": "25.10.2"
+        },
+        "timestamp": "2026-01-09T22:19:28.093270098"
+    }
+}
