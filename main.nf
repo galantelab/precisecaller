@@ -68,6 +68,10 @@ params.skip_recalibration_metrics = params.skip_recalibration_metrics == null ?
     getAssayAttribute('skip_recalibration_metrics') :
     params.skip_recalibration_metrics
 
+params.use_genomicsdb = params.use_genomicsdb == null ?
+    getAssayAttribute('use_genomicsdb') :
+    params.use_genomicsdb
+
 params.coverage_metrics_mins      = params.coverage_metrics_mins      ?: getAssayAttribute('coverage_metrics_mins')
 params.coverage_metrics_intervals = params.coverage_metrics_intervals ?: getAssayAttribute('coverage_metrics_intervals')
 
