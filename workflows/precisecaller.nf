@@ -3,25 +3,26 @@
     IMPORT MODULES / SUBWORKFLOWS / FUNCTIONS
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
-include { FASTQC                                                            } from '../modules/nf-core/fastqc/main'
-include { MULTIQC                                                           } from '../modules/nf-core/multiqc/main'
-include { paramsSummaryMap                                                  } from 'plugin/nf-schema'
-include { paramsSummaryMultiqc                                              } from '../subworkflows/nf-core/utils_nfcore_pipeline'
-include { softwareVersionsToYAML                                            } from '../subworkflows/nf-core/utils_nfcore_pipeline'
-include { methodsDescriptionText                                            } from '../subworkflows/local/utils_nfcore_precisecaller_pipeline'
-include { FASTP                                                             } from '../modules/nf-core/fastp/main'
-include { BWA_MEM                                                           } from '../modules/nf-core/bwa/mem/main'
-include { SAMTOOLS_SORT                                                     } from '../modules/nf-core/samtools/sort/main'
-include { SAMTOOLS_VIEW                        as SAMTOOLS_FILTER_MAPQ      } from '../modules/nf-core/samtools/view/main'
-include { PICARD_MARKDUPLICATES                                             } from '../modules/nf-core/picard/markduplicates/main'
-include { FASTQ_FILTER_UMI_CONSENSUS_FGBIO                                  } from '../subworkflows/local/fastq_filter_umi_consensus_fgbio/main'
-include { FASTQ_SPLIT_SEQKIT                                                } from '../subworkflows/local/fastq_split_seqkit/main'
-include { BAM_MERGE_SAMTOOLS                                                } from '../subworkflows/local/bam_merge_samtools/main'
-include { BAM_MERGE_SAMTOOLS                                                } from '../subworkflows/local/bam_merge_samtools/main'
-include { BAM_COLLECT_METRICS_PICARD           as ALIGN_METRICS_POST_SORT   } from '../subworkflows/local/bam_collect_metrics_picard/main'
-include { BAM_COLLECT_METRICS_PICARD           as ALIGN_METRICS_POST_MAPQ   } from '../subworkflows/local/bam_collect_metrics_picard/main'
-include { BAM_COLLECT_METRICS_MOSDEPTH         as COVERAGE_METRICS          } from '../subworkflows/local/bam_collect_metrics_mosdepth/main'
-include { BAM_BASERECALIBRATOR_APPLYBQSR_GATK  as BASERECALIBRATOR          } from '../subworkflows/local/bam_baserecalibrator_applybqsr_gatk/main'
+include { FASTQC                                                                } from '../modules/nf-core/fastqc/main'
+include { MULTIQC                                                               } from '../modules/nf-core/multiqc/main'
+include { paramsSummaryMap                                                      } from 'plugin/nf-schema'
+include { paramsSummaryMultiqc                                                  } from '../subworkflows/nf-core/utils_nfcore_pipeline'
+include { softwareVersionsToYAML                                                } from '../subworkflows/nf-core/utils_nfcore_pipeline'
+include { methodsDescriptionText                                                } from '../subworkflows/local/utils_nfcore_precisecaller_pipeline'
+include { FASTP                                                                 } from '../modules/nf-core/fastp/main'
+include { BWA_MEM                                                               } from '../modules/nf-core/bwa/mem/main'
+include { SAMTOOLS_SORT                                                         } from '../modules/nf-core/samtools/sort/main'
+include { SAMTOOLS_VIEW                            as SAMTOOLS_FILTER_MAPQ      } from '../modules/nf-core/samtools/view/main'
+include { PICARD_MARKDUPLICATES                                                 } from '../modules/nf-core/picard/markduplicates/main'
+include { FASTQ_FILTER_UMI_CONSENSUS_FGBIO                                      } from '../subworkflows/local/fastq_filter_umi_consensus_fgbio/main'
+include { FASTQ_SPLIT_SEQKIT                                                    } from '../subworkflows/local/fastq_split_seqkit/main'
+include { BAM_MERGE_SAMTOOLS                                                    } from '../subworkflows/local/bam_merge_samtools/main'
+include { BAM_MERGE_SAMTOOLS                                                    } from '../subworkflows/local/bam_merge_samtools/main'
+include { BAM_COLLECT_METRICS_PICARD               as ALIGN_METRICS_POST_SORT   } from '../subworkflows/local/bam_collect_metrics_picard/main'
+include { BAM_COLLECT_METRICS_PICARD               as ALIGN_METRICS_POST_MAPQ   } from '../subworkflows/local/bam_collect_metrics_picard/main'
+include { BAM_COLLECT_METRICS_MOSDEPTH             as COVERAGE_METRICS          } from '../subworkflows/local/bam_collect_metrics_mosdepth/main'
+include { BAM_BASERECALIBRATOR_APPLYBQSR_GATK      as BASERECALIBRATOR          } from '../subworkflows/local/bam_baserecalibrator_applybqsr_gatk/main'
+include { BAM_VARIANT_CALLING_HAPLOTYPECALLER_GATK as HAPLOTYPECALLER           } from '../subworkflows/local/bam_variant_calling_haplotypecaller_gatk/main'
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -36,6 +37,8 @@ workflow PRECISECALLER {
     fasta_fai
     dict
     bwa,
+    dbsnp,
+    dbsnp_tbi,
     known_indels,
     known_indels_tbi,
     known_snps,
@@ -265,6 +268,31 @@ workflow PRECISECALLER {
     bam       = BASERECALIBRATOR.out.bam
     bam_index = BASERECALIBRATOR.out.bai
     versions  = versions.mix(BASERECALIBRATOR.out.versions)
+
+    /*
+    ~~~~~~~~~~~~~~~~~~~~~~
+       VARIANT CALLING
+    ~~~~~~~~~~~~~~~~~~~~~~
+    */
+
+    vcf     = Channel.empty()
+    vcf_tbi = Channel.empty()
+
+    // GATK HaplotypeCaller calls variants (SNPs and INDELs)
+    HAPLOTYPECALLER(
+        bam,
+        bam_index,
+        intervals,
+        fasta,
+        fasta_fai,
+        dict,
+        dbsnp,
+        dbsnp_tbi,
+    )
+
+    vcf      = HAPLOTYPECALLER.out.vcf
+    vcf_tbi  = HAPLOTYPECALLER.out.tbi
+    versions = versions.mix(HAPLOTYPECALLER.out.versions)
 
     //
     // Collate and save software versions
