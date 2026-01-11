@@ -1,0 +1,79 @@
+nextflow_workflow {
+
+    name "Test Subworkflow VCF_GENOTYPE_GATK"
+    script "../main.nf"
+    workflow "VCF_GENOTYPE_GATK"
+
+    tag "subworkflows"
+    tag "subworkflows_"
+    tag "subworkflows/vcf_genotype_gatk"
+    tag "gatk4"
+    tag "gatk4/genomicsdbimport"
+    tag "gatk4/combinegvcfs"
+    tag "gatk4/genotypegvcfs"
+
+    test("Test use_genomicsdb = false") {
+        when {
+            workflow {
+                """
+                input[0] = Channel.of([[id:'test'], file(params.modules_testdata_base_path + 'genomics/homo_sapiens/illumina/gvcf/test.genome.vcf', checkIfExists: true)])
+                input[1] = Channel.of([[id:'test'], file(params.modules_testdata_base_path + 'genomics/homo_sapiens/illumina/gvcf/test.genome.vcf.idx', checkIfExists: true)])
+                input[2] = Channel.fromPath(params.modules_testdata_base_path + 'genomics/homo_sapiens/genome/genome.bed', checkIfExists: true).first()
+                input[3] = Channel.value([file(params.modules_testdata_base_path + 'genomics/homo_sapiens/genome/genome.bed', checkIfExists: true), []])
+                input[4] = Channel.value([[id:'fa'], file(params.modules_testdata_base_path + 'genomics/homo_sapiens/genome/genome.fasta', checkIfExists: true)])
+                input[5] = Channel.value([[id:'fai'], file(params.modules_testdata_base_path + 'genomics/homo_sapiens/genome/genome.fasta.fai', checkIfExists: true)])
+                input[6] = Channel.value([[id:'dict'], file(params.modules_testdata_base_path + 'genomics/homo_sapiens/genome/genome.dict', checkIfExists: true)])
+                input[7] = Channel.value([[id:'sites'], file(params.modules_testdata_base_path + 'genomics/homo_sapiens/genome/vcf/dbsnp_146.hg38.vcf.gz', checkIfExists: true)])
+                input[8] = Channel.value([[id:'sites'], file(params.modules_testdata_base_path + 'genomics/homo_sapiens/genome/vcf/dbsnp_146.hg38.vcf.gz.tbi', checkIfExists: true)])
+                input[9] = false
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert workflow.success },
+                { assert snapshot(
+                    file(workflow.out.vcf[0][1]).name,
+                    file(workflow.out.tbi[0][1]).name,
+                    workflow.out.versions
+                    ).match()
+                }
+            )
+        }
+
+    }
+
+    test("Test use_genomicsdb = true") {
+        when {
+            workflow {
+                """
+                input[0] = Channel.of([[id:'test'], file(params.modules_testdata_base_path + 'genomics/homo_sapiens/illumina/gvcf/test.genome.vcf', checkIfExists: true)])
+                input[1] = Channel.of([[id:'test'], file(params.modules_testdata_base_path + 'genomics/homo_sapiens/illumina/gvcf/test.genome.vcf.idx', checkIfExists: true)])
+                input[2] = Channel.fromPath(params.modules_testdata_base_path + 'genomics/homo_sapiens/genome/genome.bed', checkIfExists: true).first()
+                input[3] = Channel.value([file(params.modules_testdata_base_path + 'genomics/homo_sapiens/genome/genome.bed', checkIfExists: true), []])
+                input[4] = Channel.value([[id:'fa'], file(params.modules_testdata_base_path + 'genomics/homo_sapiens/genome/genome.fasta', checkIfExists: true)])
+                input[5] = Channel.value([[id:'fai'], file(params.modules_testdata_base_path + 'genomics/homo_sapiens/genome/genome.fasta.fai', checkIfExists: true)])
+                input[6] = Channel.value([[id:'dict'], file(params.modules_testdata_base_path + 'genomics/homo_sapiens/genome/genome.dict', checkIfExists: true)])
+                input[7] = Channel.value([[id:'sites'], file(params.modules_testdata_base_path + 'genomics/homo_sapiens/genome/vcf/dbsnp_146.hg38.vcf.gz', checkIfExists: true)])
+                input[8] = Channel.value([[id:'sites'], file(params.modules_testdata_base_path + 'genomics/homo_sapiens/genome/vcf/dbsnp_146.hg38.vcf.gz.tbi', checkIfExists: true)])
+                input[9] = true
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert workflow.success },
+                { assert snapshot(
+                    file(workflow.out.vcf[0][1]).name,
+                    file(workflow.out.tbi[0][1]).name,
+                    workflow.out.versions
+                    ).match()
+                }
+            )
+        }
+
+    }
+
+}
