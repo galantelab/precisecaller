@@ -1,0 +1,22 @@
+Changes in module 'nf-core/gatk4/combinegvcfs'
+'modules/nf-core/gatk4/combinegvcfs/meta.yml' is unchanged
+'modules/nf-core/gatk4/combinegvcfs/environment.yml' is unchanged
+Changes in 'gatk4/combinegvcfs/main.nf':
+--- modules/nf-core/gatk4/combinegvcfs/main.nf
++++ modules/nf-core/gatk4/combinegvcfs/main.nf
+@@ -14,8 +14,9 @@
+     path dict
+ 
+     output:
+-    tuple val(meta), path("*.combined.g.vcf.gz"), emit: combined_gvcf
+-    path "versions.yml",                          emit: versions
++    tuple val(meta), path("*.combined.g.vcf.gz"),     emit: combined_gvcf
++    tuple val(meta), path("*.combined.g.vcf.gz.tbi"), emit: combined_tbi,  optional: true
++    path "versions.yml",                              emit: versions
+ 
+     when:
+     task.ext.when == null || task.ext.when
+
+'modules/nf-core/gatk4/combinegvcfs/tests/main.nf.test.snap' is unchanged
+'modules/nf-core/gatk4/combinegvcfs/tests/main.nf.test' is unchanged
+************************************************************
