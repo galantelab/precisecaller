@@ -23,6 +23,7 @@ include { BAM_COLLECT_METRICS_PICARD               as ALIGN_METRICS_POST_MAPQ   
 include { BAM_COLLECT_METRICS_MOSDEPTH             as COVERAGE_METRICS          } from '../subworkflows/local/bam_collect_metrics_mosdepth/main'
 include { BAM_BASERECALIBRATOR_APPLYBQSR_GATK      as BASERECALIBRATOR          } from '../subworkflows/local/bam_baserecalibrator_applybqsr_gatk/main'
 include { BAM_VARIANT_CALLING_HAPLOTYPECALLER_GATK as HAPLOTYPECALLER           } from '../subworkflows/local/bam_variant_calling_haplotypecaller_gatk/main'
+include { VCF_GENOTYPE_GATK                        as GENOTYPE                  } from '../subworkflows/local/vcf_genotype_gatk/main'
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -293,6 +294,24 @@ workflow PRECISECALLER {
     vcf      = HAPLOTYPECALLER.out.vcf
     vcf_tbi  = HAPLOTYPECALLER.out.tbi
     versions = versions.mix(HAPLOTYPECALLER.out.versions)
+
+    // Joint genotyping of multiple GVCFs using GATK
+    GENOTYPE(
+        vcf,
+        vcf_tbi,
+        intervals,
+        intervals_gz_tbi,
+        fasta,
+        fasta_fai,
+        dict,
+        dbsnp,
+        dbsnp_tbi,
+        params.use_genomicsdb
+    )
+
+    vcf      = GENOTYPE.out.vcf
+    vcf_tbi  = GENOTYPE.out.tbi
+    versions = versions.mix(GENOTYPE.out.versions)
 
     //
     // Collate and save software versions
