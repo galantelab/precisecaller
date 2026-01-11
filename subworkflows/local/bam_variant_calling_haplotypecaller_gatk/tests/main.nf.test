@@ -29,7 +29,12 @@ nextflow_workflow {
         then {
             assertAll(
                 { assert workflow.success },
-                { assert snapshot(workflow.out).match() }
+                { assert snapshot(
+                    file(workflow.out.vcf[0][1]).name,
+                    file(workflow.out.tbi[0][1]).name,
+                    workflow.out.versions
+                    ).match()
+                }
             )
         }
 

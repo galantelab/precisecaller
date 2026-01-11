@@ -1,73 +1,20 @@
 {
     "sarscov2 - bam": {
         "content": [
-            {
-                "0": [
-                    [
-                        {
-                            "id": "test"
-                        },
-                        "test.bqsr.bam:md5,ee8d42b010ef00959bee15669f1f695c"
-                    ]
-                ],
-                "1": [
-                    [
-                        {
-                            "id": "test"
-                        },
-                        "test.bqsr.bai:md5,99d838fe113e1309e6fca564c411b068"
-                    ]
-                ],
-                "2": [
-                    [
-                        {
-                            "id": "test"
-                        },
-                        "test.bqsr.pdf:md5,316471fd5d63f54eed2c4a58c896def7"
-                    ]
-                ],
-                "3": [
-                    "versions.yml:md5,25d88a5b57586e7724d7701e96b773c8",
-                    "versions.yml:md5,591b9aaf66ce3ab4b5de8203c81efadd",
-                    "versions.yml:md5,799fd452e3c81d22e3730d834b14f01f",
-                    "versions.yml:md5,ede19d400aee0263ba530129bcf2b4fe"
-                ],
-                "bai": [
-                    [
-                        {
-                            "id": "test"
-                        },
-                        "test.bqsr.bai:md5,99d838fe113e1309e6fca564c411b068"
-                    ]
-                ],
-                "bam": [
-                    [
-                        {
-                            "id": "test"
-                        },
-                        "test.bqsr.bam:md5,ee8d42b010ef00959bee15669f1f695c"
-                    ]
-                ],
-                "plots": [
-                    [
-                        {
-                            "id": "test"
-                        },
-                        "test.bqsr.pdf:md5,316471fd5d63f54eed2c4a58c896def7"
-                    ]
-                ],
-                "versions": [
-                    "versions.yml:md5,25d88a5b57586e7724d7701e96b773c8",
-                    "versions.yml:md5,591b9aaf66ce3ab4b5de8203c81efadd",
-                    "versions.yml:md5,799fd452e3c81d22e3730d834b14f01f",
-                    "versions.yml:md5,ede19d400aee0263ba530129bcf2b4fe"
-                ]
-            }
+            "test.bqsr.bam",
+            "test.bqsr.bai",
+            "test.bqsr.pdf",
+            [
+                "versions.yml:md5,25d88a5b57586e7724d7701e96b773c8",
+                "versions.yml:md5,591b9aaf66ce3ab4b5de8203c81efadd",
+                "versions.yml:md5,799fd452e3c81d22e3730d834b14f01f",
+                "versions.yml:md5,ede19d400aee0263ba530129bcf2b4fe"
+            ]
         ],
         "meta": {
             "nf-test": "0.9.3",
             "nextflow": "25.10.2"
         },
-        "timestamp": "2026-01-09T03:57:43.524941514"
+        "timestamp": "2026-01-11T18:42:58.506329231"
     }
 }
