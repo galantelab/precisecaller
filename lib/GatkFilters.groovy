@@ -23,7 +23,7 @@ class GatkFilters {
 	}
 
 	// Transform the List of Maps into GATK-compatible CLI arguments
-	public static String stringify(List filters) {
+	public static String toCommandOptions(List filters) {
 		if (!filters) return ""
 
 		// Using single quotes around values to protect JEXL symbols from the shell

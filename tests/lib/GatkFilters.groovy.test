@@ -154,8 +154,8 @@ nextflow_function {
 
     }
 
-    test("Test stringify valid filters") {
-        function "GatkFilters.stringify"
+    test("Test toCommandOptions valid filters") {
+        function "GatkFilters.toCommandOptions"
 
         when {
             function {
@@ -180,8 +180,8 @@ nextflow_function {
 
     }
 
-    test("Test stringify empty returns empty string") {
-        function "GatkFilters.stringify"
+    test("Test toCommandOptions empty returns empty string") {
+        function "GatkFilters.toCommandOptions"
 
         when {
             function {
