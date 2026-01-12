@@ -1,0 +1,204 @@
+nextflow_function {
+
+    name "Test GatkFilters.groovy"
+
+    test("Test parse list of maps - valid entries") {
+        function "GatkFilters.parse"
+
+        when {
+            function {
+                """
+                input[0] = [
+                    [ name: "QD_filter", expr: "QD < 2.0" ],
+                    [ name: "FS_filter", expr: "FS > 60.0" ]
+                ]
+                """
+            }
+        }
+
+        then {
+            assert function.success
+
+            def result = function.result
+
+            assert result.size() == 2
+            assert result[0].name == "QD_filter"
+            assert result[0].expr == "QD < 2.0"
+            assert result[1].name == "FS_filter"
+            assert result[1].expr == "FS > 60.0"
+        }
+
+    }
+
+    test("Test parse list of maps - invalid entries are ignored") {
+        function "GatkFilters.parse"
+
+        when {
+            function {
+                """
+                input[0] = [
+                    [ name: "OK", expr: "A>1" ],
+                    [ name: "MISSING_EXPR" ],
+                    [ expr: "NO_NAME" ],
+                    "not a map"
+                ]
+                """
+            }
+        }
+
+        then {
+            assert function.success
+
+            def result = function.result
+
+            assert result.size() == 1
+            assert result[0].name == "OK"
+            assert result[0].expr == "A>1"
+        }
+
+    }
+
+    test("Test parse string - pipe separated") {
+        function "GatkFilters.parse"
+
+        when {
+            function {
+                """
+                input[0] = "QD_filter:QD<2.0|FS_filter:FS>60.0|SOR_filter:SOR>3.0"
+                """
+            }
+        }
+
+        then {
+            assert function.success
+
+            def result = function.result
+
+            assert result.size() == 3
+            assert result[0].name == "QD_filter"
+            assert result[0].expr == "QD<2.0"
+            assert result[1].name == "FS_filter"
+            assert result[1].expr == "FS>60.0"
+            assert result[2].name == "SOR_filter"
+            assert result[2].expr == "SOR>3.0"
+        }
+
+    }
+
+    test("Test parse string - do not split double pipe") {
+        function "GatkFilters.parse"
+
+        when {
+            function {
+                """
+                input[0] = "weird:DP>10||QUAL>30|normal:QD<2.0"
+                """
+            }
+        }
+
+        then {
+            assert function.success
+
+            def result = function.result
+
+            assert result.size() == 2
+            assert result[0].name == "weird"
+            assert result[0].expr == "DP>10||QUAL>30"
+            assert result[1].name == "normal"
+            assert result[1].expr == "QD<2.0"
+        }
+
+    }
+
+    test("Test parse empty string returns empty list") {
+        function "GatkFilters.parse"
+
+        when {
+            function {
+                """
+                input[0] = " "
+                """
+            }
+        }
+
+        then {
+            assert function.success
+
+            def result = function.result
+
+            assert result instanceof List
+            assert result.size() == 0
+        }
+
+    }
+
+    test("Test parse null returns empty list") {
+        function "GatkFilters.parse"
+
+        when {
+            function {
+                """
+                input[0] = null
+                """
+            }
+        }
+
+        then {
+            assert function.success
+
+            def result = function.result
+
+            assert result instanceof List
+            assert result.size() == 0
+        }
+
+    }
+
+    test("Test stringify valid filters") {
+        function "GatkFilters.stringify"
+
+        when {
+            function {
+                """
+                input[0] = [
+                    [ name: "QD_filter", expr: "QD<2.0" ],
+                    [ name: "FS_filter", expr: "FS>60.0" ]
+                ]
+                """
+            }
+        }
+
+        then {
+            assert function.success
+
+            def result = function.result
+
+            assert result ==
+                "--filter-name 'QD_filter' --filter-expression 'QD<2.0' " +
+                "--filter-name 'FS_filter' --filter-expression 'FS>60.0'"
+        }
+
+    }
+
+    test("Test stringify empty returns empty string") {
+        function "GatkFilters.stringify"
+
+        when {
+            function {
+                """
+                input[0] = []
+                """
+            }
+        }
+
+        then {
+            assert function.success
+
+            def result = function.result
+
+            assert result == ""
+        }
+
+    }
+
+}
