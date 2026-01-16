@@ -8,7 +8,7 @@ process GATK4_VARIANTFILTRATION {
         : 'community.wave.seqera.io/library/gatk4_gcnvkernel:edb12e4f0bf02cd3'}"
 
     input:
-    tuple val(meta), path(vcf), path(tbi)
+    tuple val(meta), path(vcf), path(tbi), val(filters)
     tuple val(meta2), path(fasta)
     tuple val(meta3), path(fai)
     tuple val(meta4), path(dict)
@@ -33,6 +33,14 @@ process GATK4_VARIANTFILTRATION {
     }
     dict_name = "${dict_name}.dict"
 
+    // Custom filters in Map[filter_name]=filter_expr
+    def filters_command = ""
+    if (filters) {
+        filters_command = filters.collect { name, expr ->
+          "--filter-name '${name}' --filter-expression '${expr}'"
+        }.join(' ')
+    }
+
     def avail_mem = 3072
     if (!task.memory) {
         log.info('[GATK VariantFiltration] Available memory not known - defaulting to 3GB. Specify process memory requirements to change this.')
@@ -52,6 +60,7 @@ process GATK4_VARIANTFILTRATION {
         --output ${prefix}.vcf.gz \\
         --reference ${fasta} \\
         --tmp-dir . \\
+        ${filters_command} \\
         ${args}
 
     cat <<-END_VERSIONS > versions.yml
