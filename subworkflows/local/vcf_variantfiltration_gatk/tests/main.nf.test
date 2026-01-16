@@ -1,0 +1,55 @@
+nextflow_workflow {
+
+    name "Test Subworkflow VCF_VARIANTFILTRATION_GATK"
+    script "../main.nf"
+    workflow "VCF_VARIANTFILTRATION_GATK"
+
+    tag "subworkflows"
+    tag "subworkflows_"
+    tag "subworkflows/vcf_variantfiltration_gatk"
+    tag "gatk4"
+    tag "gatk4/selectvariants"
+    tag "gatk4/variantfiltration"
+
+    test("Test variantfiltration - human") {
+        when {
+            workflow {
+                """
+                input[0] = Channel.of([[id:'test'], file(params.local_testdata_base_path + 'data/Homo_sapiens/Illumina/vcf/NA12878.vcf.gz', checkIfExists: true)])
+                input[1] = Channel.of([[id:'test'], file(params.local_testdata_base_path + 'data/Homo_sapiens/Illumina/vcf/NA12878.vcf.gz.tbi', checkIfExists: true)])
+                input[2] = Channel.fromPath(params.local_testdata_base_path + 'references/Homo_sapiens/Gencode/hg19_chr20/Sequence/WholeGenomeFasta/intervals.bed', checkIfExists: true).first()
+                input[3] = Channel.value([[id:'fa'], file(params.local_testdata_base_path + 'references/Homo_sapiens/Gencode/hg19_chr20/Sequence/WholeGenomeFasta/human_g1k_b37_20.fasta', checkIfExists: true)])
+                input[4] = Channel.value([[id:'fai'], file(params.local_testdata_base_path + 'references/Homo_sapiens/Gencode/hg19_chr20/Sequence/WholeGenomeFasta/human_g1k_b37_20.fasta.fai', checkIfExists: true)])
+                input[5] = Channel.value([[id:'dict'], file(params.local_testdata_base_path + 'references/Homo_sapiens/Gencode/hg19_chr20/Sequence/WholeGenomeFasta/human_g1k_b37_20.dict', checkIfExists: true)])
+                input[6] = [
+                    QD_filter:   'QD < 2.0',
+                    FS_filter:   'FS > 200.0',
+                    SOR_filter:  'SOR > 10.0'
+                ]
+                input[7] = [
+                    QD_filter:              'QD < 2.0',
+                    FS_filter:              'FS > 60.0',
+                    MQ_filter:              'MQ < 40.0',
+                    SOR_filter:             'SOR > 3.0',
+                    MQRankSum_filter:       'MQRankSum < -12.5',
+                    ReadPosRankSum_filter:  'ReadPosRankSum < -8.0'
+                ]
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert workflow.success },
+                { assert snapshot(
+                    path(workflow.out.vcf[0][1]).vcf.variantsMD5,
+                    file(workflow.out.tbi[0][1]).name,
+                    workflow.out.versions
+                  ).match()
+                }
+            )
+        }
+
+    }
+
+}

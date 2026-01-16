@@ -1,0 +1,19 @@
+{
+    "Test variantfiltration - human": {
+        "content": [
+            "20bc02f16f38beb582c9f1891348853f",
+            "test.indel.filtered.vcf.gz.tbi",
+            [
+                "versions.yml:md5,528755cf299a642d60f080998145fce3",
+                "versions.yml:md5,528755cf299a642d60f080998145fce3",
+                "versions.yml:md5,700c38360d153960a8cdd396e43e76a6",
+                "versions.yml:md5,700c38360d153960a8cdd396e43e76a6"
+            ]
+        ],
+        "meta": {
+            "nf-test": "0.9.3",
+            "nextflow": "25.10.2"
+        },
+        "timestamp": "2026-01-15T21:26:21.230652255"
+    }
+}
