@@ -1,7 +1,7 @@
 {
     "Test use_genomicsdb = false": {
         "content": [
-            "all_samples.genotyped.g.vcf.gz",
+            "9b7d476515e07e5486633c42abd86cc",
             "all_samples.genotyped.g.vcf.gz.tbi",
             [
                 "versions.yml:md5,6570af09978054a066e5fc42cd3ad310",
@@ -12,11 +12,11 @@
             "nf-test": "0.9.3",
             "nextflow": "25.10.2"
         },
-        "timestamp": "2026-01-11T01:59:52.922568748"
+        "timestamp": "2026-01-16T18:58:20.256344544"
     },
     "Test use_genomicsdb = true": {
         "content": [
-            "all_samples.genotyped.g.vcf.gz",
+            "9b7d476515e07e5486633c42abd86cc",
             "all_samples.genotyped.g.vcf.gz.tbi",
             [
                 "versions.yml:md5,5eb8ea08b39699264730bb0091032ae6",
@@ -27,6 +27,6 @@
             "nf-test": "0.9.3",
             "nextflow": "25.10.2"
         },
-        "timestamp": "2026-01-11T02:00:52.375866369"
+        "timestamp": "2026-01-16T18:59:17.277698926"
     }
 }

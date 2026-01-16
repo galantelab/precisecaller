@@ -30,7 +30,7 @@ nextflow_workflow {
             assertAll(
                 { assert workflow.success },
                 { assert snapshot(
-                    file(workflow.out.vcf[0][1]).name,
+                    path(workflow.out.vcf[0][1]).vcf.variantsMD5,
                     file(workflow.out.tbi[0][1]).name,
                     workflow.out.versions
                     ).match()

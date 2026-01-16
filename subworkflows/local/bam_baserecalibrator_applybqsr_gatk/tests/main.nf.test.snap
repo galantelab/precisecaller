@@ -1,7 +1,7 @@
 {
     "sarscov2 - bam": {
         "content": [
-            "test.bqsr.bam",
+            "b194021b699cc5cf4b2b1f715e0b7b4c",
             "test.bqsr.bai",
             "test.bqsr.pdf",
             [
@@ -15,6 +15,6 @@
             "nf-test": "0.9.3",
             "nextflow": "25.10.2"
         },
-        "timestamp": "2026-01-11T18:42:58.506329231"
+        "timestamp": "2026-01-16T18:45:01.565188702"
     }
 }

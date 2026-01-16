@@ -1,7 +1,7 @@
 {
     "sarscov2 - bam": {
         "content": [
-            "test.g.vcf.gz",
+            "d2ded4648e61277ccc625a5f71624a11",
             "test.g.vcf.gz.tbi",
             [
                 "versions.yml:md5,e939c17149b7d36e6f335f22e8141f65"
@@ -11,6 +11,6 @@
             "nf-test": "0.9.3",
             "nextflow": "25.10.2"
         },
-        "timestamp": "2026-01-11T18:47:49.804487646"
+        "timestamp": "2026-01-16T18:50:50.491388576"
     }
 }

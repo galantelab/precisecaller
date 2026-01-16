@@ -35,7 +35,7 @@ nextflow_workflow {
             assertAll(
                 { assert workflow.success },
                 { assert snapshot(
-                    file(workflow.out.bam[0][1]).name,
+                    bam(workflow.out.bam[0][1]).getReadsMD5(),
                     file(workflow.out.bai[0][1]).name,
                     file(workflow.out.plots[0][1]).name,
                     workflow.out.versions
