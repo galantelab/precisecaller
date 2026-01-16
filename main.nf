@@ -52,31 +52,6 @@ params.known_snps_tbi   = getGenomeAttribute('known_snps_tbi')
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    ASSAY PARAMETER VALUES
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-*/
-
-params.skip_alignment_metrics = params.skip_alignment_metrics == null ?
-    getAssayAttribute('skip_alignment_metrics') :
-    params.skip_alignment_metrics
-
-params.skip_coverage_metrics = params.skip_coverage_metrics == null ?
-    getAssayAttribute('skip_coverage_metrics') :
-    params.skip_coverage_metrics
-
-params.skip_recalibration_metrics = params.skip_recalibration_metrics == null ?
-    getAssayAttribute('skip_recalibration_metrics') :
-    params.skip_recalibration_metrics
-
-params.use_genomicsdb = params.use_genomicsdb == null ?
-    getAssayAttribute('use_genomicsdb') :
-    params.use_genomicsdb
-
-params.coverage_metrics_mins      = params.coverage_metrics_mins      ?: getAssayAttribute('coverage_metrics_mins')
-params.coverage_metrics_intervals = params.coverage_metrics_intervals ?: getAssayAttribute('coverage_metrics_intervals')
-
-/*
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     NAMED WORKFLOWS FOR PIPELINE
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */

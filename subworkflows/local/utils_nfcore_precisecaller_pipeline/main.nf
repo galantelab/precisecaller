@@ -180,19 +180,6 @@ def getGenomeAttribute(attribute) {
 }
 
 //
-// Get attribute from assay config file
-//
-def getAssayAttribute(attribute) {
-    def assay_key = params.wgs ? 'wgs' : 'other'
-    if (params.assays && params.assays.containsKey(assay_key)) {
-        if (params.assays[ assay_key ].containsKey(attribute)) {
-            return params.assays[ assay_key ][ attribute ]
-        }
-    }
-    return null
-}
-
-//
 // Exit pipeline if incorrect --genome key provided
 //
 def genomeExistsError() {
