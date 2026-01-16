@@ -73,7 +73,9 @@ workflow PRECISECALLER {
         assert rg :
             "Failed to build read group for sample ${meta.id}"
 
-        [ meta + [ read_group: rg ], files ]
+        def rg_sam = ReadGroup.toSam(rg)
+
+        tuple(meta + [ read_group: rg, read_group_sam: rg_sam ], files)
     }
 
     // FASTQC is intentionally run before FASTQ splitting to avoid

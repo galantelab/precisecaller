@@ -44,12 +44,11 @@ class ReadGroup {
     }
 
     public static String toSam(Map rg) {
-    def order = ['ID', 'CN', 'PU', 'SM', 'LB', 'PL']
-    
-    return '@RG\t' + order
-        .findAll { rg[it] != null }
-        .collect { "${it}:${rg[it]}" }
-        .join('\t')
+        def order = ['ID', 'CN', 'PU', 'SM', 'LB', 'PL']
+        return '@RG\t' + order
+            .findAll { rg[it] != null }
+            .collect { "${it}:${rg[it]}" }
+            .join('\t')
     }
 
     private static Map readNameAttrs(Path path) {
