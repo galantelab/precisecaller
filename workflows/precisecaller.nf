@@ -24,6 +24,7 @@ include { BAM_COLLECT_METRICS_MOSDEPTH             as COVERAGE_METRICS          
 include { BAM_BASERECALIBRATOR_APPLYBQSR_GATK      as BASERECALIBRATOR          } from '../subworkflows/local/bam_baserecalibrator_applybqsr_gatk/main'
 include { BAM_VARIANT_CALLING_HAPLOTYPECALLER_GATK as HAPLOTYPECALLER           } from '../subworkflows/local/bam_variant_calling_haplotypecaller_gatk/main'
 include { VCF_GENOTYPE_GATK                        as GENOTYPE                  } from '../subworkflows/local/vcf_genotype_gatk/main'
+include { VCF_VARIANTFILTRATION_GATK               as VARIANTFILTRATION         } from '../subworkflows/local/vcf_variantfiltration_gatk/main'
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -37,16 +38,18 @@ workflow PRECISECALLER {
     fasta
     fasta_fai
     dict
-    bwa,
-    dbsnp,
-    dbsnp_tbi,
-    known_indels,
-    known_indels_tbi,
-    known_snps,
-    known_snps_tbi,
-    intervals,
-    intervals_gz_tbi,
+    bwa
+    dbsnp
+    dbsnp_tbi
+    known_indels
+    known_indels_tbi
+    known_snps
+    known_snps_tbi
+    intervals
+    intervals_gz_tbi
     umi_file
+    filters_indel_map
+    filters_snp_map
 
     main:
     versions      = Channel.empty()
@@ -312,6 +315,23 @@ workflow PRECISECALLER {
     vcf      = GENOTYPE.out.vcf
     vcf_tbi  = GENOTYPE.out.tbi
     versions = versions.mix(GENOTYPE.out.versions)
+
+    // Split multi-sample genotyped GVCF into SNPs & INDELs
+    // and apply hard-filter
+    VARIANTFILTRATION(
+        vcf,
+        vcf_tbi,
+        intervals,
+        fasta,
+        fasta_fai,
+        dict,
+        filters_indel_map,
+        filters_snp_map
+    )
+
+    vcf      = VARIANTFILTRATION.out.vcf
+    vcf_tbi  = VARIANTFILTRATION.out.tbi
+    versions = versions.mix(VARIANTFILTRATION.out.versions)
 
     //
     // Collate and save software versions

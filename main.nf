@@ -125,6 +125,12 @@ workflow GALANTELAB_PRECISECALLER {
         null
 
     //
+    // Prepare filters for variants
+    //
+    filters_indel_map = GatkFilters.parse(params.filters_indel)
+    filters_snp_map   = GatkFilters.parse(params.filters_snp)
+
+    //
     // WORKFLOW: Run pipeline
     //
     PRECISECALLER (
@@ -139,7 +145,9 @@ workflow GALANTELAB_PRECISECALLER {
         PREPARE_GENOME.out.known_snps_tbi,
         PREPARE_INTERVALS.out.intervals,
         PREPARE_INTERVALS.out.intervals_gz_tbi,
-        umi_file
+        umi_file,
+        filters_indel_map,
+        filters_snp_map
     )
     versions = versions.mix(PRECISECALLER.out.versions)
 
