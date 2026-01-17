@@ -35,23 +35,42 @@ workflow VCF_GENOTYPE_GATK {
 
     main:
     versions       = Channel.empty()
+    combine_input  = Channel.empty()
     genotype_input = Channel.empty()
 
     // Group all per-sample GVCFs into a single aggregated tuple.
     // The meta information is replaced by a synthetic meta object
     // identifying that the dataset now represents "all samples"
+    // and all sample names are stored into a list at meta.samples
 
     grouped_vcf = vcf
         .map { meta, vcf ->
-            tuple([id:"all_samples"], vcf)
+            tuple(
+                [ id: 'all_samples' ],
+                meta.sample,
+                vcf
+            )
         }
         .groupTuple()
 
     grouped_tbi = tbi
         .map { meta, tbi ->
-            tuple([id:"all_samples"], tbi)
+            tuple(
+                [ id: 'all_samples' ],
+                tbi
+            )
         }
         .groupTuple()
+
+    combine_input = grouped_vcf
+        .join(grouped_tbi)
+        .map { meta, samples, vcf, tbi ->
+            tuple(
+                meta + [ samples: samples ],
+                vcf,
+                tbi
+            )
+        }
 
     // Used primarily for WGS datasets or large cohorts where memory
     // and runtime can become limiting
@@ -66,40 +85,39 @@ workflow VCF_GENOTYPE_GATK {
         input_map        = false
 
         GENOMICSDBIMPORT(
-            grouped_vcf
-               .join(grouped_tbi)
-               .combine(intervals)
-               .map { meta, vcf, tbi, bed ->
-                   tuple(meta, vcf, tbi, bed, interval_value, [])
-               },
+            combine_input
+                .combine(intervals)
+                .map { meta, vcf, tbi, bed ->
+                    tuple(meta, vcf, tbi, bed, interval_value, [])
+                },
             run_intlist,
             run_updatewspace,
             input_map
         )
 
         genotype_input = GENOMICSDBIMPORT.out.genomicsdb
-                         .combine(intervals_gz_tbi)
-                         .map { meta, db, bed, bed_tbi ->
-                             tuple(meta, db, [], bed, bed_tbi)
-                         }
+                             .combine(intervals_gz_tbi)
+                             .map { meta, db, bed, bed_tbi ->
+                                 tuple(meta, db, [], bed, bed_tbi)
+                             }
 
         versions = versions.mix(GENOMICSDBIMPORT.out.versions)
     } else {
         // Typically preferred for WXS or targeted sequencing panels and
         // for smaller sample sets
         COMBINEGVCFS(
-            grouped_vcf.join(grouped_tbi),
+            combine_input,
             fasta.map     { it[1] },
             fasta_fai.map { it[1] },
             dict.map      { it[1] }
         )
 
         genotype_input = COMBINEGVCFS.out.combined_gvcf
-                         .join(COMBINEGVCFS.out.combined_tbi)
-                         .combine(intervals_gz_tbi)
-                         .map { meta, vcf, vcf_tbi, bed, bed_tbi ->
-                             tuple(meta, vcf, vcf_tbi, bed, bed_tbi)
-                         }
+                             .join(COMBINEGVCFS.out.combined_tbi)
+                             .combine(intervals_gz_tbi)
+                             .map { meta, vcf, vcf_tbi, bed, bed_tbi ->
+                                 tuple(meta, vcf, vcf_tbi, bed, bed_tbi)
+                             }
 
         versions = versions.mix(COMBINEGVCFS.out.versions)
     }
