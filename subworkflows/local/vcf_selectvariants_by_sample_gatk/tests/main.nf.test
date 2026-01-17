@@ -1,0 +1,56 @@
+nextflow_workflow {
+
+    name "Test Subworkflow VCF_SELECTVARIANTS_BY_SAMPLE_GATK"
+    script "../main.nf"
+    workflow "VCF_SELECTVARIANTS_BY_SAMPLE_GATK"
+
+    tag "subworkflows"
+    tag "subworkflows_"
+    tag "subworkflows/vcf_selectvariantes_by_sample"
+    tag "gatk4"
+    tag "gatk4/selectvariants"
+
+    test("Test all_genomes - Samples: test0, test1, test2, test3") {
+        when {
+            workflow {
+                """
+                input[0] = Channel.of(
+                    [
+                        [id:'test.snp', type:'snp', samples: ['test0', 'test1', 'test2', 'test3']],
+                        file(params.local_testdata_base_path + 'data/Homo_sapiens/Illumina/vcf/all_samples.vcf.gz', checkIfExists: true)
+                    ],
+                    [
+                        [id:'test.indel', type:'indel', samples: ['test0', 'test1', 'test2', 'test3']],
+                        file(params.local_testdata_base_path + 'data/Homo_sapiens/Illumina/vcf/all_samples.vcf.gz', checkIfExists: true)
+                    ]
+                )
+                input[1] = Channel.of(
+                    [
+                        [id:'test.snp', type:'snp', samples: ['test0', 'test1', 'test2', 'test3']],
+                        file(params.local_testdata_base_path + 'data/Homo_sapiens/Illumina/vcf/all_samples.vcf.gz.tbi', checkIfExists: true)
+                    ],
+                    [
+                        [id:'test.indel', type:'indel', samples: ['test0', 'test1', 'test2', 'test3']],
+                        file(params.local_testdata_base_path + 'data/Homo_sapiens/Illumina/vcf/all_samples.vcf.gz.tbi', checkIfExists: true)
+                    ]
+                )
+                input[2] = Channel.fromPath(params.modules_testdata_base_path + 'genomics/homo_sapiens/genome/genome.interval_list', checkIfExists: true)
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert workflow.success },
+                { assert snapshot(
+                    path(workflow.out.vcf[0][1]).vcf.variantsMD5,
+                    file(workflow.out.tbi[0][1]).name,
+                    workflow.out.versions
+                  ).match()
+                }
+            )
+        }
+
+    }
+
+}

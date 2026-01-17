@@ -1,0 +1,23 @@
+{
+    "Test all_genomes - Samples: test0, test1, test2, test3": {
+        "content": [
+            "853d3fc4a3e9b642ffd6546892869ddb",
+            "test0.indel.g.vcf.gz.tbi",
+            [
+                "versions.yml:md5,f138300588292dfcd4e497e0b7315cb1",
+                "versions.yml:md5,f138300588292dfcd4e497e0b7315cb1",
+                "versions.yml:md5,f138300588292dfcd4e497e0b7315cb1",
+                "versions.yml:md5,f138300588292dfcd4e497e0b7315cb1",
+                "versions.yml:md5,f138300588292dfcd4e497e0b7315cb1",
+                "versions.yml:md5,f138300588292dfcd4e497e0b7315cb1",
+                "versions.yml:md5,f138300588292dfcd4e497e0b7315cb1",
+                "versions.yml:md5,f138300588292dfcd4e497e0b7315cb1"
+            ]
+        ],
+        "meta": {
+            "nf-test": "0.9.3",
+            "nextflow": "25.10.2"
+        },
+        "timestamp": "2026-01-17T20:44:02.082327571"
+    }
+}
