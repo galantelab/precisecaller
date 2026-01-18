@@ -25,6 +25,7 @@ include { BAM_BASERECALIBRATOR_APPLYBQSR_GATK      as BASERECALIBRATOR          
 include { BAM_VARIANT_CALLING_HAPLOTYPECALLER_GATK as HAPLOTYPECALLER           } from '../subworkflows/local/bam_variant_calling_haplotypecaller_gatk/main'
 include { VCF_GENOTYPE_GATK                        as GENOTYPE                  } from '../subworkflows/local/vcf_genotype_gatk/main'
 include { VCF_VARIANTFILTRATION_GATK               as VARIANTFILTRATION         } from '../subworkflows/local/vcf_variantfiltration_gatk/main'
+include { VCF_SELECTVARIANTS_BY_SAMPLE_GATK        as SELECTVARIANTS_BY_SAMPLE  } from '../subworkflows/local/vcf_selectvariants_by_sample_gatk/main'
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -334,6 +335,17 @@ workflow PRECISECALLER {
     vcf      = VARIANTFILTRATION.out.vcf
     vcf_tbi  = VARIANTFILTRATION.out.tbi
     versions = versions.mix(VARIANTFILTRATION.out.versions)
+
+    // Separate hard-filtered, multi-sample SNP/INDEL GVCFs by sample
+    SELECTVARIANTS_BY_SAMPLE(
+        vcf,
+        vcf_tbi,
+        intervals
+    )
+
+    vcf      = SELECTVARIANTS_BY_SAMPLE.out.vcf
+    vcf_tbi  = SELECTVARIANTS_BY_SAMPLE.out.tbi
+    versions = versions.mix(SELECTVARIANTS_BY_SAMPLE.out.versions)
 
     //
     // Collate and save software versions
