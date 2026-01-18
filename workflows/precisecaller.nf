@@ -26,6 +26,7 @@ include { BAM_VARIANT_CALLING_HAPLOTYPECALLER_GATK as HAPLOTYPECALLER           
 include { VCF_GENOTYPE_GATK                        as GENOTYPE                  } from '../subworkflows/local/vcf_genotype_gatk/main'
 include { VCF_VARIANTFILTRATION_GATK               as VARIANTFILTRATION         } from '../subworkflows/local/vcf_variantfiltration_gatk/main'
 include { VCF_SELECTVARIANTS_BY_SAMPLE_GATK        as SELECTVARIANTS_BY_SAMPLE  } from '../subworkflows/local/vcf_selectvariants_by_sample_gatk/main'
+include { VCF_NORM_BCFTOOLS                        as VARIANTNORMALIZATION      } from '../subworkflows/local/vcf_norm_bcftools/main'
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -346,6 +347,17 @@ workflow PRECISECALLER {
     vcf      = SELECTVARIANTS_BY_SAMPLE.out.vcf
     vcf_tbi  = SELECTVARIANTS_BY_SAMPLE.out.tbi
     versions = versions.mix(SELECTVARIANTS_BY_SAMPLE.out.versions)
+
+    // Split multiallelic variants on GVCFs
+    VARIANTNORMALIZATION(
+        vcf,
+        vcf_tbi,
+        fasta
+    )
+
+    vcf      = VARIANTNORMALIZATION.out.vcf
+    vcf_tbi  = VARIANTNORMALIZATION.out.tbi
+    versions = versions.mix(VARIANTNORMALIZATION.out.versions)
 
     //
     // Collate and save software versions
