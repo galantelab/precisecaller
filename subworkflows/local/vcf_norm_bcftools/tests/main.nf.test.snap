@@ -1,0 +1,17 @@
+{
+    "Test from bcftools/norm sarscov2": {
+        "content": [
+            "7b0d354031003db48cfcb216d52dfec6",
+            "test.ste2.g.vcf.gz.tbi",
+            [
+                "versions.yml:md5,24ca0c60ff8dbabe3c0704b3604edbe3",
+                "versions.yml:md5,cb58e121bc9fa25a41710ab295857623"
+            ]
+        ],
+        "meta": {
+            "nf-test": "0.9.3",
+            "nextflow": "25.10.2"
+        },
+        "timestamp": "2026-01-18T19:41:51.653536349"
+    }
+}

@@ -1,0 +1,48 @@
+nextflow_workflow {
+
+    name "Test Subworkflow VCF_NORM_BCFTOOLS"
+    script "../main.nf"
+    workflow "VCF_NORM_BCFTOOLS"
+
+    tag "subworkflows"
+    tag "subworkflows_"
+    tag "subworkflows/vcf_norm_bcftools"
+    tag "bcftools"
+    tag "bcftools/norm"
+
+    test("Test from bcftools/norm sarscov2") {
+
+        when {
+            workflow {
+                """
+                input[0] = Channel.of([
+                    [ id:'test' ],
+                    file(params.modules_testdata_base_path + 'genomics/sarscov2/illumina/vcf/test.vcf.gz', checkIfExists: true)
+                ])
+                input[1] = Channel.of([
+                    [ id:'test' ],
+                    []
+                ])
+                input[2] = Channel.value([
+                    [ id:'genome' ],
+                    file(params.modules_testdata_base_path + 'genomics/sarscov2/genome/genome.fasta.gz', checkIfExists: true)
+                ])
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert workflow.success },
+                { assert snapshot(
+                    path(workflow.out.vcf[0][1]).vcf.variantsMD5,
+                    file(workflow.out.tbi[0][1]).name,
+                    workflow.out.versions
+                  ).match()
+                }
+            )
+        }
+
+    }
+
+}
