@@ -9,6 +9,7 @@ include { BCFTOOLS_SORT                   as SORT_INDEX_DBSNP   } from '../../..
 include { BCFTOOLS_SORT                   as SORT_INDEX_INDELS  } from '../../../modules/nf-core/bcftools/sort/main'
 include { BCFTOOLS_SORT                   as SORT_INDEX_SNPS    } from '../../../modules/nf-core/bcftools/sort/main'
 include { SAMTOOLS_FAIDX                                        } from '../../../modules/nf-core/samtools/faidx/main'
+include { ENSEMBLVEP_DOWNLOAD                                   } from '../../../modules/nf-core/ensemblvep/download/main'
 
 workflow PREPARE_GENOME {
     take:
@@ -22,6 +23,10 @@ workflow PREPARE_GENOME {
     known_indels_tbi     // [optional]  value: string - filename
     known_snps           // [mandatory] value: string - filename
     known_snps_tbi       // [optional]  value: string - filename
+    vep_cache            // [optional]  value: string - dirname
+    vep_cache_version    // [mandatory] value: string
+    vep_genome           // [mandatory] value: string
+    vep_species          // [mandatory] value: string
 
     main:
     ch_versions = Channel.empty()
@@ -106,6 +111,16 @@ workflow PREPARE_GENOME {
         ch_versions       = ch_versions.mix(SORT_INDEX_SNPS.out.versions)
     }
 
+    ch_vep_cache = Channel.empty()
+    if (vep_cache) {
+        ch_vep_cache = Channel.value([[id:"vep_cache"], file(vep_cache, checkIfExists: true)])
+    } else {
+        ch_ensemblvep_input = Channel.value([[id:"vep_cache"], vep_genome, vep_species, vep_cache_version])
+        ENSEMBLVEP_DOWNLOAD(ch_ensemblvep_input)
+        ch_vep_cache = ENSEMBLVEP_DOWNLOAD.out.cache
+        // The versions information is collected with topic
+    }
+
     emit:
     fasta            = ch_fasta             // channel: tuple(meta, fasta)
     fasta_fai        = ch_fasta_fai         // channel: tuple(meta, fasta.fai)
@@ -116,5 +131,6 @@ workflow PREPARE_GENOME {
     known_indels_tbi = ch_known_indels_tbi  // channel: tuple(meta, known_indels_tbi)
     known_snps       = ch_known_snps        // channel: tuple(meta, known_snps)
     known_snps_tbi   = ch_known_snps_tbi    // channel: tuple(meta, known_snps_tbi)
+    vep_cache        = ch_vep_cache         // channel: tuple(meta, vep_cache)
     versions         = ch_versions          // channel: path(versions.yml)
 }

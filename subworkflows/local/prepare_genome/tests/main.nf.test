@@ -15,16 +15,20 @@ nextflow_workflow {
 
             workflow {
                 """
-                input[0] = params.local_testdata_base_path + 'references/Homo_sapiens/Gencode/hg38_chr22q12.1/Sequence/WholeGenomeFasta/genome.fa'
-                input[1] = null
-                input[2] = null
-                input[3] = null
-                input[4] = params.local_testdata_base_path + 'data/Homo_sapiens/Simulations/dbsnp/dbsnp.vcf'
-                input[5] = null
-                input[6] = params.local_testdata_base_path + 'data/Homo_sapiens/Simulations/known_sites/known_indels.vcf'
-                input[7] = null
-                input[8] = params.local_testdata_base_path + 'data/Homo_sapiens/Simulations/known_sites/known_snps.vcf'
-                input[9] = null
+                input[0]  = params.local_testdata_base_path + 'references/Homo_sapiens/Gencode/hg38_chr22q12.1/Sequence/WholeGenomeFasta/genome.fa'
+                input[1]  = null
+                input[2]  = null
+                input[3]  = null
+                input[4]  = params.local_testdata_base_path + 'data/Homo_sapiens/Simulations/dbsnp/dbsnp.vcf'
+                input[5]  = null
+                input[6]  = params.local_testdata_base_path + 'data/Homo_sapiens/Simulations/known_sites/known_indels.vcf'
+                input[7]  = null
+                input[8]  = params.local_testdata_base_path + 'data/Homo_sapiens/Simulations/known_sites/known_snps.vcf'
+                input[9]  = null
+                input[10] = null
+                input[11] = params.vep_cache_version
+                input[12] = params.vep_genome
+                input[13] = params.vep_species
                 """
             }
         }
@@ -44,16 +48,20 @@ nextflow_workflow {
 
             workflow {
                 """
-                input[0] = params.local_testdata_base_path + 'references/Homo_sapiens/Gencode/hg38_chr22q12.1/Sequence/WholeGenomeFasta/genome.fa.gz'
-                input[1] = null
-                input[2] = null
-                input[3] = null
-                input[4] = params.local_testdata_base_path + 'data/Homo_sapiens/Simulations/dbsnp/dbsnp.vcf.gz'
-                input[5] = params.local_testdata_base_path + 'data/Homo_sapiens/Simulations/dbsnp/dbsnp.vcf.gz.tbi'
-                input[6] = params.local_testdata_base_path + 'data/Homo_sapiens/Simulations/known_sites/known_indels.vcf.gz'
-                input[7] = params.local_testdata_base_path + 'data/Homo_sapiens/Simulations/known_sites/known_indels.vcf.gz.tbi'
-                input[8] = params.local_testdata_base_path + 'data/Homo_sapiens/Simulations/known_sites/known_snps.vcf.gz'
-                input[9] = params.local_testdata_base_path + 'data/Homo_sapiens/Simulations/known_sites/known_snps.vcf.gz.tbi'
+                input[0]  = params.local_testdata_base_path + 'references/Homo_sapiens/Gencode/hg38_chr22q12.1/Sequence/WholeGenomeFasta/genome.fa.gz'
+                input[1]  = null
+                input[2]  = null
+                input[3]  = null
+                input[4]  = params.local_testdata_base_path + 'data/Homo_sapiens/Simulations/dbsnp/dbsnp.vcf.gz'
+                input[5]  = params.local_testdata_base_path + 'data/Homo_sapiens/Simulations/dbsnp/dbsnp.vcf.gz.tbi'
+                input[6]  = params.local_testdata_base_path + 'data/Homo_sapiens/Simulations/known_sites/known_indels.vcf.gz'
+                input[7]  = params.local_testdata_base_path + 'data/Homo_sapiens/Simulations/known_sites/known_indels.vcf.gz.tbi'
+                input[8]  = params.local_testdata_base_path + 'data/Homo_sapiens/Simulations/known_sites/known_snps.vcf.gz'
+                input[9]  = params.local_testdata_base_path + 'data/Homo_sapiens/Simulations/known_sites/known_snps.vcf.gz.tbi'
+                input[10] = params.local_testdata_base_path + 'references/Caenorhabditis_elegans/vep_cache/115_WBcel235/'
+                input[11] = params.vep_cache_version
+                input[12] = params.vep_genome
+                input[13] = params.vep_species
                 """
             }
         }
