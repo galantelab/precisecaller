@@ -39,16 +39,19 @@ if (params.help) {
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
 
-params.fasta            = getGenomeAttribute('fasta')
-params.fasta_fai        = getGenomeAttribute('fasta_fai')
-params.dict             = getGenomeAttribute('dict')
-params.bwa              = getGenomeAttribute('bwa')
-params.dbsnp            = getGenomeAttribute('dbsnp')
-params.dbsnp_tbi        = getGenomeAttribute('dbsnp_tbi')
-params.known_indels     = getGenomeAttribute('known_indels')
-params.known_indels_tbi = getGenomeAttribute('known_indels_tbi')
-params.known_snps       = getGenomeAttribute('known_snps')
-params.known_snps_tbi   = getGenomeAttribute('known_snps_tbi')
+params.fasta             = getGenomeAttribute('fasta')
+params.fasta_fai         = getGenomeAttribute('fasta_fai')
+params.dict              = getGenomeAttribute('dict')
+params.bwa               = getGenomeAttribute('bwa')
+params.dbsnp             = getGenomeAttribute('dbsnp')
+params.dbsnp_tbi         = getGenomeAttribute('dbsnp_tbi')
+params.known_indels      = getGenomeAttribute('known_indels')
+params.known_indels_tbi  = getGenomeAttribute('known_indels_tbi')
+params.known_snps        = getGenomeAttribute('known_snps')
+params.known_snps_tbi    = getGenomeAttribute('known_snps_tbi')
+params.vep_cache_version = getGenomeAttribute('vep_cache_version')
+params.vep_genome        = getGenomeAttribute('vep_genome')
+params.vep_species       = getGenomeAttribute('vep_species')
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -79,7 +82,11 @@ workflow GALANTELAB_PRECISECALLER {
         params.known_indels,
         params.known_indels_tbi,
         params.known_snps,
-        params.known_snps_tbi
+        params.known_snps_tbi,
+        params.vep_cache,
+        params.vep_cache_version,
+        params.vep_genome,
+        params.vep_species
     )
     versions = versions.mix(PREPARE_GENOME.out.versions)
 
@@ -118,6 +125,7 @@ workflow GALANTELAB_PRECISECALLER {
         PREPARE_GENOME.out.known_indels_tbi,
         PREPARE_GENOME.out.known_snps,
         PREPARE_GENOME.out.known_snps_tbi,
+        PREPARE_GENOME.out.vep_cache,
         PREPARE_INTERVALS.out.intervals,
         PREPARE_INTERVALS.out.intervals_gz_tbi,
         umi_file,
@@ -125,6 +133,16 @@ workflow GALANTELAB_PRECISECALLER {
         filters_snp_map
     )
     versions = versions.mix(PRECISECALLER.out.versions)
+
+    // Capture and format the topic-based versions
+    topic_versions = Channel.topic('versions')
+        .map { "\"${it[0]}\":\n    ${it[1]}: ${it[2]}" }
+        .collectFile(name: 'topic_versions.yml', newLine: true)
+        .ifEmpty([])
+
+    // Mix them into your main versions channel
+    // This combines legacy .out.versions and the new topic versions
+    versions = versions.mix(topic_versions)
 
     emit:
     multiqc_report = PRECISECALLER.out.multiqc_report // channel: /path/to/multiqc_report.html
@@ -157,6 +175,7 @@ workflow {
     GALANTELAB_PRECISECALLER (
         PIPELINE_INITIALISATION.out.samplesheet
     )
+
     //
     // SUBWORKFLOW: Run completion tasks
     //

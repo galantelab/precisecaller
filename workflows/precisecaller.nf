@@ -47,6 +47,7 @@ workflow PRECISECALLER {
     known_indels_tbi
     known_snps
     known_snps_tbi
+    vep_cache
     intervals
     intervals_gz_tbi
     umi_file
