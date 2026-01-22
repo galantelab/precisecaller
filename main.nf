@@ -130,23 +130,12 @@ workflow GALANTELAB_PRECISECALLER {
         PREPARE_INTERVALS.out.intervals_gz_tbi,
         umi_file,
         filters_indel_map,
-        filters_snp_map
+        filters_snp_map,
+        versions
     )
-    versions = versions.mix(PRECISECALLER.out.versions)
-
-    // Capture and format the topic-based versions
-    topic_versions = Channel.topic('versions')
-        .map { "\"${it[0]}\":\n    ${it[1]}: ${it[2]}" }
-        .collectFile(name: 'topic_versions.yml', newLine: true)
-        .ifEmpty([])
-
-    // Mix them into your main versions channel
-    // This combines legacy .out.versions and the new topic versions
-    versions = versions.mix(topic_versions)
 
     emit:
     multiqc_report = PRECISECALLER.out.multiqc_report // channel: /path/to/multiqc_report.html
-    versions       = versions                         // channel: [version1, version2, ...]
 }
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

@@ -27,6 +27,7 @@ include { VCF_GENOTYPE_GATK                        as GENOTYPE                  
 include { VCF_VARIANTFILTRATION_GATK               as VARIANTFILTRATION         } from '../subworkflows/local/vcf_variantfiltration_gatk/main'
 include { VCF_SELECTVARIANTS_BY_SAMPLE_GATK        as SELECTVARIANTS_BY_SAMPLE  } from '../subworkflows/local/vcf_selectvariants_by_sample_gatk/main'
 include { VCF_NORM_BCFTOOLS                        as VARIANTNORMALIZATION      } from '../subworkflows/local/vcf_norm_bcftools/main'
+include { VCF_ANNOTATION_VEP                       as VARIANTANNOTATION         } from '../subworkflows/local/vcf_annotation_vep/main'
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -53,9 +54,9 @@ workflow PRECISECALLER {
     umi_file
     filters_indel_map
     filters_snp_map
+    versions
 
     main:
-    versions      = Channel.empty()
     multiqc_files = Channel.empty()
 
     /*
@@ -360,6 +361,40 @@ workflow PRECISECALLER {
     vcf_tbi  = VARIANTNORMALIZATION.out.tbi
     versions = versions.mix(VARIANTNORMALIZATION.out.versions)
 
+    // Annotates normalized and indexed VCFs using Ensembl VEP
+    VARIANTANNOTATION(
+        vcf,
+        vcf_tbi,
+        fasta,
+        vep_cache,
+        params.vep_cache_version,
+        params.vep_genome,
+        params.vep_species
+    )
+
+    vcf      = VARIANTANNOTATION.out.vcf
+    vcf_tbi  = VARIANTANNOTATION.out.tbi
+    // versions from topic channel
+    // multiqc_files from topic channel
+
+    //
+    // IS THIS THE END?
+    //
+
+    //
+    // Capture and format the topic-based versions
+    //
+    topic_versions = Channel.topic('versions')
+        .map { proc, tool, version ->
+            "\"${proc}\":\n    ${tool}: ${version}"
+        }
+        .collectFile(name: 'topic_versions.yml', newLine: true)
+        .ifEmpty([])
+
+    // Mix them into the main versions channel
+    // This combines legacy .out.versions and the new topic versions
+    versions = versions.mix(topic_versions)
+
     //
     // Collate and save software versions
     //
@@ -370,6 +405,17 @@ workflow PRECISECALLER {
             sort: true,
             newLine: true
         ).set { collated_versions }
+
+    //
+    // Capture and format the topic-based multiqc_files
+    //
+    topic_multiqc_files = Channel.topic('multiqc_files')
+        .map { it[2] }
+        .ifEmpty([])
+
+    // Mix them into the main multiqc_files channel
+    // This combines legacy and the new topic reports
+    multiqc_files = multiqc_files.mix(topic_multiqc_files)
 
     //
     // MODULE: MultiQC
