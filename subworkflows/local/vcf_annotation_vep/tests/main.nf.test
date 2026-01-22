@@ -1,0 +1,56 @@
+nextflow_workflow {
+
+    name "Test Subworkflow VCF_ANNOTATION_VEP"
+    script "../main.nf"
+    workflow "VCF_ANNOTATION_VEP"
+
+    tag "modules"
+    tag "modules_nfcore"
+    tag "ensemblvep"
+    tag "ensemblvep/vep"
+
+    test("Test from ensemblvep/vep module") {
+        config "./nextflow.config"
+
+        when {
+            workflow {
+                """
+                vep_cache = Channel.value([
+                    [id:"vep_cache"],
+                    file(params.local_testdata_base_path + 'references/Caenorhabditis_elegans/vep_cache/115_WBcel235/')
+                ])
+
+                input[0] = Channel.of([
+                    [ id:'test', sample:'test_sample' ],
+                    file(params.modules_testdata_base_path + 'genomics/sarscov2/illumina/vcf/test.vcf', checkIfExists: true),
+                ])
+                input[1] = Channel.of([
+                    [ id:'test', sample:'test_sample' ],
+                    []
+                ])
+                input[2] = Channel.value([
+                    [id:"fasta"],
+                    file(params.modules_testdata_base_path + 'genomics/sarscov2/genome/genome.fasta', checkIfExists: true)
+                ])
+                input[3] = vep_cache
+                input[4] = params.vep_cache_version
+                input[5] = params.vep_genome
+                input[6] = params.vep_species
+                """
+            }
+        }
+
+        then {
+            assert workflow.success
+            assertAll(
+                { assert snapshot(
+                    path(workflow.out.vcf[0][1]).vcf.variantsMD5,
+                    file(workflow.out.tbi[0][1]).name,
+                    workflow.out.findAll { key, val -> key.startsWith("versions") }
+                ).match() }
+            )
+        }
+
+    }
+
+}
