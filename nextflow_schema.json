@@ -41,7 +41,8 @@
           "description": "MultiQC report title. Printed as page header, used for filename if not otherwise specified.",
           "fa_icon": "fas fa-file-signature"
         }
-      }
+      },
+      "help_text": ""
     },
     "reference_genome_options": {
       "title": "Reference genome options",
@@ -65,6 +66,80 @@
           "description": "Path to FASTA genome file.",
           "help_text": "This parameter is *mandatory* if `--genome` is not specified. If you don't have a BWA index available this will be generated for you automatically. Combine with `--save_reference` to save BWA index for future runs.",
           "fa_icon": "far fa-file-code"
+        },
+        "fasta_fai": {
+          "type": "string",
+          "pattern": "^\\S+\\.fai$",
+          "format": "file-path",
+          "description": "Path to FASTA genome index."
+        },
+        "dict": {
+          "type": "string",
+          "pattern": "^\\S+\\.dict$",
+          "format": "file-path",
+          "description": "Path to FASTA genome dictionary"
+        },
+        "bwa": {
+          "type": "string",
+          "format": "directory-path",
+          "description": "Path to BWA index directory."
+        },
+        "dbsnp": {
+          "type": "string",
+          "format": "file-path",
+          "pattern": "^\\S+\\.vcf(\\.gz)?$",
+          "description": "Path to dbSNP annotation file."
+        },
+        "dbsnp_tbi": {
+          "type": "string",
+          "pattern": "^\\S+\\.vcf\\.gz\\.tbi$",
+          "format": "file-path",
+          "description": "Path to dbSNP annotation index."
+        },
+        "known_snps": {
+          "type": "string",
+          "pattern": "^\\S+\\.vcf(\\.gz)?$",
+          "format": "file-path",
+          "description": "Path to validated SNPs file."
+        },
+        "known_snps_tbi": {
+          "type": "string",
+          "pattern": "^\\S+\\.vcf\\.gz\\.tbi$",
+          "format": "file-path",
+          "description": "Path to validated SNPs index."
+        },
+        "known_indels": {
+          "type": "string",
+          "pattern": "^\\S+\\.vcf(\\.gz)?$",
+          "format": "file-path",
+          "description": "Path to validated Indels file."
+        },
+        "known_indels_tbi": {
+          "type": "string",
+          "description": "Path to validated Indels index.",
+          "pattern": "^\\S+\\.vcf\\.gz\\.tbi$",
+          "format": "file-path"
+        },
+        "vep_cache": {
+          "type": "string",
+          "format": "directory-path",
+          "description": "Path to Ensembl/VEP directory."
+        },
+        "vep_cache_version": {
+          "type": "string",
+          "description": "Which version of the cache to annotate with."
+        },
+        "vep_genome": {
+          "type": "string",
+          "description": "Which genome to annotate with."
+        },
+        "vep_species": {
+          "type": "string",
+          "description": "Which species to annotate with."
+        },
+        "save_reference": {
+          "type": "boolean",
+          "description": "Publish reference files to output."
         },
         "igenomes_ignore": {
           "type": "boolean",
@@ -219,119 +294,265 @@
           "description": "Base URL or local path to location of pipeline test dataset files",
           "default": "https://raw.githubusercontent.com/nf-core/test-datasets/",
           "hidden": true
+        },
+        "modules_testdata_base_path": {
+          "type": "string",
+          "default": "https://raw.githubusercontent.com/nf-core/test-datasets/modules/data/",
+          "hidden": true,
+          "description": "Base URL or local path to location of pipeline test dataset files"
+        },
+        "local_testdata_base_path": {
+          "type": "string",
+          "default": "s3://bioinfohsl-tools/precisecaller/test-datasets/",
+          "hidden": true,
+          "description": "Base URL or local path to location of pipeline test dataset files"
         }
       }
     },
     "umi_options": {
       "title": "UMI options",
       "type": "object",
-      "description": "Options for processing and filtering consensus reads using Unique Molecular Identifiers (UMIs)",
+      "description": "Options for processing and filtering consensus reads using Unique Molecular Identifiers (UMIs).",
       "default": "",
       "fa_icon": "fas fa-filter",
       "help_text": "This section contains parameters for configuring the processing and filtering of consensus reads using Unique Molecular Identifiers (UMIs) in the pipeline. UMIs are short, unique sequences attached to DNA fragments, enabling the identification and correction of sequencing errors by grouping reads from the same original molecule. These options are inspired by the fgbio best-practice consensus pipeline (https://github.com/fulcrumgenomics/fgbio/blob/main/docs/best-practice-consensus-pipeline.md).\n\nKey features controlled here include:\n- UMI extraction and correction: Adjusting tolerances for mismatches when matching observed UMIs to expected sequences.\n- Consensus read generation: Settings that influence how reads are grouped and collapsed into consensus sequences.\n- Filtering: Parameters to refine the resulting consensus reads, ensuring high-quality output for downstream analysis.\n\nAdjust these options based on your experimental design (e.g., fully degenerate vs. non-fully degenerate UMIs) and sequencing data characteristics. Refer to the pipeline documentation for detailed guidance on optimizing these settings.",
       "properties": {
         "umi_read_structure": {
           "type": "string",
-          "description": "Specifie the structure of UMIs in the sequencing reads, required for UMI processing",
+          "description": "Specifie the structure of UMIs in the sequencing reads, required for UMI processing.",
           "help_text": "The --umi_read_structure parameter defines the structure and location of Unique Molecular Identifiers (UMIs) within the sequencing reads. This is a required option for enabling UMI processing in the pipeline. It follows a format such as '8M+T' (8 bases of UMI followed by template sequence) to indicate where UMIs are located in the read (e.g., read 1, read 2, or both). Without this parameter, the pipeline cannot extract or process UMIs, and the UMI-related steps will not run.\n\nProvide a valid read structure string based on your sequencing protocol. For example, '5M+T' indicates a 5-base UMI at the start of read 1, followed by the template. Multiple structures can be specified for paired-end data (e.g., '8M+T +T'). Refer to the fgbio documentation or your sequencing kit specifications for guidance on setting this value correctly.",
           "pattern": "^(\\d+[MTBCS])*(\\d+|\\+)[MTBCS]$"
         },
         "group_by_umi_strategy": {
           "type": "string",
           "default": "Adjacency",
-          "description": "Strategy when running with UMI for GROUPREADSBYUMI",
-          "enum": ["Identity", "Edit", "Adjacency", "Paired"],
+          "description": "Strategy when running with UMI for GROUPREADSBYUMI.",
+          "enum": [
+            "Identity",
+            "Edit",
+            "Adjacency",
+            "Paired"
+          ],
           "help_text": "Grouping of UMIs is performed by one of four strategies:\n\n1. Identity: only reads with identical UMI sequences are grouped together. This strategy may be useful for evaluating data, but should generally be avoided as it will generate multiple UMI groups per original molecule in the presence of errors.\n2. Edit: reads are clustered into groups such that each read within a group has at least one other read in the group with <= edits differences and there are inter-group pairings with <= edits differences. Effective when there are small numbers of reads per UMI, but breaks down at very high coverage of UMIs.\n3. Adjacency: a version of the directed adjacency method described in umi_tools that allows for errors between UMIs but only when there is a count gradient.\n4. Paired: similar to adjacency but for methods that produce template such that a read with A-B is related to but not identical to a read with B-A. Expects the UMI sequences to be stored in a single SAM tag separated by a hyphen (e.g. ACGT-CCGG) and allows for one of the two UMIs to be absent (e.g. ACGT- or -ACGT). The molecular IDs produced have more structure than for single UMI strategies and are of the form {base}/{A|B}. E.g. two UMI pairs would be mapped as follows AAAA-GGGG -> 1/A, GGGG-AAAA -> 1/B.\n"
         },
         "umi_file": {
           "type": "string",
-          "description": "Fixed list of UMIs used for CORRECTUMIS",
+          "description": "Fixed list of UMIs used for CORRECTUMIS.",
           "format": "file-path"
         },
         "umi_file_max_mismatches": {
           "type": "integer",
           "default": 1,
-          "description": "Maximum number of mismatches between a UMI and an expected UMI",
+          "description": "Maximum number of mismatches between a UMI and an expected UMI.",
           "minimum": 0
         },
         "umi_file_min_distance": {
           "type": "integer",
           "default": 1,
-          "description": "Minimum distance (in mismatches) to next best UMI",
+          "description": "Minimum distance (in mismatches) to next best UMI.",
           "minimum": 0
         },
         "umi_min_reads": {
           "type": "integer",
           "default": 3,
-          "description": "Minimum number of reads supporting a consensus base/read",
+          "description": "Minimum number of reads supporting a consensus base/read.",
           "minimum": 0
         },
         "umi_min_base_quality": {
           "type": "integer",
           "default": 45,
-          "description": "Mask (make 'N') consensus bases with quality less than this threshold",
+          "description": "Mask (make 'N') consensus bases with quality less than this threshold.",
           "minimum": 0
         },
         "umi_max_base_error_rate": {
           "type": "number",
           "default": 0.2,
-          "description": "Maximum error rate for a single consensus base",
+          "description": "Maximum error rate for a single consensus base.",
           "minimum": 0,
           "maximum": 1
         }
       }
     },
-    "read_trimming_and_filtering": {
-      "title": "Read trimming and filtering",
+    "read_trimming_options": {
+      "title": "Read trimming options",
       "type": "object",
-      "description": "Parameters passed to FastP for adapter trimming, quality trimming, and read filtering. Skipped automatically when UMI processing is enabled",
+      "description": "Parameters passed to FastP for adapter trimming, quality trimming, and read filtering. Skipped automatically when UMI processing is enabled.",
       "default": "",
       "properties": {
         "skip_trimming": {
           "type": "boolean",
           "default": true,
-          "description": "Skip trimming at all"
+          "description": "Skip trimming at all."
         },
         "skip_adapter_trimming": {
           "type": "boolean",
-          "description": "Skip adapter trimming"
+          "description": "Skip adapter trimming."
         },
         "trim_front1": {
           "type": "integer",
           "default": 0,
-          "description": "Remove bases from the 5' end of read 1",
+          "description": "Remove bases from the 5' end of read 1.",
           "minimum": 0
         },
         "trim_front2": {
           "type": "integer",
           "default": 0,
-          "description": "Remove bases from the 5' end of read 2"
+          "description": "Remove bases from the 5' end of read 2."
         },
         "trim_tail1": {
           "type": "integer",
           "default": 0,
-          "description": "Remove bases from the 3' end of read 1 AFTER adapter/quality trimming has been performed",
+          "description": "Remove bases from the 3' end of read 1 AFTER adapter/quality trimming has been performed.",
           "minimum": 0
         },
         "trim_tail2": {
           "type": "integer",
           "default": 0,
-          "description": "Remove bases from the 3' end of read 2 AFTER adapter/quality trimming has been performed",
+          "description": "Remove bases from the 3' end of read 2 AFTER adapter/quality trimming has been performed.",
           "minimum": 0
         },
         "trim_poly_g": {
           "type": "boolean",
-          "description": "Remove poly-G tails"
+          "description": "Remove poly-G tails."
         },
         "trim_min_read_length": {
           "type": "integer",
           "default": 15,
-          "description": "Reads shorter will be discarded",
+          "description": "Reads shorter will be discarded.",
           "minimum": 0
         },
         "save_trimmed_fastq": {
           "type": "boolean",
-          "description": "Publish trimmed FASTQ files"
+          "description": "Publish trimmed FASTQ files."
+        }
+      }
+    },
+    "fastq_splitting_options": {
+      "title": "FASTQ splitting options",
+      "type": "object",
+      "description": "Controls optional splitting of large FASTQ files into smaller chunks to increase parallelism in downstream steps.",
+      "default": "",
+      "properties": {
+        "split_fastq_reads": {
+          "type": "integer",
+          "default": 50000000,
+          "description": "Set to 0 in order to disable splitting.",
+          "minimum": 0
+        },
+        "save_split_fastq": {
+          "type": "boolean",
+          "description": "Publish split FASTQ files."
+        }
+      }
+    },
+    "collect_metrics_options": {
+      "title": "Collect metrics options",
+      "type": "object",
+      "description": "Parameter controlling the collection of metrics.  If not provided, assay-specific defaults will be used (e.g. WGS vs WXS/panel).",
+      "default": "",
+      "properties": {
+        "skip_alignment_metrics": {
+          "type": "boolean",
+          "description": "Skip alignment metrics."
+        },
+        "skip_coverage_metrics": {
+          "type": "boolean",
+          "description": "Skip coverage metrics."
+        },
+        "skip_recalibration_metrics": {
+          "type": "boolean",
+          "description": "Skip recalibration metrics."
+        },
+        "coverage_metrics_mins": {
+          "type": "string",
+          "default": "1,2,30,50,100,150,200",
+          "description": "Minimum coverage thresholds (comma-separated) used to compute coverage statistics.",
+          "pattern": "^\\d+(,\\d+)*$"
+        },
+        "coverage_metrics_intervals": {
+          "type": "string",
+          "default": "1:30:100:200",
+          "description": "Coverage depth intervals (colon-separated, 1:10:20) used to summarize depth distribution.",
+          "pattern": "^\\d+(:\\d+)*$"
+        }
+      }
+    },
+    "read_group_and_sequencing_metadata_options": {
+      "title": "Read group and sequencing metadata options",
+      "type": "object",
+      "description": "Metadata written to BAM read group (RG) fields during alignment or UMI-aware processing.",
+      "default": "",
+      "properties": {
+        "seq_center": {
+          "type": "string",
+          "description": "Sequencing center to be written in read group CN field by aligner."
+        },
+        "seq_platform": {
+          "type": "string",
+          "default": "ILLUMINA",
+          "description": "Default platform written in read group PL field by aligner."
+        }
+      }
+    },
+    "snp_indel_filtering_options": {
+      "title": "SNP/INDEL filtering options",
+      "type": "object",
+      "description": "JEXL expression parameters for GATK VariantFiltration.",
+      "default": "",
+      "help_text": "The parameters `params.filters_snp` and `params.filters_indel` support two input styles:\n\n1. String (typically supplied via CLI)\n- Filters must be separated by `|`\n- Each filter must follow the format:  <filter_name>:<JEXL_expression>\n- Example:\n  `--filters_snp \"QD_filter:QD<2.0|FS_filter:FS>60.0|SOR_filter:SOR>3.0\"`\n2. Map format (recommended for params-file / YAML / JSON):\n- Keys represent filter names\n- Values represent JEXL filter expressions\n\nExample (YAML):\nfilters_snp:\nQD_filter: \"QD < 2.0\"\nFS_filter: \"FS > 60.0\"\nMQ_filter: \"MQ < 40.0\"\n\nInternally, both formats are parsed into a Map[filter_name: filter_expression]\nand passed to the GATK VariantFiltration module.\n\nIf no filters are provided, the VariantFiltration step will be skipped\nor executed without custom filter expressions.",
+      "properties": {
+        "filters_snp": {
+          "type": "string",
+          "default": "QD_filter:        QD < 2.0 |FS_filter:        FS > 60.0 |MQ_filter:        MQ < 40.0 |SOR_filter:       SOR > 3.0 |MQRankSum_filter:     MQRankSum < -12.5 |ReadPosRankSum_filter:  ReadPosRankSum < -8.0",
+          "description": "Pipe-separated values or Groovy Map."
+        },
+        "filters_indel": {
+          "type": "string",
+          "default": "QD_filter:        QD < 2.0 |FS_filter:        FS > 200.0 |SOR_filter:       SOR > 10.0",
+          "description": "Pipe-separated values or Groovy Map."
+        }
+      }
+    },
+    "assay_target_regions_options": {
+      "title": "Assay/Target regions options",
+      "type": "object",
+      "description": "Options defining the sequencing assay type and the genomic regions analyzed (e.g. whole genome vs targeted sequencing).",
+      "default": "",
+      "properties": {
+        "wgs": {
+          "type": "boolean",
+          "description": "Set to true, if data is a Whole Genome Sequencing file."
+        },
+        "intervals": {
+          "type": "string",
+          "format": "file-path",
+          "description": "BED file with target regions. It is not mandatory when wgs = True."
+        }
+      }
+    },
+    "alignment_and_read_filtering_options": {
+      "title": "Alignment and read filtering options",
+      "type": "object",
+      "description": "Options controlling filtering of aligned reads prior to variant calling.",
+      "default": "",
+      "properties": {
+        "min_mapq": {
+          "type": "integer",
+          "default": 20,
+          "description": "Mapping filtering by phred-score. Set to 0 in order to disable mapq filtering.",
+          "minimum": 0
+        }
+      }
+    },
+    "variant_calling_genotyping_options": {
+      "title": "Variant calling/Genotyping options",
+      "type": "object",
+      "description": "Parameters controlling how per-sample GVCFs are aggregated and jointly genotyped.",
+      "default": "",
+      "properties": {
+        "use_genomicsdb": {
+          "type": "boolean",
+          "description": "Use GenomicsDBImport instead of CombineGVCFs to aggregate GVCF files before genotyping Recommended: true for WGS; false for WES/panel or small cohorts."
         }
       }
     }
@@ -353,111 +574,28 @@
       "$ref": "#/$defs/umi_options"
     },
     {
-      "$ref": "#/$defs/read_trimming_and_filtering"
+      "$ref": "#/$defs/read_trimming_options"
+    },
+    {
+      "$ref": "#/$defs/fastq_splitting_options"
+    },
+    {
+      "$ref": "#/$defs/collect_metrics_options"
+    },
+    {
+      "$ref": "#/$defs/read_group_and_sequencing_metadata_options"
+    },
+    {
+      "$ref": "#/$defs/snp_indel_filtering_options"
+    },
+    {
+      "$ref": "#/$defs/assay_target_regions_options"
+    },
+    {
+      "$ref": "#/$defs/alignment_and_read_filtering_options"
+    },
+    {
+      "$ref": "#/$defs/variant_calling_genotyping_options"
     }
-  ],
-  "properties": {
-    "save_reference": {
-      "type": "boolean"
-    },
-    "vep_cache": {
-      "type": "string"
-    },
-    "wgs": {
-      "type": "boolean"
-    },
-    "intervals": {
-      "type": "string"
-    },
-    "use_genomicsdb": {
-      "type": "boolean"
-    },
-    "filters_snp": {
-      "type": "string",
-      "default": "QD_filter:              QD < 2.0 |FS_filter:              FS > 60.0 |MQ_filter:              MQ < 40.0 |SOR_filter:             SOR > 3.0 |MQRankSum_filter:       MQRankSum < -12.5 |ReadPosRankSum_filter:  ReadPosRankSum < -8.0"
-    },
-    "filters_indel": {
-      "type": "string",
-      "default": "QD_filter:              QD < 2.0 |FS_filter:              FS > 200.0 |SOR_filter:             SOR > 10.0"
-    },
-    "split_fastq_reads": {
-      "type": "integer",
-      "default": 50000000
-    },
-    "save_split_fastq": {
-      "type": "boolean"
-    },
-    "min_mapq": {
-      "type": "integer",
-      "default": 20
-    },
-    "skip_alignment_metrics": {
-      "type": "boolean"
-    },
-    "skip_coverage_metrics": {
-      "type": "boolean"
-    },
-    "skip_recalibration_metrics": {
-      "type": "boolean"
-    },
-    "coverage_metrics_mins": {
-      "type": "string",
-      "default": "1,2,30,50,100,150,200"
-    },
-    "coverage_metrics_intervals": {
-      "type": "string",
-      "default": "1:30:100:200"
-    },
-    "seq_center": {
-      "type": "string"
-    },
-    "seq_platform": {
-      "type": "string",
-      "default": "ILLUMINA"
-    },
-    "modules_testdata_base_path": {
-      "type": "string",
-      "default": "https://raw.githubusercontent.com/nf-core/test-datasets/modules/data/"
-    },
-    "local_testdata_base_path": {
-      "type": "string",
-      "default": "s3://bioinfohsl-tools/precisecaller/test-datasets/"
-    },
-    "fasta_fai": {
-      "type": "string"
-    },
-    "dict": {
-      "type": "string"
-    },
-    "bwa": {
-      "type": "string"
-    },
-    "dbsnp": {
-      "type": "string"
-    },
-    "dbsnp_tbi": {
-      "type": "string"
-    },
-    "known_indels": {
-      "type": "string"
-    },
-    "known_indels_tbi": {
-      "type": "string"
-    },
-    "known_snps": {
-      "type": "string"
-    },
-    "known_snps_tbi": {
-      "type": "string"
-    },
-    "vep_cache_version": {
-      "type": "string"
-    },
-    "vep_genome": {
-      "type": "string"
-    },
-    "vep_species": {
-      "type": "string"
-    }
-  }
+  ]
 }
