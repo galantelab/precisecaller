@@ -503,12 +503,12 @@
       "properties": {
         "filters_snp": {
           "type": "string",
-          "default": "QD_filter:        QD < 2.0 |FS_filter:        FS > 60.0 |MQ_filter:        MQ < 40.0 |SOR_filter:       SOR > 3.0 |MQRankSum_filter:     MQRankSum < -12.5 |ReadPosRankSum_filter:  ReadPosRankSum < -8.0",
+          "default": "QD_filter: QD < 2.0 | FS_filter: FS > 60.0 | MQ_filter: MQ < 40.0 | SOR_filter: SOR > 3.0 | MQRankSum_filter: MQRankSum < -12.5 | ReadPosRankSum_filter: ReadPosRankSum < -8.0",
           "description": "Pipe-separated values or Groovy Map."
         },
         "filters_indel": {
           "type": "string",
-          "default": "QD_filter:        QD < 2.0 |FS_filter:        FS > 200.0 |SOR_filter:       SOR > 10.0",
+          "default": "QD_filter: QD < 2.0 | FS_filter: FS > 200.0 | SOR_filter: SOR > 10.0",
           "description": "Pipe-separated values or Groovy Map."
         }
       }
