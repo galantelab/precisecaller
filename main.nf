@@ -19,7 +19,6 @@ include { PREPARE_INTERVALS       } from './subworkflows/local/prepare_intervals
 include { PIPELINE_INITIALISATION } from './subworkflows/local/utils_nfcore_precisecaller_pipeline'
 include { PIPELINE_COMPLETION     } from './subworkflows/local/utils_nfcore_precisecaller_pipeline'
 include { getGenomeAttribute      } from './subworkflows/local/utils_nfcore_precisecaller_pipeline'
-include { getAssayAttribute       } from './subworkflows/local/utils_nfcore_precisecaller_pipeline'
 include { paramsHelp              } from 'plugin/nf-validation'
 
 /*
@@ -29,7 +28,7 @@ include { paramsHelp              } from 'plugin/nf-validation'
 */
 
 if (params.help) {
-    log.info paramsHelp("nextflow run galantelab/precisecaller --input input_file.csv")
+    log.info paramsHelp("nextflow run galantelab/precisecaller --input input_file.csv --outdir results")
     exit 0
 }
 
