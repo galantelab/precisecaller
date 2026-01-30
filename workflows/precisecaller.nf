@@ -17,7 +17,6 @@ include { PICARD_MARKDUPLICATES                                                 
 include { FASTQ_FILTER_UMI_CONSENSUS_FGBIO                                      } from '../subworkflows/local/fastq_filter_umi_consensus_fgbio/main'
 include { FASTQ_SPLIT_SEQKIT                                                    } from '../subworkflows/local/fastq_split_seqkit/main'
 include { BAM_MERGE_SAMTOOLS                                                    } from '../subworkflows/local/bam_merge_samtools/main'
-include { BAM_MERGE_SAMTOOLS                                                    } from '../subworkflows/local/bam_merge_samtools/main'
 include { BAM_COLLECT_METRICS_PICARD               as ALIGN_METRICS_POST_SORT   } from '../subworkflows/local/bam_collect_metrics_picard/main'
 include { BAM_COLLECT_METRICS_PICARD               as ALIGN_METRICS_POST_MAPQ   } from '../subworkflows/local/bam_collect_metrics_picard/main'
 include { BAM_COLLECT_METRICS_MOSDEPTH             as COVERAGE_METRICS          } from '../subworkflows/local/bam_collect_metrics_mosdepth/main'
