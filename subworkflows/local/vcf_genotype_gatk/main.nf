@@ -16,9 +16,9 @@
 // The final output is always a joint-called VCF + TBI from GenotypeGVCFs
 //
 
-include { GATK4_GENOMICSDBIMPORT as GENOMICSDBIMPORT } from '../../../modules/nf-core/gatk4/genomicsdbimport/main'
-include { GATK4_COMBINEGVCFS     as COMBINEGVCFS     } from '../../../modules/nf-core/gatk4/combinegvcfs/main'
-include { GATK4_GENOTYPEGVCFS    as GENOTYPEGVCFS    } from '../../../modules/nf-core/gatk4/genotypegvcfs/main'
+include { GATK4_GENOMICSDBIMPORT } from '../../../modules/nf-core/gatk4/genomicsdbimport/main'
+include { GATK4_COMBINEGVCFS     } from '../../../modules/nf-core/gatk4/combinegvcfs/main'
+include { GATK4_GENOTYPEGVCFS    } from '../../../modules/nf-core/gatk4/genotypegvcfs/main'
 
 workflow VCF_GENOTYPE_GATK {
     take:
@@ -84,7 +84,7 @@ workflow VCF_GENOTYPE_GATK {
         run_updatewspace = false
         input_map        = false
 
-        GENOMICSDBIMPORT(
+        GATK4_GENOMICSDBIMPORT(
             combine_input
                 .combine(intervals)
                 .map { meta, vcf, tbi, bed ->
@@ -95,37 +95,37 @@ workflow VCF_GENOTYPE_GATK {
             input_map
         )
 
-        genotype_input = GENOMICSDBIMPORT.out.genomicsdb
+        genotype_input = GATK4_GENOMICSDBIMPORT.out.genomicsdb
                              .combine(intervals_gz_tbi)
                              .map { meta, db, bed, bed_tbi ->
                                  tuple(meta, db, [], bed, bed_tbi)
                              }
 
-        versions = versions.mix(GENOMICSDBIMPORT.out.versions)
+        versions = versions.mix(GATK4_GENOMICSDBIMPORT.out.versions)
     } else {
         // Typically preferred for WXS or targeted sequencing panels and
         // for smaller sample sets
-        COMBINEGVCFS(
+        GATK4_COMBINEGVCFS(
             combine_input,
             fasta.map     { it[1] },
             fasta_fai.map { it[1] },
             dict.map      { it[1] }
         )
 
-        genotype_input = COMBINEGVCFS.out.combined_gvcf
+        genotype_input = GATK4_COMBINEGVCFS.out.combined_gvcf
                              .join(COMBINEGVCFS.out.combined_tbi)
                              .combine(intervals_gz_tbi)
                              .map { meta, vcf, vcf_tbi, bed, bed_tbi ->
                                  tuple(meta, vcf, vcf_tbi, bed, bed_tbi)
                              }
 
-        versions = versions.mix(COMBINEGVCFS.out.versions)
+        versions = versions.mix(GATK4_COMBINEGVCFS.out.versions)
     }
 
     // Regardless of whether GVCFs were combined via GenomicsDBImport
     // or CombineGVCFs, GenotypeGVCFs performs the actual cohort
     // genotyping and produces the final multi-sample VCF output
-    GENOTYPEGVCFS(
+    GATK4_GENOTYPEGVCFS(
         genotype_input,
         fasta,
         fasta_fai,
@@ -134,10 +134,10 @@ workflow VCF_GENOTYPE_GATK {
         dbsnp_tbi
     )
 
-    versions = versions.mix(GENOTYPEGVCFS.out.versions)
+    versions = versions.mix(GATK4_GENOTYPEGVCFS.out.versions)
 
     emit:
-    vcf      = GENOTYPEGVCFS.out.vcf  // channel: tuple(meta, vcf)
-    tbi      = GENOTYPEGVCFS.out.tbi  // channel: tuple(meta, vcf.tbi)
-    versions = versions               // channel: path(versions.yml)
+    vcf      = GATK4_GENOTYPEGVCFS.out.vcf  // channel: tuple(meta, vcf)
+    tbi      = GATK4_GENOTYPEGVCFS.out.tbi  // channel: tuple(meta, vcf.tbi)
+    versions = versions                     // channel: path(versions.yml)
 }

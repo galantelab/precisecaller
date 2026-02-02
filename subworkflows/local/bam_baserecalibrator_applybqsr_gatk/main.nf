@@ -1,9 +1,9 @@
 // Run GATK4 Base Recalibration
 
-include { GATK4_BASERECALIBRATOR  as BASERECALIBRATOR_1ST_PASS } from '../../../modules/nf-core/gatk4/baserecalibrator/main'
-include { GATK4_BASERECALIBRATOR  as BASERECALIBRATOR_2ND_PASS } from '../../../modules/nf-core/gatk4/baserecalibrator/main'
-include { GATK4_APPLYBQSR         as APPLYBQSR                 } from '../../../modules/nf-core/gatk4/applybqsr/main'
-include { GATK4_ANALYZECOVARIATES as ANALYZECOVARIATES         } from '../../../modules/local/gatk4/analyzecovariates/main'
+include { GATK4_BASERECALIBRATOR  as GATK4_BASERECALIBRATOR_1ST_PASS } from '../../../modules/nf-core/gatk4/baserecalibrator/main'
+include { GATK4_BASERECALIBRATOR  as GATK4_BASERECALIBRATOR_2ND_PASS } from '../../../modules/nf-core/gatk4/baserecalibrator/main'
+include { GATK4_APPLYBQSR                                            } from '../../../modules/nf-core/gatk4/applybqsr/main'
+include { GATK4_ANALYZECOVARIATES                                    } from '../../../modules/local/gatk4/analyzecovariates/main'
 
 workflow BAM_BASERECALIBRATOR_APPLYBQSR_GATK {
     take:
@@ -52,7 +52,7 @@ workflow BAM_BASERECALIBRATOR_APPLYBQSR_GATK {
         .groupTuple()
 
     // First pass of Base Quality Score Recalibration (BQSR)
-    BASERECALIBRATOR_1ST_PASS(
+    GATK4_BASERECALIBRATOR_1ST_PASS(
         bam
             .join(bai)
             .combine(intervals)
@@ -67,10 +67,10 @@ workflow BAM_BASERECALIBRATOR_APPLYBQSR_GATK {
     )
 
     // Apply Base Quality Score Recalibration (BQSR)
-    APPLYBQSR(
+    GATK4_APPLYBQSR(
         bam
             .join(bai)
-            .join(BASERECALIBRATOR_1ST_PASS.out.table)
+            .join(GATK4_BASERECALIBRATOR_1ST_PASS.out.table)
             .combine(intervals)
             .map { meta, bam, bai, table, bed ->
                 tuple(meta, bam, bai, table, bed)
@@ -80,16 +80,16 @@ workflow BAM_BASERECALIBRATOR_APPLYBQSR_GATK {
         dict.map      { it[1] }
     )
 
-    bam_recall = APPLYBQSR.out.bam
-    bai_recall = APPLYBQSR.out.bai
-    versions   = versions.mix(BASERECALIBRATOR_1ST_PASS.out.versions)
-    versions   = versions.mix(APPLYBQSR.out.versions)
+    bam_recall = GATK4_APPLYBQSR.out.bam
+    bai_recall = GATK4_APPLYBQSR.out.bai
+    versions   = versions.mix(GATK4_BASERECALIBRATOR_1ST_PASS.out.versions)
+    versions   = versions.mix(GATK4_APPLYBQSR.out.versions)
 
     if (get_metrics) {
         // Second pass of Base Quality Score Recalibration (BQSR)
         // Generate error model based on corrected BAM file
         // Only used to Analyze Covariates
-        BASERECALIBRATOR_2ND_PASS(
+        GATK4_BASERECALIBRATOR_2ND_PASS(
             bam_recall
                 .join(bai_recall)
                 .combine(intervals)
@@ -104,14 +104,14 @@ workflow BAM_BASERECALIBRATOR_APPLYBQSR_GATK {
         )
 
         // Analyze covariates (visually see the effects of recalibration)
-        ANALYZECOVARIATES(
-            BASERECALIBRATOR_1ST_PASS.out.table
-                .join(BASERECALIBRATOR_2ND_PASS.out.table)
+        GATK4_ANALYZECOVARIATES(
+            GATK4_BASERECALIBRATOR_1ST_PASS.out.table
+                .join(GATK4_BASERECALIBRATOR_2ND_PASS.out.table)
         )
 
-        plots    = ANALYZECOVARIATES.out.plots
-        versions = versions.mix(BASERECALIBRATOR_2ND_PASS.out.versions)
-        versions = versions.mix(ANALYZECOVARIATES.out.versions)
+        plots    = GATK4_ANALYZECOVARIATES.out.plots
+        versions = versions.mix(GATK4_BASERECALIBRATOR_2ND_PASS.out.versions)
+        versions = versions.mix(GATK4_ANALYZECOVARIATES.out.versions)
     }
 
     emit:

@@ -1,7 +1,7 @@
 // GATK HaplotypeCaller calls variants (SNPs and INDELs) via local de-novo
 // reassembly of haplotypes in regions showing signs of variation
 
-include { GATK4_HAPLOTYPECALLER as HAPLOTYPECALLER } from '../../../modules/nf-core/gatk4/haplotypecaller/main'
+include { GATK4_HAPLOTYPECALLER } from '../../../modules/nf-core/gatk4/haplotypecaller/main'
 
 workflow BAM_VARIANT_CALLING_HAPLOTYPECALLER_GATK {
     take:
@@ -17,7 +17,7 @@ workflow BAM_VARIANT_CALLING_HAPLOTYPECALLER_GATK {
     main:
     versions = Channel.empty()
 
-    HAPLOTYPECALLER(
+    GATK4_HAPLOTYPECALLER(
         bam.join(bai)
            .combine(intervals)
            .map { meta, bam, bai, bed ->
@@ -30,10 +30,10 @@ workflow BAM_VARIANT_CALLING_HAPLOTYPECALLER_GATK {
         dbsnp_tbi
     )
 
-    versions = versions.mix(HAPLOTYPECALLER.out.versions)
+    versions = versions.mix(GATK4_HAPLOTYPECALLER.out.versions)
 
     emit:
-    vcf      = HAPLOTYPECALLER.out.vcf  // channel: tuple(meta, vcf)
-    tbi      = HAPLOTYPECALLER.out.tbi  // channel: tuple(meta, vcf.tbi)
-    versions = versions                 // channel: path(versions.yml)
+    vcf      = GATK4_HAPLOTYPECALLER.out.vcf  // channel: tuple(meta, vcf)
+    tbi      = GATK4_HAPLOTYPECALLER.out.tbi  // channel: tuple(meta, vcf.tbi)
+    versions = versions                       // channel: path(versions.yml)
 }

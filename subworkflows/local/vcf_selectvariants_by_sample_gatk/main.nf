@@ -11,7 +11,7 @@
 // variant type (SNP or INDEL) in the metadata.
 //
 
-include { GATK4_SELECTVARIANTS as SELECTVARIANTS } from '../../../modules/nf-core/gatk4/selectvariants/main'
+include { GATK4_SELECTVARIANTS as GATK4_SELECTVARIANTS_BY_SAMPLE } from '../../../modules/nf-core/gatk4/selectvariants/main'
 
 workflow VCF_SELECTVARIANTS_BY_SAMPLE_GATK {
     take:
@@ -31,7 +31,7 @@ workflow VCF_SELECTVARIANTS_BY_SAMPLE_GATK {
     // This expands a single multi-sample VCF into one input tuple per sample,
     // allowing GATK SelectVariants to be executed independently for each sample
     //
-    SELECTVARIANTS(
+    GATK4_SELECTVARIANTS_BY_SAMPLE(
         vcf
             .join(tbi)
             .combine(intervals)
@@ -46,10 +46,10 @@ workflow VCF_SELECTVARIANTS_BY_SAMPLE_GATK {
             }
     )
 
-    versions = versions.mix(SELECTVARIANTS.out.versions)
+    versions = versions.mix(GATK4_SELECTVARIANTS_BY_SAMPLE.out.versions)
 
     emit:
-    vcf      = SELECTVARIANTS.out.vcf   // channel: tuple(meta, vcf)
-    tbi      = SELECTVARIANTS.out.tbi   // channel: tuple(meta, vcf.tbi)
-    versions = versions                 // channel: path(versions.yml)
+    vcf      = GATK4_SELECTVARIANTS_BY_SAMPLE.out.vcf   // channel: tuple(meta, vcf)
+    tbi      = GATK4_SELECTVARIANTS_BY_SAMPLE.out.tbi   // channel: tuple(meta, vcf.tbi)
+    versions = versions                                 // channel: path(versions.yml)
 }

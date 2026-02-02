@@ -50,12 +50,12 @@ workflow PREPARE_INTERVALS {
 
     // Normalize all supported input formats into a sorted BED file
     CREATE_INTERVALS(intervals_path.map { it[1] })
-    intervals_bed = CREATE_INTERVALS.out.bed.first()
+    intervals_bed = CREATE_INTERVALS.out.bed
     versions      = versions.mix(CREATE_INTERVALS.out.versions)
 
     // Compress and index the BED file using bgzip + tabix
     TABIX_INTERVALS(intervals_bed.map { [[id:"intervals"], it] })
-    intervals_bed_gz_tbi = TABIX_INTERVALS.out.gz_index.map { meta, bed, tbi -> [bed, tbi] }.first()
+    intervals_bed_gz_tbi = TABIX_INTERVALS.out.gz_index.map { meta, bed, tbi -> [bed, tbi] }
     versions             = versions.mix(TABIX_INTERVALS.out.versions)
 
     emit:
