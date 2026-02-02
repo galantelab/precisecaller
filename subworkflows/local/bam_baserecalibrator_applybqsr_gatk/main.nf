@@ -27,15 +27,27 @@ workflow BAM_BASERECALIBRATOR_APPLYBQSR_GATK {
 
     known_sites = known_indels
         .mix(known_snps)
-        .map { meta, vcf ->
-            tuple([id:"known_sites"], vcf)
+        .flatMap { meta, vcfs ->
+            if (vcfs instanceof List) {
+                vcfs.collect { vcf ->
+                    tuple([id:"known_sites"], vcf)
+                }
+            } else {
+                [ tuple([id:"known_sites"], vcfs) ]
+            }
         }
         .groupTuple()
 
     known_sites_tbi = known_indels_tbi
         .mix(known_snps_tbi)
-        .map { meta, tbi ->
-            tuple([id:"known_sites_tbi"], tbi)
+        .flatMap { meta, tbis ->
+            if (tbis instanceof List) {
+                tbis.collect { tbi ->
+                    tuple([id:"known_sites"], tbi)
+                }
+            } else {
+                [ tuple([id:"known_sites"], tbis) ]
+            }
         }
         .groupTuple()
 
