@@ -139,6 +139,7 @@ workflow GALANTELAB_PRECISECALLER {
 workflow {
 
     main:
+
     //
     // SUBWORKFLOW: Run initialisation tasks
     //
@@ -150,6 +151,23 @@ workflow {
         params.outdir,
         params.input
     )
+
+    //
+    // Not allow empty samplesheet
+    //
+    PIPELINE_INITIALISATION.out.samplesheet
+        .ifEmpty {
+            error """
+            ❌ The samplesheet appears to be empty or missing a header.
+
+            Expected a CSV file with a header line, for example:
+
+            id,sample,lane,fastq_1,fastq_2
+            ID1,SAMPLE1,L001,S1_R1.fastq.gz,S1_R2.fastq.gz
+
+            Please check your samplesheet format.
+            """
+        }
 
     //
     // WORKFLOW: Run main workflow
