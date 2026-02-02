@@ -48,6 +48,9 @@ workflow PRECISECALLER {
     known_snps
     known_snps_tbi
     vep_cache
+    vep_cache_version
+    vep_genome
+    vep_species
     intervals
     intervals_gz_tbi
     umi_file
@@ -78,7 +81,7 @@ workflow PRECISECALLER {
 
         def rg_sam = ReadGroup.toSam(rg)
 
-        tuple(meta + [ read_group: rg, read_group_sam: rg_sam ], files)
+        tuple(meta + [ read_group: rg, read_group_sam: "'${rg_sam}'" ], files)
     }
 
     // FASTQC is intentionally run before FASTQ splitting to avoid
@@ -371,9 +374,9 @@ workflow PRECISECALLER {
         vcf_tbi,
         fasta,
         vep_cache,
-        params.vep_cache_version,
-        params.vep_genome,
-        params.vep_species
+        vep_cache_version,
+        vep_genome,
+        vep_species
     )
 
     vcf      = VARIANTANNOTATION.out.vcf
