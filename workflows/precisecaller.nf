@@ -392,11 +392,11 @@ workflow PRECISECALLER {
     // Capture and format the topic-based versions
     //
     topic_versions = Channel.topic('versions')
+        .filter { it != null }
         .map { proc, tool, version ->
             "\"${proc}\":\n    ${tool}: ${version}"
         }
         .collectFile(name: 'topic_versions.yml', newLine: true)
-        .ifEmpty([])
 
     // Mix them into the main versions channel
     // This combines legacy .out.versions and the new topic versions
@@ -417,8 +417,8 @@ workflow PRECISECALLER {
     // Capture and format the topic-based multiqc_files
     //
     topic_multiqc_files = Channel.topic('multiqc_files')
-        .map { it[2] }
-        .ifEmpty([])
+        .filter { it != null }
+        .map { it[3] }
 
     // Mix them into the main multiqc_files channel
     // This combines legacy and the new topic reports
