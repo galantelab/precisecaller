@@ -3,30 +3,29 @@
     IMPORT MODULES / SUBWORKFLOWS / FUNCTIONS
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
-include { FASTQC                                                                } from '../modules/nf-core/fastqc/main'
-include { MULTIQC                                                               } from '../modules/nf-core/multiqc/main'
-include { paramsSummaryMap                                                      } from 'plugin/nf-schema'
-include { paramsSummaryMultiqc                                                  } from '../subworkflows/nf-core/utils_nfcore_pipeline'
-include { softwareVersionsToYAML                                                } from '../subworkflows/nf-core/utils_nfcore_pipeline'
-include { methodsDescriptionText                                                } from '../subworkflows/local/utils_nfcore_precisecaller_pipeline'
-include { FASTP                                                                 } from '../modules/nf-core/fastp/main'
-include { BWA_MEM                                                               } from '../modules/nf-core/bwa/mem/main'
-include { SAMTOOLS_SORT                                                         } from '../modules/nf-core/samtools/sort/main'
-include { SAMTOOLS_VIEW                            as SAMTOOLS_FILTER_MAPQ      } from '../modules/nf-core/samtools/view/main'
-include { PICARD_MARKDUPLICATES                                                 } from '../modules/nf-core/picard/markduplicates/main'
-include { FASTQ_FILTER_UMI_CONSENSUS_FGBIO                                      } from '../subworkflows/local/fastq_filter_umi_consensus_fgbio/main'
-include { FASTQ_SPLIT_SEQKIT                                                    } from '../subworkflows/local/fastq_split_seqkit/main'
-include { BAM_MERGE_SAMTOOLS                                                    } from '../subworkflows/local/bam_merge_samtools/main'
-include { BAM_COLLECT_METRICS_PICARD               as ALIGN_METRICS_POST_SORT   } from '../subworkflows/local/bam_collect_metrics_picard/main'
-include { BAM_COLLECT_METRICS_PICARD               as ALIGN_METRICS_POST_MAPQ   } from '../subworkflows/local/bam_collect_metrics_picard/main'
-include { BAM_COLLECT_METRICS_MOSDEPTH             as COVERAGE_METRICS          } from '../subworkflows/local/bam_collect_metrics_mosdepth/main'
-include { BAM_BASERECALIBRATOR_APPLYBQSR_GATK      as BASERECALIBRATOR          } from '../subworkflows/local/bam_baserecalibrator_applybqsr_gatk/main'
-include { BAM_VARIANT_CALLING_HAPLOTYPECALLER_GATK as HAPLOTYPECALLER           } from '../subworkflows/local/bam_variant_calling_haplotypecaller_gatk/main'
-include { VCF_GENOTYPE_GATK                        as GENOTYPE                  } from '../subworkflows/local/vcf_genotype_gatk/main'
-include { VCF_VARIANTFILTRATION_GATK               as VARIANTFILTRATION         } from '../subworkflows/local/vcf_variantfiltration_gatk/main'
-include { VCF_SELECTVARIANTS_BY_SAMPLE_GATK        as SELECTVARIANTS_BY_SAMPLE  } from '../subworkflows/local/vcf_selectvariants_by_sample_gatk/main'
-include { VCF_NORM_BCFTOOLS                        as VARIANTNORMALIZATION      } from '../subworkflows/local/vcf_norm_bcftools/main'
-include { VCF_ANNOTATION_VEP                       as VARIANTANNOTATION         } from '../subworkflows/local/vcf_annotation_vep/main'
+include { paramsSummaryMap                         } from 'plugin/nf-schema'
+include { paramsSummaryMultiqc                     } from '../subworkflows/nf-core/utils_nfcore_pipeline'
+include { softwareVersionsToYAML                   } from '../subworkflows/nf-core/utils_nfcore_pipeline'
+include { methodsDescriptionText                   } from '../subworkflows/local/utils_nfcore_precisecaller_pipeline'
+include { FASTQC                                   } from '../modules/nf-core/fastqc/main'
+include { MULTIQC                                  } from '../modules/nf-core/multiqc/main'
+include { FASTP                                    } from '../modules/nf-core/fastp/main'
+include { BWA_MEM                                  } from '../modules/nf-core/bwa/mem/main'
+include { SAMTOOLS_SORT                            } from '../modules/nf-core/samtools/sort/main'
+include { SAMTOOLS_VIEW  as SAMTOOLS_FILTER_MAPQ   } from '../modules/nf-core/samtools/view/main'
+include { PICARD_MARKDUPLICATES                    } from '../modules/nf-core/picard/markduplicates/main'
+include { FASTQ_FILTER_UMI_CONSENSUS_FGBIO         } from '../subworkflows/local/fastq_filter_umi_consensus_fgbio/main'
+include { FASTQ_SPLIT_SEQKIT                       } from '../subworkflows/local/fastq_split_seqkit/main'
+include { BAM_MERGE_SAMTOOLS                       } from '../subworkflows/local/bam_merge_samtools/main'
+include { BAM_COLLECT_METRICS_PICARD               } from '../subworkflows/local/bam_collect_metrics_picard/main'
+include { BAM_COLLECT_METRICS_MOSDEPTH             } from '../subworkflows/local/bam_collect_metrics_mosdepth/main'
+include { BAM_BASERECALIBRATOR_APPLYBQSR_GATK      } from '../subworkflows/local/bam_baserecalibrator_applybqsr_gatk/main'
+include { BAM_VARIANT_CALLING_HAPLOTYPECALLER_GATK } from '../subworkflows/local/bam_variant_calling_haplotypecaller_gatk/main'
+include { VCF_GENOTYPE_GATK                        } from '../subworkflows/local/vcf_genotype_gatk/main'
+include { VCF_VARIANTFILTRATION_GATK               } from '../subworkflows/local/vcf_variantfiltration_gatk/main'
+include { VCF_SELECTVARIANTS_BY_SAMPLE_GATK        } from '../subworkflows/local/vcf_selectvariants_by_sample_gatk/main'
+include { VCF_NORM_BCFTOOLS                        } from '../subworkflows/local/vcf_norm_bcftools/main'
+include { VCF_ANNOTATION_VEP                       } from '../subworkflows/local/vcf_annotation_vep/main'
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -190,6 +189,9 @@ workflow PRECISECALLER {
     bam      = BAM_MERGE_SAMTOOLS.out.bam
     versions = versions.mix(BAM_MERGE_SAMTOOLS.out.versions)
 
+    // Collect bam for alignment metrics
+    bam_alignment_metrics = Channel.empty()
+
     // Sort merged BAM files by genomic coordinate and generate a BAI index
     // Coordinate sorting is required for downstream analysis steps
     SAMTOOLS_SORT(
@@ -205,18 +207,11 @@ workflow PRECISECALLER {
     // Collect alignment and insert size metrics on coordinate-sorted BAMs
     // Metrics are labeled as `post_sort` to distinguish them from
     // post-filtering metrics when MAPQ filtering is enabled
-    if (enable_collect_alignment_metrics) {
-        ALIGN_METRICS_POST_SORT(
-            bam.map { meta, bam ->
-                [ meta + [ stage: 'post_sort' ], bam ]
-            },
-            fasta
-        )
-
-        versions      = versions.mix(ALIGN_METRICS_POST_SORT.out.versions)
-        multiqc_files = multiqc_files.mix(ALIGN_METRICS_POST_SORT.out.alignment_metrics.map { meta, txt -> txt })
-        multiqc_files = multiqc_files.mix(ALIGN_METRICS_POST_SORT.out.insert_metrics.map    { meta, txt -> txt })
-    }
+    bam_alignment_metrics = bam_alignment_metrics.mix(
+        bam.map { meta, bam ->
+            tuple(meta + [ stage: 'post_sort' ], bam)
+        }
+    )
 
     // Filter alignments based on minimum MAPQ threshold
     // Since `samtools view` preserves coordinate order, the output BAM
@@ -235,18 +230,19 @@ workflow PRECISECALLER {
 
         // Metrics are labeled as `post_mapq` to distinguish them from
         // post-sorting metrics
-        if (enable_collect_alignment_metrics) {
-            ALIGN_METRICS_POST_MAPQ(
-                bam.map { meta, bam ->
-                    [ meta + [ stage: 'post_mapq' ], bam ]
-                },
-                fasta
-            )
+        bam_alignment_metrics = bam_alignment_metrics.mix(
+            bam.map { meta, bam ->
+                tuple(meta + [ stage: 'post_mapq' ], bam)
+            }
+        )
+    }
 
-            versions      = versions.mix(ALIGN_METRICS_POST_MAPQ.out.versions)
-            multiqc_files = multiqc_files.mix(ALIGN_METRICS_POST_MAPQ.out.alignment_metrics.map { meta, txt -> txt })
-            multiqc_files = multiqc_files.mix(ALIGN_METRICS_POST_MAPQ.out.insert_metrics.map    { meta, txt -> txt })
-        }
+    if (enable_collect_alignment_metrics) {
+        BAM_COLLECT_METRICS_PICARD(bam_alignment_metrics, fasta)
+
+        versions      = versions.mix(BAM_COLLECT_METRICS_PICARD.out.versions)
+        multiqc_files = multiqc_files.mix(BAM_COLLECT_METRICS_PICARD.out.alignment_metrics.map { meta, txt -> txt })
+        multiqc_files = multiqc_files.mix(BAM_COLLECT_METRICS_PICARD.out.insert_metrics.map    { meta, txt -> txt })
     }
 
     // Mark duplicated reads
@@ -259,16 +255,16 @@ workflow PRECISECALLER {
 
     // Collect coverage metrics
     if (enable_collect_coverage_metrics) {
-        COVERAGE_METRICS(bam, bam_bai, intervals)
+        BAM_COLLECT_METRICS_MOSDEPTH(bam, bam_bai, intervals)
 
-        versions      = versions.mix(COVERAGE_METRICS.out.versions)
-        multiqc_files = multiqc_files.mix(COVERAGE_METRICS.out.global_txt.map  { meta, txt -> txt })
-        multiqc_files = multiqc_files.mix(COVERAGE_METRICS.out.summary_txt.map { meta, txt -> txt })
-        multiqc_files = multiqc_files.mix(COVERAGE_METRICS.out.regions_txt.map { meta, txt -> txt })
+        versions      = versions.mix(BAM_COLLECT_METRICS_MOSDEPTH.out.versions)
+        multiqc_files = multiqc_files.mix(BAM_COLLECT_METRICS_MOSDEPTH.out.global_txt.map  { meta, txt -> txt })
+        multiqc_files = multiqc_files.mix(BAM_COLLECT_METRICS_MOSDEPTH.out.summary_txt.map { meta, txt -> txt })
+        multiqc_files = multiqc_files.mix(BAM_COLLECT_METRICS_MOSDEPTH.out.regions_txt.map { meta, txt -> txt })
     }
 
     // Run GATK4 Base Recalibration on dedupped BAMs
-    BASERECALIBRATOR(
+    BAM_BASERECALIBRATOR_APPLYBQSR_GATK(
         bam,
         bam_bai,
         intervals,
@@ -282,9 +278,9 @@ workflow PRECISECALLER {
         enable_collect_recalibration_metrics
     )
 
-    bam      = BASERECALIBRATOR.out.bam
-    bam_bai  = BASERECALIBRATOR.out.bai
-    versions = versions.mix(BASERECALIBRATOR.out.versions)
+    bam      = BAM_BASERECALIBRATOR_APPLYBQSR_GATK.out.bam
+    bam_bai  = BAM_BASERECALIBRATOR_APPLYBQSR_GATK.out.bai
+    versions = versions.mix(BAM_BASERECALIBRATOR_APPLYBQSR_GATK.out.versions)
 
     /*
     ~~~~~~~~~~~~~~~~~~~~~~
@@ -296,7 +292,7 @@ workflow PRECISECALLER {
     vcf_tbi = Channel.empty()
 
     // GATK HaplotypeCaller calls variants (SNPs and INDELs)
-    HAPLOTYPECALLER(
+    BAM_VARIANT_CALLING_HAPLOTYPECALLER_GATK(
         bam,
         bam_bai,
         intervals,
@@ -307,12 +303,12 @@ workflow PRECISECALLER {
         dbsnp_tbi,
     )
 
-    vcf      = HAPLOTYPECALLER.out.vcf
-    vcf_tbi  = HAPLOTYPECALLER.out.tbi
-    versions = versions.mix(HAPLOTYPECALLER.out.versions)
+    vcf      = BAM_VARIANT_CALLING_HAPLOTYPECALLER_GATK.out.vcf
+    vcf_tbi  = BAM_VARIANT_CALLING_HAPLOTYPECALLER_GATK.out.tbi
+    versions = versions.mix(BAM_VARIANT_CALLING_HAPLOTYPECALLER_GATK.out.versions)
 
     // Joint genotyping of multiple GVCFs using GATK
-    GENOTYPE(
+    VCF_GENOTYPE_GATK(
         vcf,
         vcf_tbi,
         intervals,
@@ -325,13 +321,13 @@ workflow PRECISECALLER {
         params.use_genomicsdb
     )
 
-    vcf      = GENOTYPE.out.vcf
-    vcf_tbi  = GENOTYPE.out.tbi
-    versions = versions.mix(GENOTYPE.out.versions)
+    vcf      = VCF_GENOTYPE_GATK.out.vcf
+    vcf_tbi  = VCF_GENOTYPE_GATK.out.tbi
+    versions = versions.mix(VCF_GENOTYPE_GATK.out.versions)
 
     // Split multi-sample genotyped GVCF into SNPs & INDELs
     // and apply hard-filter
-    VARIANTFILTRATION(
+    VCF_VARIANTFILTRATION_GATK(
         vcf,
         vcf_tbi,
         intervals,
@@ -342,34 +338,34 @@ workflow PRECISECALLER {
         filters_snp_map
     )
 
-    vcf      = VARIANTFILTRATION.out.vcf
-    vcf_tbi  = VARIANTFILTRATION.out.tbi
-    versions = versions.mix(VARIANTFILTRATION.out.versions)
+    vcf      = VCF_VARIANTFILTRATION_GATK.out.vcf
+    vcf_tbi  = VCF_VARIANTFILTRATION_GATK.out.tbi
+    versions = versions.mix(VCF_VARIANTFILTRATION_GATK.out.versions)
 
     // Separate hard-filtered, multi-sample SNP/INDEL GVCFs by sample
-    SELECTVARIANTS_BY_SAMPLE(
+    VCF_SELECTVARIANTS_BY_SAMPLE_GATK(
         vcf,
         vcf_tbi,
         intervals
     )
 
-    vcf      = SELECTVARIANTS_BY_SAMPLE.out.vcf
-    vcf_tbi  = SELECTVARIANTS_BY_SAMPLE.out.tbi
-    versions = versions.mix(SELECTVARIANTS_BY_SAMPLE.out.versions)
+    vcf      = VCF_SELECTVARIANTS_BY_SAMPLE_GATK.out.vcf
+    vcf_tbi  = VCF_SELECTVARIANTS_BY_SAMPLE_GATK.out.tbi
+    versions = versions.mix(VCF_SELECTVARIANTS_BY_SAMPLE_GATK.out.versions)
 
     // Split multiallelic variants on GVCFs
-    VARIANTNORMALIZATION(
+    VCF_NORM_BCFTOOLS(
         vcf,
         vcf_tbi,
         fasta
     )
 
-    vcf      = VARIANTNORMALIZATION.out.vcf
-    vcf_tbi  = VARIANTNORMALIZATION.out.tbi
-    versions = versions.mix(VARIANTNORMALIZATION.out.versions)
+    vcf      = VCF_NORM_BCFTOOLS.out.vcf
+    vcf_tbi  = VCF_NORM_BCFTOOLS.out.tbi
+    versions = versions.mix(VCF_NORM_BCFTOOLS.out.versions)
 
     // Annotates normalized and indexed VCFs using Ensembl VEP
-    VARIANTANNOTATION(
+    VCF_ANNOTATION_VEP(
         vcf,
         vcf_tbi,
         fasta,
@@ -379,8 +375,8 @@ workflow PRECISECALLER {
         vep_species
     )
 
-    vcf      = VARIANTANNOTATION.out.vcf
-    vcf_tbi  = VARIANTANNOTATION.out.tbi
+    vcf      = VCF_ANNOTATION_VEP.out.vcf
+    vcf_tbi  = VCF_ANNOTATION_VEP.out.tbi
     // versions from topic channel
     // multiqc_files from topic channel
 
