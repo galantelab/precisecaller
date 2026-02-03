@@ -208,7 +208,7 @@ nextflow_function {
 
         then {
             assert function.success
-            assert function.result == "@RG\tID:FC123.L1\tCN:PONGA\tPU:FC123.L1.AAAAAA\tSM:sample1\tLB:sample1_lib\tPL:ILLUMINA"
+            assert function.result == '@RG\\tID:FC123.L1\\tCN:PONGA\\tPU:FC123.L1.AAAAAA\\tSM:sample1\\tLB:sample1_lib\\tPL:ILLUMINA'
         }
     }
 
