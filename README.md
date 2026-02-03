@@ -1,6 +1,9 @@
-
-
-# galantelab/precisecaller
+<h1>
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="docs/images/galantelab-precisecaller_logo_dark.png">
+    <img alt="galantelab/precisecaller" src="docs/images/galantelab-precisecaller_logo_light.png">
+  </picture>
+</h1>
 
 ## Introduction
 
