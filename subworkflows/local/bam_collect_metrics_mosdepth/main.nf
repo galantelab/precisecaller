@@ -5,14 +5,14 @@ include { MOSDEPTH } from '../../../modules/nf-core/mosdepth/main'
 workflow BAM_COLLECT_METRICS_MOSDEPTH {
     take:
     bam         // [mandatory] channel: tuple(meta, bam)
-    bam_index   // [mandatory] channel: tuple(meta, bai)
+    bai         // [mandatory] channel: tuple(meta, bai)
     intervals   // [mandatory] channel: path(bed)
 
     main:
     versions = Channel.empty()
 
     MOSDEPTH(
-        bam.join(bam_index)
+        bam.join(bai)
            .combine(intervals)
            .map { meta, bam, bai, bed ->
                tuple(meta, bam, bai, bed)
